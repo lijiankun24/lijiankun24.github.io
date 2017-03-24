@@ -91,7 +91,7 @@
 
 <meta name="description" content="本文以图文的方式介绍了在 Mac 下使用 Hexo + GitHub Pages 搭建个人博客">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Mac下Hexo和GitHub-Pages搭建个人博客（一）">
+<meta property="og:title" content="Mac 下 Hexo 和 GitHub-Pages 搭建个人博客（一）">
 <meta property="og:url" content="http://yoursite.com/2017/03/17/Mac下Hexo和GitHub-Pages搭建个人博客1/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="本文以图文的方式介绍了在 Mac 下使用 Hexo + GitHub Pages 搭建个人博客">
@@ -109,9 +109,9 @@
 <meta property="og:image" content="http://yoursite.com/2017/03/17/Mac下Hexo和GitHub-Pages搭建个人博客1/config.png">
 <meta property="og:image" content="http://yoursite.com/2017/03/17/Mac下Hexo和GitHub-Pages搭建个人博客1/hexo_d.png">
 <meta property="og:image" content="http://yoursite.com/2017/03/17/Mac下Hexo和GitHub-Pages搭建个人博客1/hexo_new.png">
-<meta property="og:updated_time" content="2017-03-19T14:50:38.000Z">
+<meta property="og:updated_time" content="2017-03-24T14:42:41.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Mac下Hexo和GitHub-Pages搭建个人博客（一）">
+<meta name="twitter:title" content="Mac 下 Hexo 和 GitHub-Pages 搭建个人博客（一）">
 <meta name="twitter:description" content="本文以图文的方式介绍了在 Mac 下使用 Hexo + GitHub Pages 搭建个人博客">
 <meta name="twitter:image" content="http://yoursite.com/2017/03/17/Mac下Hexo和GitHub-Pages搭建个人博客1/git_version.png">
 
@@ -147,7 +147,7 @@
 
 
 
-  <title> Mac下Hexo和GitHub-Pages搭建个人博客（一） | Hexo </title>
+  <title> Mac 下 Hexo 和 GitHub-Pages 搭建个人博客（一） | Hexo </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -297,7 +297,7 @@
             
             
               
-                Mac下Hexo和GitHub-Pages搭建个人博客（一）
+                Mac 下 Hexo 和 GitHub-Pages 搭建个人博客（一）
               
             
           </h1>
@@ -360,67 +360,44 @@
 <li>npm</li>
 <li>hexo</li>
 </ul>
-<h2 id="本地站点搭建"><a href="#本地站点搭建" class="headerlink" title="本地站点搭建"></a>本地站点搭建</h2><h3 id="安装Git"><a href="#安装Git" class="headerlink" title="安装Git"></a>安装Git</h3><p>在 Mac OS X 中自带 Git，不需要安装 Git，在 Mac terminal 中输入以下命令可以查看 git 版本号：</p>
-<blockquote>
-<p>git –version</p>
-</blockquote>
+<h2 id="本地站点搭建"><a href="#本地站点搭建" class="headerlink" title="本地站点搭建"></a>本地站点搭建</h2><h3 id="安装Git"><a href="#安装Git" class="headerlink" title="安装Git"></a>安装Git</h3><p>在 Mac OS X 中自带 Git，不需要安装 Git，在 Mac terminal 中输入以下命令可以查看 git 版本号：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git --version</div></pre></td></tr></table></figure></p>
 <p>如下图所示：</p>
 <div align="center"><br>    <img src="/2017/03/17/Mac下Hexo和GitHub-Pages搭建个人博客1/git_version.png" width="460" height="75" alt=""><br></div>
 
-<h3 id="安装Node-js"><a href="#安装Node-js" class="headerlink" title="安装Node.js"></a>安装Node.js</h3><p>Node.js 可以直接从<a href="https://nodejs.org/en/" target="_blank" rel="external">官网</a>下载，然后下一步下一步即可完成安装，如下图所示：</p>
+<h3 id="安装Node-js"><a href="#安装Node-js" class="headerlink" title="安装Node.js"></a>安装Node.js</h3><p>Node.js 可以直接从 <a href="https://nodejs.org/en/" target="_blank" rel="external">官网</a> 下载，然后下一步下一步即可完成安装，如下图所示：</p>
 <div align="center"><br>    <img src="/2017/03/17/Mac下Hexo和GitHub-Pages搭建个人博客1/node.js.png" width="460" height="324" alt=""><br></div>
 
 <p>从上图中可以看出，node.js 安装完成以后，npm 也被安装完成，简化了工作。检测安装是否成功，可以在 Mac terminal 中输入以下命令查看 node.js 和 npm 的版本号：</p>
-<blockquote>
-<p>node -v</p>
-<p>npm -v</p>
-</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">node -v</div><div class="line">npm -v</div></pre></td></tr></table></figure>
 <p>如下图所示：</p>
 <div align="center"><br>    <img src="/2017/03/17/Mac下Hexo和GitHub-Pages搭建个人博客1/node_npm.png" width="460" height="103" alt=""><br></div>
 
-<h3 id="安装Hexo"><a href="#安装Hexo" class="headerlink" title="安装Hexo"></a>安装Hexo</h3><p>Git、Node.js 和 npm 安装完成以后，接下来就可以安装 Hexo 了。在 Mac terminal 中输入以下命令即可执行安装：</p>
-<blockquote>
-<p>sudo npm install -g hexo</p>
-</blockquote>
+<h3 id="安装Hexo"><a href="#安装Hexo" class="headerlink" title="安装Hexo"></a>安装Hexo</h3><p>Git、Node.js 和 npm 安装完成以后，接下来就可以安装 Hexo 了。在 Mac terminal 中输入以下命令即可执行安装：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo npm install -g hexo</div></pre></td></tr></table></figure></p>
 <p>稍等片刻，安装完成以后，效果如下图所示：</p>
 <div align="center"><br>    <img src="/2017/03/17/Mac下Hexo和GitHub-Pages搭建个人博客1/hexo_install.png" width="460" height="425" alt=""><br></div>
 
 <p>输入以下命令查看 Hexo 的版本号：</p>
-<blockquote>
-<p>hexo -v</p>
-</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo -v</div></pre></td></tr></table></figure>
 <p>如下图所示：</p>
 <div align="center"><br>    <img src="/2017/03/17/Mac下Hexo和GitHub-Pages搭建个人博客1/hexo_version.png" width="460" height="228" alt=""><br></div>
 
-<h3 id="初始化Hexo"><a href="#初始化Hexo" class="headerlink" title="初始化Hexo"></a>初始化Hexo</h3><p>在自己的用户名目录下，创建 hexo 文件夹(<code>mkdir hexo</code>)，并进入到 hexo 文件夹中(<code>cd hexo</code>)，执行以下命令可以完成对 Hexo 的初始化工作</p>
-<blockquote>
-<p>hexo init</p>
-</blockquote>
+<h3 id="初始化-Hexo"><a href="#初始化-Hexo" class="headerlink" title="初始化 Hexo"></a>初始化 Hexo</h3><p>在自己的用户名目录下，创建 <code>hexo</code> 文件夹(<code>mkdir hexo</code>)，并进入到 <code>hexo</code> 文件夹中(<code>cd hexo</code>)，执行以下命令可以完成对 Hexo 的初始化工作<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo init</div></pre></td></tr></table></figure></p>
 <p>如下图所示：</p>
 <div align="center"><br>    <img src="/2017/03/17/Mac下Hexo和GitHub-Pages搭建个人博客1/hexo_init1.png" width="460" height="576" alt=""><br></div><br><div align="center"><br>    <img src="/2017/03/17/Mac下Hexo和GitHub-Pages搭建个人博客1/hexo_init2.png" width="460" height="271" alt=""><br></div>
 
-<h3 id="安装依赖"><a href="#安装依赖" class="headerlink" title="安装依赖"></a>安装依赖</h3><p>在部署博客之前，需要先安装依赖，执行以下命令即可：</p>
-<blockquote>
-<p>npm install</p>
-</blockquote>
-<h3 id="生成静态页面"><a href="#生成静态页面" class="headerlink" title="生成静态页面"></a>生成静态页面</h3><p>执行以下命令，生成静态页面，如下图所示：</p>
-<blockquote>
-<p>hexo generate</p>
-</blockquote>
+<h3 id="安装依赖"><a href="#安装依赖" class="headerlink" title="安装依赖"></a>安装依赖</h3><p>在部署博客之前，需要先安装依赖，执行以下命令即可：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install</div></pre></td></tr></table></figure></p>
+<h3 id="生成静态页面"><a href="#生成静态页面" class="headerlink" title="生成静态页面"></a>生成静态页面</h3><p>执行以下命令，生成静态页面，如下图所示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo generate</div></pre></td></tr></table></figure></p>
 <div align="center"><br>    <img src="/2017/03/17/Mac下Hexo和GitHub-Pages搭建个人博客1/hexo_g.png" width="460" height="394" alt=""><br></div>
 
-<h3 id="启动服务"><a href="#启动服务" class="headerlink" title="启动服务"></a>启动服务</h3><p>执行以下命令，启动服务，如下图所示：</p>
-<blockquote>
-<p>hexo server</p>
-</blockquote>
+<h3 id="启动服务"><a href="#启动服务" class="headerlink" title="启动服务"></a>启动服务</h3><p>执行以下命令，启动服务，如下图所示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo server</div></pre></td></tr></table></figure></p>
 <div align="center"><br>    <img src="/2017/03/17/Mac下Hexo和GitHub-Pages搭建个人博客1/hexo_s.png" width="460" height="80" alt=""><br></div>
 
 <p>PS：停止服务使用 <code>Ctrl+C</code>。</p>
 <h3 id="在本地查看效果"><a href="#在本地查看效果" class="headerlink" title="在本地查看效果"></a>在本地查看效果</h3><p>打开浏览器，输入 <code>http://localhost:4000/</code>，如下图所示：</p>
 <div align="center"><br>    <img src="/2017/03/17/Mac下Hexo和GitHub-Pages搭建个人博客1/hexo_scan.png" width="460" height="408" alt=""><br></div>
 
-<h2 id="部署到GitHub"><a href="#部署到GitHub" class="headerlink" title="部署到GitHub"></a>部署到GitHub</h2><p>以上操作的结果是可以生成一个在本地浏览的博客站点，若想部署到 GitHub 上，请按照如下方式操作即可。因为本博客是托管在 GitHub 上的，所以一个 GitHub 账号是必不可少的，在 GitHub 注册账号这里就不叙述了。</p>
-<h3 id="创建repository"><a href="#创建repository" class="headerlink" title="创建repository"></a>创建repository</h3><p>登录 GitHub 个人账号以后，在首页右上角会有 <code>New repository</code> 按钮，点击按钮会出现下图所示界面：</p>
+<h2 id="部署到-GitHub"><a href="#部署到-GitHub" class="headerlink" title="部署到 GitHub"></a>部署到 GitHub</h2><p>以上操作的结果是可以生成一个在本地浏览的博客站点，若想部署到 GitHub 上，请按照如下方式操作即可。因为本博客是托管在 GitHub 上的，所以一个 GitHub 账号是必不可少的，在 GitHub 注册账号这里就不叙述了。</p>
+<h3 id="创建-repository"><a href="#创建-repository" class="headerlink" title="创建 repository"></a>创建 repository</h3><p>登录 GitHub 个人账号以后，在首页右上角会有 <code>New repository</code> 按钮，点击按钮会出现下图所示界面：</p>
 <div align="center"><br>    <img src="/2017/03/17/Mac下Hexo和GitHub-Pages搭建个人博客1/new_repository.png" width="460" height="399" alt=""><br></div>
 
 <p>如上图所示，其中有三点需要说明：</p>
@@ -429,43 +406,23 @@
 <li>Description 可以为空；</li>
 <li>免费服务的话，只能选择 <code>Public</code> (公开的)</li>
 </ol>
-<h3 id="安装-Git-部署器"><a href="#安装-Git-部署器" class="headerlink" title="安装 Git 部署器"></a>安装 Git 部署器</h3><p>在 Mac terminal 中执行以下命令即可：</p>
-<blockquote>
-<p>npm install hexo-deployer-git –save</p>
-</blockquote>
-<h3 id="修改配置文件"><a href="#修改配置文件" class="headerlink" title="修改配置文件"></a>修改配置文件</h3><p>在 hexo 的根目录下会有_config.yml文件，打开_config.yml文件，在文件最末尾，修改如下配置：</p>
+<h3 id="安装-Git-部署器"><a href="#安装-Git-部署器" class="headerlink" title="安装 Git 部署器"></a>安装 Git 部署器</h3><p>在 Mac terminal 中执行以下命令即可：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install hexo-deployer-git –save</div></pre></td></tr></table></figure></p>
+<h3 id="修改配置文件"><a href="#修改配置文件" class="headerlink" title="修改配置文件"></a>修改配置文件</h3><p>在 <code>hexo</code> 的根目录下会有 <code>_config.yml</code> 文件，打开 <code>_config.yml</code> 文件，在文件最末尾，修改如下配置：</p>
 <div align="center"><br>    <img src="/2017/03/17/Mac下Hexo和GitHub-Pages搭建个人博客1/config.png" width="460" height="99" alt=""><br></div>
 
-<h3 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h3><p>在 hexo 目录下执行以下命令， 即可完成对将静态博客部署到 GitHub 上</p>
-<blockquote>
-<p>hexo deploy</p>
-</blockquote>
+<h3 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h3><p>在 <code>hexo</code> 目录下执行以下命令， 即可完成对将静态博客部署到 GitHub 上<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo deploy</div></pre></td></tr></table></figure></p>
 <div align="center"><br>    <img src="/2017/03/17/Mac下Hexo和GitHub-Pages搭建个人博客1/hexo_d.png" width="460" height="495" alt=""><br></div>
 
 <p>部署成功以后，在浏览器中输入 <code>http://lijiankun24.github.io</code> 即可在线浏览自己的博客啦~</p>
-<h3 id="创建新博客"><a href="#创建新博客" class="headerlink" title="创建新博客"></a>创建新博客</h3><p>PS：以下命令均是在 hexo 路径下执行的。</p>
-<p>新建博客，执行以下命令：</p>
-<blockquote>
-<p>hexo new “test_blog”</p>
-</blockquote>
+<h3 id="创建新博客"><a href="#创建新博客" class="headerlink" title="创建新博客"></a>创建新博客</h3><p>PS：以下命令均是在 <code>hexo</code> 路径下执行的。</p>
+<p>新建博客，执行以下命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo new &quot;test_blog&quot;</div></pre></td></tr></table></figure></p>
 <div align="center"><br>    <img src="/2017/03/17/Mac下Hexo和GitHub-Pages搭建个人博客1/hexo_new.png" width="460" height="107" alt=""><br></div>
 
 <p>在 <code>/hexo/source/_posts/</code> 目录下即可看到一个名为 <code>test-blog.md</code> 文件。</p>
-<h3 id="发布新博客"><a href="#发布新博客" class="headerlink" title="发布新博客"></a>发布新博客</h3><p>编辑好博客以后，即可执行以下命令部署到GitHub上：</p>
-<blockquote>
-<p>hexo clean</p>
-<p>hexo generate</p>
-<p>hexo deploy</p>
-</blockquote>
-<p>PS：一些快捷键：</p>
-<blockquote>
-<p>hexo g == hexo generate</p>
-<p>hexo d == hexo deploy</p>
-<p>hexo s == hexo server</p>
-<p>hexo n == hexo new</p>
-</blockquote>
+<h3 id="发布新博客"><a href="#发布新博客" class="headerlink" title="发布新博客"></a>发布新博客</h3><p>编辑好博客以后，即可执行以下命令部署到GitHub上：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">hexo clean</div><div class="line">hexo generate</div><div class="line">hexo deploy</div></pre></td></tr></table></figure></p>
+<p>PS：一些快捷键：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">hexo g == hexo generate</div><div class="line">hexo d == hexo deploy</div><div class="line">hexo s == hexo server</div><div class="line">hexo n == hexo new</div></pre></td></tr></table></figure></p>
 <hr>
-<p>本文到此结束，其实在网上类似的教程很多，我只不过是参考别人照猫画虎，这篇博客真正的意义在于熟悉Hexo的使用，为以后继续写博客奠定一定的基础。<br>当然，《Mac 下 Hexo 和 GitHub-Pages 搭建个人博客》系列文章还没有写完，后面会继续更新。</p>
+<p>本文到此结束，其实在网上类似的教程很多，我只不过是参考别人照猫画虎，这篇博客真正的意义在于熟悉 Hexo 的使用，为以后继续写博客奠定一定的基础。<br>当然，《Mac 下 Hexo 和 GitHub-Pages 搭建个人博客》系列文章还没有写完，后面会继续更新。</p>
 <p>参考博客：</p>
 <p><a href="http://yuweiguocn.github.io/tags/hexo/" target="_blank" rel="external">Mac下Hexo+GitHub搭建博客图文教程（一）</a> – yuweiguo</p>
 
@@ -642,7 +599,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#准备条件"><span class="nav-number">1.</span> <span class="nav-text">准备条件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#硬件环境："><span class="nav-number">1.1.</span> <span class="nav-text">硬件环境：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#软件环境："><span class="nav-number">1.2.</span> <span class="nav-text">软件环境：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#本地站点搭建"><span class="nav-number">2.</span> <span class="nav-text">本地站点搭建</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装Git"><span class="nav-number">2.1.</span> <span class="nav-text">安装Git</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装Node-js"><span class="nav-number">2.2.</span> <span class="nav-text">安装Node.js</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装Hexo"><span class="nav-number">2.3.</span> <span class="nav-text">安装Hexo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#初始化Hexo"><span class="nav-number">2.4.</span> <span class="nav-text">初始化Hexo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装依赖"><span class="nav-number">2.5.</span> <span class="nav-text">安装依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生成静态页面"><span class="nav-number">2.6.</span> <span class="nav-text">生成静态页面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动服务"><span class="nav-number">2.7.</span> <span class="nav-text">启动服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在本地查看效果"><span class="nav-number">2.8.</span> <span class="nav-text">在本地查看效果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#部署到GitHub"><span class="nav-number">3.</span> <span class="nav-text">部署到GitHub</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建repository"><span class="nav-number">3.1.</span> <span class="nav-text">创建repository</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装-Git-部署器"><span class="nav-number">3.2.</span> <span class="nav-text">安装 Git 部署器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改配置文件"><span class="nav-number">3.3.</span> <span class="nav-text">修改配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#部署"><span class="nav-number">3.4.</span> <span class="nav-text">部署</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建新博客"><span class="nav-number">3.5.</span> <span class="nav-text">创建新博客</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#发布新博客"><span class="nav-number">3.6.</span> <span class="nav-text">发布新博客</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#准备条件"><span class="nav-number">1.</span> <span class="nav-text">准备条件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#硬件环境："><span class="nav-number">1.1.</span> <span class="nav-text">硬件环境：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#软件环境："><span class="nav-number">1.2.</span> <span class="nav-text">软件环境：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#本地站点搭建"><span class="nav-number">2.</span> <span class="nav-text">本地站点搭建</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装Git"><span class="nav-number">2.1.</span> <span class="nav-text">安装Git</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装Node-js"><span class="nav-number">2.2.</span> <span class="nav-text">安装Node.js</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装Hexo"><span class="nav-number">2.3.</span> <span class="nav-text">安装Hexo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#初始化-Hexo"><span class="nav-number">2.4.</span> <span class="nav-text">初始化 Hexo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装依赖"><span class="nav-number">2.5.</span> <span class="nav-text">安装依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生成静态页面"><span class="nav-number">2.6.</span> <span class="nav-text">生成静态页面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动服务"><span class="nav-number">2.7.</span> <span class="nav-text">启动服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在本地查看效果"><span class="nav-number">2.8.</span> <span class="nav-text">在本地查看效果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#部署到-GitHub"><span class="nav-number">3.</span> <span class="nav-text">部署到 GitHub</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建-repository"><span class="nav-number">3.1.</span> <span class="nav-text">创建 repository</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装-Git-部署器"><span class="nav-number">3.2.</span> <span class="nav-text">安装 Git 部署器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改配置文件"><span class="nav-number">3.3.</span> <span class="nav-text">修改配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#部署"><span class="nav-number">3.4.</span> <span class="nav-text">部署</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建新博客"><span class="nav-number">3.5.</span> <span class="nav-text">创建新博客</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#发布新博客"><span class="nav-number">3.6.</span> <span class="nav-text">发布新博客</span></a></li></ol></li></ol></div>
             
 
           </div>
