@@ -1,0 +1,770 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="本文是《Mac 下 Hexo 和 Github-Pages 搭建个人博客》系列文章的第三篇。如果想让自己写的博客被 Google 和 Baidu 搜索到，需要将自己的博客网站提交到 Google 和 Baidu 搜索引擎。这篇文章主要介绍在将自己的博客提交到 Google 和 Baidu 的时候遇到的一些问题，主要分为以下几个部分：
+
+将 Hexo 博客同时托管到 Github 和 Coding">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mac下Hexo和GitHub-Pages搭建个人博客(三)">
+<meta property="og:url" content="http://yoursite.com/2017/04/11/Mac下Hexo和GitHub-Pages搭建个人博客3/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="本文是《Mac 下 Hexo 和 Github-Pages 搭建个人博客》系列文章的第三篇。如果想让自己写的博客被 Google 和 Baidu 搜索到，需要将自己的博客网站提交到 Google 和 Baidu 搜索引擎。这篇文章主要介绍在将自己的博客提交到 Google 和 Baidu 的时候遇到的一些问题，主要分为以下几个部分：
+
+将 Hexo 博客同时托管到 Github 和 Coding">
+<meta property="og:image" content="http://yoursite.com/2017/04/11/Mac下Hexo和GitHub-Pages搭建个人博客3/hexo_baidu_spider.png">
+<meta property="og:image" content="http://yoursite.com/2017/04/11/Mac下Hexo和GitHub-Pages搭建个人博客3/hexo_coding_create_project.png">
+<meta property="og:image" content="http://yoursite.com/2017/04/11/Mac下Hexo和GitHub-Pages搭建个人博客3/hexo_coding_d.png">
+<meta property="og:image" content="http://yoursite.com/2017/04/11/Mac下Hexo和GitHub-Pages搭建个人博客3/hexo_coding_pages.png">
+<meta property="og:image" content="http://yoursite.com/2017/04/11/Mac下Hexo和GitHub-Pages搭建个人博客3/hexo_coding_dnspod.png">
+<meta property="og:image" content="http://yoursite.com/2017/04/11/Mac下Hexo和GitHub-Pages搭建个人博客3/hexo_coding_dns.png">
+<meta property="og:image" content="http://yoursite.com/2017/04/11/Mac下Hexo和GitHub-Pages搭建个人博客3/hexo_coding_success.png">
+<meta property="og:image" content="http://yoursite.com/2017/04/11/Mac下Hexo和GitHub-Pages搭建个人博客3/hexo_google.png">
+<meta property="og:image" content="http://yoursite.com/2017/04/11/Mac下Hexo和GitHub-Pages搭建个人博客3/hexo_google_console.png">
+<meta property="og:image" content="http://yoursite.com/2017/04/11/Mac下Hexo和GitHub-Pages搭建个人博客3/hexo_google_console1.png">
+<meta property="og:updated_time" content="2017-04-11T13:41:31.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Mac下Hexo和GitHub-Pages搭建个人博客(三)">
+<meta name="twitter:description" content="本文是《Mac 下 Hexo 和 Github-Pages 搭建个人博客》系列文章的第三篇。如果想让自己写的博客被 Google 和 Baidu 搜索到，需要将自己的博客网站提交到 Google 和 Baidu 搜索引擎。这篇文章主要介绍在将自己的博客提交到 Google 和 Baidu 的时候遇到的一些问题，主要分为以下几个部分：
+
+将 Hexo 博客同时托管到 Github 和 Coding">
+<meta name="twitter:image" content="http://yoursite.com/2017/04/11/Mac下Hexo和GitHub-Pages搭建个人博客3/hexo_baidu_spider.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/04/11/Mac下Hexo和GitHub-Pages搭建个人博客3/"/>
+
+
+
+
+
+  <title> Mac下Hexo和GitHub-Pages搭建个人博客(三) | Hexo </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/04/11/Mac下Hexo和GitHub-Pages搭建个人博客3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="lijiankun24">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Mac下Hexo和GitHub-Pages搭建个人博客(三)
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-11T21:41:31+08:00">
+                2017-04-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文是《Mac 下 Hexo 和 Github-Pages 搭建个人博客》系列文章的第三篇。如果想让自己写的博客被 Google 和 Baidu 搜索到，需要将自己的博客网站提交到 Google 和 Baidu 搜索引擎。这篇文章主要介绍在将自己的博客提交到 Google 和 Baidu 的时候遇到的一些问题，主要分为以下几个部分：</p>
+<ol>
+<li>将 Hexo 博客同时托管到 Github 和 Coding</li>
+<li>提交 Hexo 博客到 Google</li>
+<li>提交 Hexo 博客到 Baidu<a id="more"></a>
+</li>
+</ol>
+<h2 id="将-Hexo-博客同时托管在-Github-和-Coding"><a href="#将-Hexo-博客同时托管在-Github-和-Coding" class="headerlink" title="将 Hexo 博客同时托管在 Github 和 Coding"></a>将 Hexo 博客同时托管在 Github 和 Coding</h2><h3 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h3><p>因为 Baidu 爬取 Github 太频繁，甚至引起了 Github 服务器的不稳定，最后 Github 直接屏蔽了 Baidu 的爬取，所以如果仅仅将 Hexo 博客托管在 GitHub 上的话，是无法通过 Baidu 搜索到的。验证方法如下：</p>
+<ol>
+<li>打开百度站长平台</li>
+<li>网页抓取</li>
+<li>抓取诊断</li>
+<li>点击抓取，抓取完成以后，查看抓取详情，发现如详细内容如下图所示</li>
+</ol>
+<div align="center"><br>    <img src="/2017/04/11/Mac下Hexo和GitHub-Pages搭建个人博客3/hexo_baidu_spider.png" width="460" height="244"><br></div>
+
+<p> 发现返回的 HTTP 头部信息中，装太行是：<code>HTTP/1.0 403 Forbidden</code> 表示链接被拒绝访问。</p>
+<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><p>针对以上的问题，有以下两种解决方案：</p>
+<ol>
+<li>自己买个 VPS 云主机，将 Hexo 博客部署到云主机上，这样做需要买 VPS 云主机，成本较高。</li>
+<li>将 Hexo 博客同时托管到 Github 和 Coding 上，并通过域名解析服务器 DNSPod 做解析分流，对于不同的路线（国内和国外）访问不同的网站服务（Github 或 Coding）。</li>
+</ol>
+<h3 id="具体操作"><a href="#具体操作" class="headerlink" title="具体操作"></a>具体操作</h3><h4 id="注册-Coding-账号"><a href="#注册-Coding-账号" class="headerlink" title="注册 Coding 账号"></a>注册 <a href="https://coding.net/" target="_blank" rel="external">Coding</a> 账号</h4><p>这个不用多讲，没什么特别的。</p>
+<h4 id="在-Coding-上新建项目"><a href="#在-Coding-上新建项目" class="headerlink" title="在 Coding 上新建项目"></a>在 Coding 上新建项目</h4> <div align="center"><br>     <img src="/2017/04/11/Mac下Hexo和GitHub-Pages搭建个人博客3/hexo_coding_create_project.png" width="460" height="441"><br> </div>
+
+<p>如上图所示，有两点需要注意：</p>
+<ol>
+<li>项目名称和个人昵称必须一致。否则会出现静态文件路径不对的问题，比如：没有样式。例如我的个人昵称是：lijiankun24 ，项目名称也是：lijiankun24。</li>
+<li>项目必须是共有的。</li>
+</ol>
+<h4 id="配置-hexo-config-yml-文件"><a href="#配置-hexo-config-yml-文件" class="headerlink" title="配置 /hexo/_config.yml 文件"></a>配置 <code>/hexo/_config.yml</code> 文件</h4><p>打开 <code>/hexo/_config.yml</code> 文件，并修改其中的 <code>deploy</code> 部分如下所示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"># Deployment</div><div class="line">## Docs: https://hexo.io/docs/deployment.html</div><div class="line">deploy:</div><div class="line">  type: git</div><div class="line">  branch: master</div><div class="line">  repo:</div><div class="line">      github: https://github.com/lijiankun24/lijiankun24.github.io.git</div><div class="line">      coding: git@git.coding.net:lijiankun24/lijiankun24.git</div></pre></td></tr></table></figure></p>
+<p>修改 <code>repo</code> 字段，在原来的 <code>github</code> 后面增加 <code>coding</code>，后面跟上 <code>coding</code> 服务的 <code>git</code> 仓库地址。<br>配置完成以后，使用 <code>hexo d -g</code> 命令重新生成博客，并部署。会发现，本地编辑博客生成的静态网页文件同时部署到 Github 和 Coding 上面去了。在 Coding 上面如下图所示：</p>
+<div align="center"><br>    <img src="/2017/04/11/Mac下Hexo和GitHub-Pages搭建个人博客3/hexo_coding_d.png" width="460" height="259"><br></div>
+
+<h4 id="配置-Coding-Pages-服务"><a href="#配置-Coding-Pages-服务" class="headerlink" title="配置 Coding Pages 服务"></a>配置 Coding Pages 服务</h4><div align="center"><br>    <img src="/2017/04/11/Mac下Hexo和GitHub-Pages搭建个人博客3/hexo_coding_pages.png" width="460" height="226"><br></div>
+
+<p>如上图所示，在开启 Coding Pages 服务时，需要注意<code>部署分支</code>需要与<code>_config.yml</code>配置文件中的 <code>coding</code> 仓库分支要保持一致。例如：我的都是 <code>master</code> 分支。<br>配置成功以后，可以通过 <code>http://lijiankun24.coding.me/lijiankun24</code> 验证。</p>
+<h4 id="通过-DNSPod-配置-DNS-流量分发"><a href="#通过-DNSPod-配置-DNS-流量分发" class="headerlink" title="通过 DNSPod 配置 DNS 流量分发"></a>通过 DNSPod 配置 DNS 流量分发</h4><p>使用自己的账号登录 <a href="https://www.dnspod.cn/" target="_blank" rel="external">DNSPod</a>，在自己的域名下添加两条记录：</p>
+<ol>
+<li>添加一个主机记录为 <code>@</code>，记录类型为 <code>CNAME</code>，线路类型为 <code>国内</code>，记录值为 <code>xxx.coding.me</code>(例如：lijiankun24.coding.me)的记录；</li>
+<li>再添加一个 主机记录为 <code>www</code>，记录类型为 <code>CNAME</code>，线路类型为 <code>国内</code>，记录值为 <code>xxx.coding.me</code>(例如：lijiankun24.coding.me)的记录；<blockquote>
+<p>需要注意的是，在添加这两条记录时，线路类型均设置为 <code>国内</code>。对于国内的用户实际上是通过 <code>lijiankun24.coding.me</code> 访问 Hexo 博客的，而国外的用户实际上是通过 <code>lijiankun24.github.io</code> 访问 Hexo 博客的。这样配置以后，不仅国内用户访问 Hexo 博客的速度加快了，并且解决了 Github 屏蔽 Baidu 搜索的问题，为之后将 Hexo 博客提交到 Baidu 提供了前提条件。</p>
+</blockquote>
+</li>
+</ol>
+<p>添加完成以后，如下图所示：</p>
+<div align="center"><br>    <img src="/2017/04/11/Mac下Hexo和GitHub-Pages搭建个人博客3/hexo_coding_dnspod.png" width="460" height="357"><br></div>
+
+<h4 id="在-Coding-上自定义域名"><a href="#在-Coding-上自定义域名" class="headerlink" title="在 Coding 上自定义域名"></a>在 Coding 上自定义域名</h4><p>通过 DNSPod 完成流量分发以后，就可以将自己的域名与 <code>lijiankun24.coding.me</code> 绑定起来。</p>
+<div align="center"><br>    <img src="/2017/04/11/Mac下Hexo和GitHub-Pages搭建个人博客3/hexo_coding_dns.png" width="460" height="258"><br></div>
+
+<p>在上图红色箭头所指的地方，添加自己的域名，添加完成以后，点击<code>绑定</code>按钮，就可以完成域名的绑定，绑定完成以后如红框所示的样子。</p>
+<h3 id="验证百度抓取"><a href="#验证百度抓取" class="headerlink" title="验证百度抓取"></a>验证百度抓取</h3><p>按照上面步骤配置完成以后，再次使用百度站长的 <code>网页抓取 --&gt; 抓取诊断</code> 抓取以后，结果如下图所示：</p>
+<div align="center"><br>    <img src="/2017/04/11/Mac下Hexo和GitHub-Pages搭建个人博客3/hexo_coding_success.png" width="460" height="266"><br></div>
+
+<p>如上图所示，现在抓取 <code>http://www.lijiankun24.com</code>，返回的Http头的状态行是：<code>HTTP/1.1 200 OK</code>，表示 Baidu 可以成功地抓取到 <code>http://www.lijiankun24.com</code> 了。</p>
+<h2 id="将-Hexo-博客提交到-Google"><a href="#将-Hexo-博客提交到-Google" class="headerlink" title="将 Hexo 博客提交到 Google"></a>将 Hexo 博客提交到 Google</h2><p>首先，需要确认自己的博客网站是否被 Google 收录，打开 Google 主页（需要科学上网），输入 <code>site: lijiankun24.com</code>，如果可以搜到，说明被 Google 收录了，如果没有则没有被 Google 收录。如下图所示：</p>
+<div align="center"><br>    <img src="/2017/04/11/Mac下Hexo和GitHub-Pages搭建个人博客3/hexo_google.png" width="460" height="344"><br></div>
+
+<p>如果没有被 Google 收录，则需要按照以下步骤将博客网站提交到 Google。</p>
+<h3 id="验证-Hexo-博客网站"><a href="#验证-Hexo-博客网站" class="headerlink" title="验证 Hexo 博客网站"></a>验证 Hexo 博客网站</h3><p>验证网站的主要目的就是让 Google 知道，这个网站是你的，这是使用 Google 站长平台更多功能的前提，也是将 Hexo 博客提交到 Google 的第一步。</p>
+<ol>
+<li><p>登录<a href="https://www.google.com/webmasters/tools/home" target="_blank" rel="external">Google Search Console</a>，点击添加属性，然后输入 Hexo 博客的网址，添加网站。</p>
+<div align="center"><br> <img src="/2017/04/11/Mac下Hexo和GitHub-Pages搭建个人博客3/hexo_google_console.png" width="460" height="253"><br></div>
+</li>
+<li><p>添加完网站以后，需要验证网站。验证网站 Google 提供了多种方案，这里使用Google 推荐的一种方法，相对简单。</p>
+<div align="center"><br> <img src="/2017/04/11/Mac下Hexo和GitHub-Pages搭建个人博客3/hexo_google_console1.png" width="460" height="328"><br></div>
+
+</li>
+</ol>
+<p>下载上图中红色框中所指示的所对应的 html 文件，并将该 html 文件放在域名根目录下，也就是 Hexo 博客根目录下的 source （/hexo/source/）文件下。然后部署到服务器，在浏览器中输入<br> <code>https://www.lijiankun24.com/google642827cad0b5bb94.html</code> 就可以查看该文件是否上传成功，最后点击验证按钮就可以了。</p>
+<h3 id="提交站点地图到-Google"><a href="#提交站点地图到-Google" class="headerlink" title="提交站点地图到 Google"></a>提交站点地图到 Google</h3><blockquote>
+<p>站点地图是一种文件，您可以通过该文件列出您网站上的网页，从而将您网站内容的组织架构告知Google和其他搜索引擎。Googlebot等搜索引擎网页抓取工具会读取此文件，以便更加智能地抓取您的网站。                        –<a href="http://www.jianshu.com/p/619dab2d3c08" target="_blank" rel="external">嘟嘟</a></p>
+</blockquote>
+<p>使用下面的命令安装插件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install hexo-generator-sitemap --save</div></pre></td></tr></table></figure></p>
+<p>然后再 Hexo 的根目录下的 <code>_config.yml</code> 文件中添加如下代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"># 自动生成sitemap</div><div class="line">sitemap:</div><div class="line">path: sitemap.xml</div></pre></td></tr></table></figure></p>
+<p>然后使用 <code>hexo g</code> 编译博客，如果在 <code>/hexo/public/</code> 目录下发现 <code>sitemap.xml</code> 文件，则说明成功了。</p>
+<blockquote>
+<p>打开 <code>sitemap.xml</code> 文件，发现里面文章的链接中的域名都是 <code>yoursite.com</code>，表示很奇怪，然后我将其都改成 <code>www.lijiankun24.com</code>。</p>
+</blockquote>
+<p>部署完成以后，访问 <code>http://www.lijiankun24.com/sitemap.xml</code> 地址，结果如下图所示：</p>
+<p>参考资料：</p>
+<p><a href="http://www.jianshu.com/p/7ad9d3cd4d6e" target="_blank" rel="external">hexo干货系列：（四）将hexo博客同时托管到github和coding</a> – 嘟嘟MD</p>
+<p><a href="http://guochenglai.com/2016/09/26/baidu-crow-github-page/" target="_blank" rel="external">百度无法爬取Github Pages静态网站解决方案</a> – 郭承来</p>
+<p><a href="http://www.franktly.com/2016/07/05/Hexo同时部署在Coding和GitHub上并使用DNSPod分流" target="_blank" rel="external">Hexo同时部署在Coding和GitHub上并使用DNSPod分流</a> – just do IT</p>
+<p><a href="https://lneayce.github.io/2016/10/11/put-blog-both-coding-github/" target="_blank" rel="external">部署 hexo 到 github 和 coding 上</a> – Lneayce</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/22/Mac下Hexo和GitHub-Pages搭建个人博客2/" rel="next" title="Mac 下 Hexo 和 GitHub-Pages 搭建个人博客（二）">
+                <i class="fa fa-chevron-left"></i> Mac 下 Hexo 和 GitHub-Pages 搭建个人博客（二）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="lijiankun24" />
+          <p class="site-author-name" itemprop="name">lijiankun24</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#将-Hexo-博客同时托管在-Github-和-Coding"><span class="nav-number">1.</span> <span class="nav-text">将 Hexo 博客同时托管在 Github 和 Coding</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#起因"><span class="nav-number">1.1.</span> <span class="nav-text">起因</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决方案"><span class="nav-number">1.2.</span> <span class="nav-text">解决方案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#具体操作"><span class="nav-number">1.3.</span> <span class="nav-text">具体操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#注册-Coding-账号"><span class="nav-number">1.3.1.</span> <span class="nav-text">注册 Coding 账号</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#在-Coding-上新建项目"><span class="nav-number">1.3.2.</span> <span class="nav-text">在 Coding 上新建项目</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置-hexo-config-yml-文件"><span class="nav-number">1.3.3.</span> <span class="nav-text">配置 /hexo/_config.yml 文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置-Coding-Pages-服务"><span class="nav-number">1.3.4.</span> <span class="nav-text">配置 Coding Pages 服务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#通过-DNSPod-配置-DNS-流量分发"><span class="nav-number">1.3.5.</span> <span class="nav-text">通过 DNSPod 配置 DNS 流量分发</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#在-Coding-上自定义域名"><span class="nav-number">1.3.6.</span> <span class="nav-text">在 Coding 上自定义域名</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#验证百度抓取"><span class="nav-number">1.4.</span> <span class="nav-text">验证百度抓取</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#将-Hexo-博客提交到-Google"><span class="nav-number">2.</span> <span class="nav-text">将 Hexo 博客提交到 Google</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#验证-Hexo-博客网站"><span class="nav-number">2.1.</span> <span class="nav-text">验证 Hexo 博客网站</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#提交站点地图到-Google"><span class="nav-number">2.2.</span> <span class="nav-text">提交站点地图到 Google</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lijiankun24</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>
