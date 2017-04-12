@@ -113,7 +113,10 @@
 <meta property="og:image" content="http://www.lijiankun24.com/2017/04/11/Mac下Hexo和GitHub-Pages搭建个人博客3/hexo_baidu1.png">
 <meta property="og:image" content="http://www.lijiankun24.com/2017/04/11/Mac下Hexo和GitHub-Pages搭建个人博客3/hexo_baidu2.png">
 <meta property="og:image" content="http://www.lijiankun24.com/2017/04/11/Mac下Hexo和GitHub-Pages搭建个人博客3/hexo_baidu3.png">
-<meta property="og:updated_time" content="2017-04-11T15:43:30.000Z">
+<meta property="og:image" content="http://www.lijiankun24.com/2017/04/11/Mac下Hexo和GitHub-Pages搭建个人博客3/hexo_baidu4.png">
+<meta property="og:image" content="http://www.lijiankun24.com/2017/04/11/Mac下Hexo和GitHub-Pages搭建个人博客3/hexo_baidu5.png">
+<meta property="og:image" content="http://www.lijiankun24.com/2017/04/11/Mac下Hexo和GitHub-Pages搭建个人博客3/hexo_baidu6.png">
+<meta property="og:updated_time" content="2017-04-12T15:03:05.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Mac下Hexo和GitHub-Pages搭建个人博客(三)">
 <meta name="twitter:description" content="本文是《Mac 下 Hexo 和 Github-Pages 搭建个人博客》系列文章的第三篇。如果想让自己写的博客被 Google 和 Baidu 搜索到，需要将自己的博客网站提交到 Google 和 Baidu 搜索引擎。这篇文章主要介绍在将自己的博客提交到 Google 和 Baidu 的时候遇到的一些问题，主要分为以下几个部分：
@@ -388,6 +391,9 @@
 <p>修改 <code>repo</code> 字段，在原来的 <code>github</code> 后面增加 <code>coding</code>，后面跟上 <code>coding</code> 服务的 <code>git</code> 仓库地址。<br>配置完成以后，使用 <code>hexo d -g</code> 命令重新生成博客，并部署。会发现，本地编辑博客生成的静态网页文件同时部署到 Github 和 Coding 上面去了。在 Coding 上面如下图所示：</p>
 <div align="center"><br>    <img src="/2017/04/11/Mac下Hexo和GitHub-Pages搭建个人博客3/hexo_coding_d.png" width="460" height="259"><br></div>
 
+<blockquote>
+<p>如果第一次使用 coding，可能需要配置 SSH 公钥，配置的方法可以参考<a href="https://coding.net/help/doc/git/ssh-key.html" target="_blank" rel="external"> coding 帮助中心</a>。</p>
+</blockquote>
 <h4 id="配置-Coding-Pages-服务"><a href="#配置-Coding-Pages-服务" class="headerlink" title="配置 Coding Pages 服务"></a>配置 Coding Pages 服务</h4><div align="center"><br>    <img src="/2017/04/11/Mac下Hexo和GitHub-Pages搭建个人博客3/hexo_coding_pages.png" width="460" height="226"><br></div>
 
 <p>如上图所示，在开启 Coding Pages 服务时，需要注意<code>部署分支</code>需要与<code>_config.yml</code>配置文件中的 <code>coding</code> 仓库分支要保持一致。例如：我的都是 <code>master</code> 分支。<br>配置成功以后，可以通过 <code>http://lijiankun24.coding.me/lijiankun24</code> 验证。</p>
@@ -416,20 +422,20 @@
 <p>如果没有被 Google 收录，则需要按照以下步骤将博客网站提交到 Google。</p>
 <h3 id="在-Google-验证-Hexo-博客网站"><a href="#在-Google-验证-Hexo-博客网站" class="headerlink" title="在 Google 验证 Hexo 博客网站"></a>在 Google 验证 Hexo 博客网站</h3><p>验证网站的主要目的就是让 Google 知道，这个网站是你的，这是使用 Google 站长平台更多功能的前提，也是将 Hexo 博客提交到 Google 的第一步。</p>
 <ol>
-<li><p>登录<a href="https://www.google.com/webmasters/tools/home" target="_blank" rel="external">Google Search Console</a>，点击添加属性，然后输入 Hexo 博客的网址，添加网站。</p>
+<li><p>登录 <a href="https://www.google.com/webmasters/tools/home" target="_blank" rel="external">Google Search Console</a>，点击添加属性，然后输入 Hexo 博客的网址，添加网站。</p>
 <div align="center"><br> <img src="/2017/04/11/Mac下Hexo和GitHub-Pages搭建个人博客3/hexo_google_console.png" width="460" height="253"><br></div>
 </li>
-<li><p>添加完网站以后，需要验证网站。验证网站 Google 提供了多种方案，这里使用Google 推荐的一种方法，相对简单。</p>
+<li><p>添加网站完成以后，需要验证网站。Google 提供了多种方案验证网站。这里使用 Google 推荐的一种方法，相对简单。</p>
 <div align="center"><br> <img src="/2017/04/11/Mac下Hexo和GitHub-Pages搭建个人博客3/hexo_google_console1.png" width="460" height="328"><br></div>
 
 </li>
 </ol>
-<p>下载上图中红色框中所指示的所对应的 html 文件，并将该 html 文件放在域名根目录下，也就是 Hexo 博客根目录下的 source （/hexo/source/）文件下。然后部署到服务器，在浏览器中输入<br> <code>https://www.lijiankun24.com/google642827cad0b5bb94.html</code> 就可以查看该文件是否上传成功，最后点击验证按钮就可以了。</p>
+<p>下载上图中红色框中所指示 html 验证文件，并将该 html 验证文件放在域名根目录下，也就是 Hexo 博客根目录下的 source （/hexo/source/）文件下。然后部署到服务器，在浏览器中输入<br> <code>https://www.lijiankun24.com/google642827cad0b5bb94.html</code> 就可以查看该文件是否上传成功，最后点击验证按钮就可以了。</p>
 <h3 id="提交站点地图到-Google"><a href="#提交站点地图到-Google" class="headerlink" title="提交站点地图到 Google"></a>提交站点地图到 Google</h3><blockquote>
-<p>站点地图是一种文件，您可以通过该文件列出您网站上的网页，从而将您网站内容的组织架构告知Google和其他搜索引擎。Googlebot等搜索引擎网页抓取工具会读取此文件，以便更加智能地抓取您的网站。                        –<a href="http://www.jianshu.com/p/619dab2d3c08" target="_blank" rel="external">嘟嘟</a></p>
+<p>站点地图是一种文件，您可以通过该文件列出您网站上的网页，从而将您网站内容的组织架构告知 Google 和其他搜索引擎。Googlebot 等搜索引擎网页抓取工具会读取此文件，以便更加智能地抓取您的网站。                        –<a href="http://www.jianshu.com/p/619dab2d3c08" target="_blank" rel="external">嘟嘟</a></p>
 </blockquote>
-<p>使用下面的命令安装插件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install hexo-generator-sitemap --save</div></pre></td></tr></table></figure></p>
-<p>然后在 Hexo 的根目录下的 <code>_config.yml</code> 文件中添加如下代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"># 自动生成sitemap</div><div class="line">sitemap:</div><div class="line">path: sitemap.xml</div></pre></td></tr></table></figure></p>
+<h4 id="准备站点地图-sitemap"><a href="#准备站点地图-sitemap" class="headerlink" title="准备站点地图 sitemap"></a>准备站点地图 sitemap</h4><p><strong>进入 Hexo 博客的根目录</strong>，使用下面的命令安装插件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install hexo-generator-sitemap --save</div></pre></td></tr></table></figure></p>
+<p>向 Hexo 的根目录下的 <code>_config.yml</code> 文件中添加如下代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"># 自动生成sitemap</div><div class="line">sitemap:</div><div class="line">path: sitemap.xml</div></pre></td></tr></table></figure></p>
 <p>然后使用 <code>hexo g</code> 编译博客，如果在 <code>/hexo/public/</code> 目录下发现 <code>sitemap.xml</code> 文件，则说明成功了。</p>
 <blockquote>
 <p>打开 <code>sitemap.xml</code> 文件，如果发现里面文章链接中的域名都是<br><code>yoursite.com</code> 的话，需要将 Hexo 博客站点下 <code>_config.yml</code> 中的 <code>url</code> 修改为自己的域名，如我的修改为 <code>url: www.lijiankun24.com</code>。</p>
@@ -437,7 +443,7 @@
 <p>部署完成以后，访问 <code>http://www.lijiankun24.com/sitemap.xml</code> 地址，结果如下图所示：</p>
 <div align="center"><br>    <img src="/2017/04/11/Mac下Hexo和GitHub-Pages搭建个人博客3/hexo_sitemap.png" width="460" height="294"><br></div>
 
-<p>最后将自己博客的站点地图（sitemap.xml）提交到 Google 即可。<br>首先使用 Google 账号登陆<a href="https://www.google.com/webmasters/tools/home?hl=zh-CN" target="_blank" rel="external">谷歌站长工具</a>，如果之前添加的站点验证通过以后，选择该站点下的 <code>抓取 ---&gt; 站点地图</code>，就可以看到 <code>添加/测试站点地图</code>，填写 <code>sitemap.xml</code>，点击提交即可，如下图所示。</p>
+<h4 id="将站点地图-sitemap-提交到谷歌站长平台"><a href="#将站点地图-sitemap-提交到谷歌站长平台" class="headerlink" title="将站点地图 sitemap 提交到谷歌站长平台"></a>将站点地图 sitemap 提交到谷歌站长平台</h4><p>使用 Google 账号登陆<a href="https://www.google.com/webmasters/tools/home?hl=zh-CN" target="_blank" rel="external">谷歌站长工具</a>，如果之前添加的站点验证通过以后，选择该站点下的 <code>抓取 ---&gt; 站点地图</code>，就可以看到 <code>添加/测试站点地图</code>，填写 <code>sitemap.xml</code>，点击提交即可，如下图所示。</p>
 <div align="center"><br>    <img src="/2017/04/11/Mac下Hexo和GitHub-Pages搭建个人博客3/hexo_sitemap_submit.png" width="460" height="229"><br></div>
 
 <p>按照以上步骤完成之后，自己的 Hexo 博客就提交到 Google 了，就可以通过 Google 搜索到你博客中相关的内容了。</p>
@@ -446,23 +452,53 @@
 
 <p>如果没有被 Baidu 收录，则需要按照以下步骤将博客网站提交到 Baidu。</p>
 <h3 id="在-Baidu-验证-Hexo-博客网站"><a href="#在-Baidu-验证-Hexo-博客网站" class="headerlink" title="在 Baidu 验证 Hexo 博客网站"></a>在 Baidu 验证 Hexo 博客网站</h3><p>和在 Google 验证 Hexo 博客网站一样，在 Baidu 验证也是让 Baidu 知道，你是该网站的拥有者，是将 Hexo 博客网站提交到 Baidu 的第一步。</p>
-<ol>
-<li>登录<a href="http://zhanzhang.baidu.com/" target="_blank" rel="external">百度站长平台</a>，点击 <code>站点管理 ---&gt; 添加站点</code>，如下图所示：<div align="center"><br> <img src="/2017/04/11/Mac下Hexo和GitHub-Pages搭建个人博客3/hexo_baidu1.png" width="460" height="197"><br></div>
+<p>登录<a href="http://zhanzhang.baidu.com/" target="_blank" rel="external">百度站长平台</a>，点击 <code>站点管理 ---&gt; 添加站点</code>，如下图所示：</p>
+<div align="center"><br>    <img src="/2017/04/11/Mac下Hexo和GitHub-Pages搭建个人博客3/hexo_baidu1.png" width="460" height="197"><br></div>
 
-</li>
-</ol>
 <p>第一步，输入自己的 Hexo 博客地址；第二部，选择站点属性（看着选一下就行）；第三步是最关键的，如下图所示：</p>
 <div align="center"><br>    <img src="/2017/04/11/Mac下Hexo和GitHub-Pages搭建个人博客3/hexo_baidu2.png" width="460" height="269"><br></div>
 
 <p>百度站长平台提供了三种验证方式，我选择使用 <code>CNAME</code> 的方式验证网站。登录 <a href="https://www.dnspod.cn" target="_blank" rel="external">DNSPod</a>，进入<code>用户中心 ---&gt; 域名解析</code>，点击自己的域名，点击<code>添加记录</code>，添加一条主机记录为 <code>OCynuVu7om</code>，记录类型为 <code>CNAME</code>，路线为 <code>默认</code>，记录值为 <code>zz.baidu.com</code> 的记录，如下图所示：</p>
-<p><div align="center"><br>    <img src="/2017/04/11/Mac下Hexo和GitHub-Pages搭建个人博客3/hexo_baidu3.png" width="460" height="269"><br></div><br>在 DNSPod 中自己的域名下面，记录添加完成以后，回到百度站长平台中验证网站的第三步中，点击 <code>完成验证</code> 即可。</p>
-<h3 id="提交站点地图到-Baidu"><a href="#提交站点地图到-Baidu" class="headerlink" title="提交站点地图到 Baidu"></a>提交站点地图到 Baidu</h3><p>使用下面的命令安装针对 Baidu 的插件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install hexo-generator-baidu-sitemap --save</div></pre></td></tr></table></figure></p>
+<div align="center"><br>    <img src="/2017/04/11/Mac下Hexo和GitHub-Pages搭建个人博客3/hexo_baidu3.png" width="460" height="269"><br></div>
+
+<p>在 DNSPod 中自己的域名下面，记录添加完成以后，回到百度站长平台中验证网站的第三步中，点击 <code>完成验证</code> 即可。</p>
+<blockquote>
+<p>需要注意的是，虽然百度站长平台提示”将 OCynuVu7om.lijiankun24.com 使用 CNAME 解析到 zz.baidu.com”，但是在 DNSPod 添加记录时，主机记录值是 <code>OCynuVu7om</code>，而不是 <code>OCynuVu7om.lijiankun24.com</code>。</p>
+</blockquote>
+<h3 id="提交站点地图到-Baidu"><a href="#提交站点地图到-Baidu" class="headerlink" title="提交站点地图到 Baidu"></a>提交站点地图到 Baidu</h3><h4 id="准备站点地图-baidusitemap"><a href="#准备站点地图-baidusitemap" class="headerlink" title="准备站点地图 baidusitemap"></a>准备站点地图 baidusitemap</h4><p>进入 Hexo 博客的根目录，使用下面的命令安装针对 Baidu 的插件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install hexo-generator-baidu-sitemap --save</div></pre></td></tr></table></figure></p>
 <p>然后在 Hexo 的根目录下的 <code>_config.yml</code> 文件中添加如下代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># 自动生成sitemap</div><div class="line">sitemap:</div><div class="line">path: sitemap.xml</div><div class="line">baidusitemap:</div><div class="line">path: baidusitemap.xml</div></pre></td></tr></table></figure></p>
-<p>参考资料：</p>
-<p><a href="http://www.jianshu.com/p/7ad9d3cd4d6e" target="_blank" rel="external">hexo干货系列：（四）将hexo博客同时托管到github和coding</a> – 嘟嘟MD</p>
+<p>使用 <code>hexo g</code> 编译博客，如果在 <code>/hexo/public/</code> 目录下发现 baidusitemap.xml 文件，则说明成功了。部署完成以后，访问 <a href="http://www.lijiankun24.com/baidusitemap.xml">http://www.lijiankun24.com/baidusitemap.xml</a> 地址，结果如下图所示：</p>
+<div align="center"><br>    <img src="/2017/04/11/Mac下Hexo和GitHub-Pages搭建个人博客3/hexo_baidu4.png" width="460" height="382"><br></div>
+
+<h4 id="链接提交"><a href="#链接提交" class="headerlink" title="链接提交"></a>链接提交</h4><p>百度站长平台提供链接提交通道，可以提交想被百度收录的链接，百度搜索引擎会按照标准处理，但不保证一定能够收录您提交的链接。详细如下图所示：</p>
+<div align="center"><br>    <img src="/2017/04/11/Mac下Hexo和GitHub-Pages搭建个人博客3/hexo_baidu5.png" width="460" height="195"><br></div>
+
+<blockquote>
+<p>一般自动提交比手动提交效果好，在自动提交中从效率上来说：主动推送 &gt; 自动推送 &gt; sitemap         –<a href="http://www.jianshu.com/p/619dab2d3c08" target="_blank" rel="external">嘟嘟</a></p>
+</blockquote>
+<ol>
+<li><p>Baidu Sitemap的方式。在 <code>网页抓取 ---&gt; 链接提交</code> 中选中 <code>自动提交 ---&gt; sitemap</code>选项卡，并输入 Baidu 的 sitemap 网址，点击提交即可，如下图所示：</p>
+<div align="center"><br> <img src="/2017/04/11/Mac下Hexo和GitHub-Pages搭建个人博客3/hexo_baidu6.png" width="460" height="294"><br></div>
+</li>
+<li><p>自动推送的方式。把如下的 JS 代码放在网页页面中即可：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">&lt;script&gt;</div><div class="line">(function()&#123;</div><div class="line">    var bp = document.createElement(&apos;script&apos;);</div><div class="line">    var curProtocol = window.location.protocol.split(&apos;:&apos;)[0];</div><div class="line">    if (curProtocol === &apos;https&apos;) &#123;</div><div class="line">        bp.src = &apos;https://zz.bdstatic.com/linksubmit/push.js&apos;;        </div><div class="line">    &#125;</div><div class="line">    else &#123;</div><div class="line">        bp.src = &apos;http://push.zhanzhang.baidu.com/push.js&apos;;</div><div class="line">    &#125;</div><div class="line">    var s = document.getElementsByTagName(&quot;script&quot;)[0];</div><div class="line">    s.parentNode.insertBefore(bp, s);</div><div class="line">&#125;)();</div><div class="line">&lt;/script&gt;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<blockquote>
+<p>最好把上述代码放在 Hexo 生成的每个页面的公共部分,如果使用 NexT 主题，则可以将这段代码放在 <code>/hexo/blog/themes/next/layout/_layout.swig</code> 的 <code>&lt;body&gt;</code> 标签的最后面即可。</p>
+</blockquote>
+<ol>
+<li>主动推送的方式。需要编写主动推送代码，<a href="http://zhanzhang.baidu.com/college/courseinfo?id=267&amp;page=2#h2_article_title8" target="_blank" rel="external">主动推送编写示例</a>。</li>
+</ol>
+<p>这篇文章到此就把三部分内容全部介绍完毕，如果有什么问题欢迎指出。</p>
+<p><strong>参考资料：</strong></p>
+<p><a href="http://www.jianshu.com/p/7ad9d3cd4d6e" target="_blank" rel="external">hexo干货系列：（四）将hexo博客同时托管到github和coding</a> – 嘟嘟 MD</p>
 <p><a href="http://guochenglai.com/2016/09/26/baidu-crow-github-page/" target="_blank" rel="external">百度无法爬取Github Pages静态网站解决方案</a> – 郭承来</p>
 <p><a href="http://www.franktly.com/2016/07/05/Hexo同时部署在Coding和GitHub上并使用DNSPod分流" target="_blank" rel="external">Hexo同时部署在Coding和GitHub上并使用DNSPod分流</a> – just do IT</p>
 <p><a href="https://lneayce.github.io/2016/10/11/put-blog-both-coding-github/" target="_blank" rel="external">部署 hexo 到 github 和 coding 上</a> – Lneayce</p>
+<p><a href="http://henvyluk.com/2016/12/17/github-hexo%E6%8F%90%E4%BA%A4%E5%88%B0%E7%99%BE%E5%BA%A6%E8%B0%B7%E6%AD%8C%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E/" target="_blank" rel="external">github+hexo提交到百度谷歌搜索引擎</a>  – henvy</p>
+<p><a href="http://www.jianshu.com/p/619dab2d3c08" target="_blank" rel="external">hexo干货系列：（六）hexo提交搜索引擎（百度+谷歌）</a> – 嘟嘟 MD</p>
+<p><a href="http://www.franktly.com/2016/07/06/%E8%AE%A9Baidu%E5%92%8CGoogle%E6%94%B6%E5%BD%95Hexo%E5%8D%9A%E5%AE%A2/" target="_blank" rel="external">让Baidu和Google收录Hexo博客</a> – just do IT</p>
 
       
     </div>
@@ -627,7 +663,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#将-Hexo-博客同时托管在-Github-和-Coding"><span class="nav-number">1.</span> <span class="nav-text">将 Hexo 博客同时托管在 Github 和 Coding</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#起因"><span class="nav-number">1.1.</span> <span class="nav-text">起因</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决方案"><span class="nav-number">1.2.</span> <span class="nav-text">解决方案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#具体操作"><span class="nav-number">1.3.</span> <span class="nav-text">具体操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#注册-Coding-账号"><span class="nav-number">1.3.1.</span> <span class="nav-text">注册 Coding 账号</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#在-Coding-上新建项目"><span class="nav-number">1.3.2.</span> <span class="nav-text">在 Coding 上新建项目</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置-hexo-config-yml-文件"><span class="nav-number">1.3.3.</span> <span class="nav-text">配置 /hexo/_config.yml 文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置-Coding-Pages-服务"><span class="nav-number">1.3.4.</span> <span class="nav-text">配置 Coding Pages 服务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#通过-DNSPod-配置-DNS-流量分发"><span class="nav-number">1.3.5.</span> <span class="nav-text">通过 DNSPod 配置 DNS 流量分发</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#在-Coding-上自定义域名"><span class="nav-number">1.3.6.</span> <span class="nav-text">在 Coding 上自定义域名</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#验证百度抓取"><span class="nav-number">1.4.</span> <span class="nav-text">验证百度抓取</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#将-Hexo-博客提交到-Google"><span class="nav-number">2.</span> <span class="nav-text">将 Hexo 博客提交到 Google</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#在-Google-验证-Hexo-博客网站"><span class="nav-number">2.1.</span> <span class="nav-text">在 Google 验证 Hexo 博客网站</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#提交站点地图到-Google"><span class="nav-number">2.2.</span> <span class="nav-text">提交站点地图到 Google</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#将-Hexo-博客提交到-Baidu"><span class="nav-number">3.</span> <span class="nav-text">将 Hexo 博客提交到 Baidu</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#在-Baidu-验证-Hexo-博客网站"><span class="nav-number">3.1.</span> <span class="nav-text">在 Baidu 验证 Hexo 博客网站</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#提交站点地图到-Baidu"><span class="nav-number">3.2.</span> <span class="nav-text">提交站点地图到 Baidu</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#将-Hexo-博客同时托管在-Github-和-Coding"><span class="nav-number">1.</span> <span class="nav-text">将 Hexo 博客同时托管在 Github 和 Coding</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#起因"><span class="nav-number">1.1.</span> <span class="nav-text">起因</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决方案"><span class="nav-number">1.2.</span> <span class="nav-text">解决方案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#具体操作"><span class="nav-number">1.3.</span> <span class="nav-text">具体操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#注册-Coding-账号"><span class="nav-number">1.3.1.</span> <span class="nav-text">注册 Coding 账号</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#在-Coding-上新建项目"><span class="nav-number">1.3.2.</span> <span class="nav-text">在 Coding 上新建项目</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置-hexo-config-yml-文件"><span class="nav-number">1.3.3.</span> <span class="nav-text">配置 /hexo/_config.yml 文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置-Coding-Pages-服务"><span class="nav-number">1.3.4.</span> <span class="nav-text">配置 Coding Pages 服务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#通过-DNSPod-配置-DNS-流量分发"><span class="nav-number">1.3.5.</span> <span class="nav-text">通过 DNSPod 配置 DNS 流量分发</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#在-Coding-上自定义域名"><span class="nav-number">1.3.6.</span> <span class="nav-text">在 Coding 上自定义域名</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#验证百度抓取"><span class="nav-number">1.4.</span> <span class="nav-text">验证百度抓取</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#将-Hexo-博客提交到-Google"><span class="nav-number">2.</span> <span class="nav-text">将 Hexo 博客提交到 Google</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#在-Google-验证-Hexo-博客网站"><span class="nav-number">2.1.</span> <span class="nav-text">在 Google 验证 Hexo 博客网站</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#提交站点地图到-Google"><span class="nav-number">2.2.</span> <span class="nav-text">提交站点地图到 Google</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#准备站点地图-sitemap"><span class="nav-number">2.2.1.</span> <span class="nav-text">准备站点地图 sitemap</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#将站点地图-sitemap-提交到谷歌站长平台"><span class="nav-number">2.2.2.</span> <span class="nav-text">将站点地图 sitemap 提交到谷歌站长平台</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#将-Hexo-博客提交到-Baidu"><span class="nav-number">3.</span> <span class="nav-text">将 Hexo 博客提交到 Baidu</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#在-Baidu-验证-Hexo-博客网站"><span class="nav-number">3.1.</span> <span class="nav-text">在 Baidu 验证 Hexo 博客网站</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#提交站点地图到-Baidu"><span class="nav-number">3.2.</span> <span class="nav-text">提交站点地图到 Baidu</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#准备站点地图-baidusitemap"><span class="nav-number">3.2.1.</span> <span class="nav-text">准备站点地图 baidusitemap</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#链接提交"><span class="nav-number">3.2.2.</span> <span class="nav-text">链接提交</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
@@ -795,5 +831,19 @@
 
   
 
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+          bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+      } else {
+          bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+  
 </body>
 </html>
