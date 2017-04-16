@@ -87,40 +87,32 @@
 
 
 
-<meta name="description" content="本文是《Mac 下 Hexo 和 Github-Pages 搭建个人博客》系列文章的第二篇。按照介绍 Hexo 第一篇文章搭建好 Hexo 博客以后，发现并不理想，而且在写文章的过程中遇到了一些问题，本文主要记录一下在完善 Hexo 博客过程中，我的一些收获，包括以下四点内容：
+<meta name="description" content="本文是《Mac 下 Hexo 和 Github-Pages 搭建个人博客》系列文章的第四篇，也是最后一篇。其他可以写博客的网站，比如：简书、CSDN 等网站，都有一个功能就是统计自己博客的阅读量的功能，这个功能 NexT 也提供了，只不过需要配置一下才可以使用。本文就介绍一下统计功能的配置，并介绍一下 NexT 的主题中一些元素的配置。
 
-配置 Hexo 主题
-Hexo 草稿箱的使用
-文章中图片的插入
-为 Hexo 绑定个人域名">
+为 NexT 主题下的文章增加统计阅读量的功能
+NexT">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Mac 下 Hexo 和 GitHub-Pages 搭建个人博客（二）">
-<meta property="og:url" content="http://www.lijiankun24.com/Mac下Hexo和GitHub-Pages搭建个人博客2/index.html">
+<meta property="og:title" content="Mac下Hexo和GitHub-Pages搭建个人博客(四)">
+<meta property="og:url" content="http://www.lijiankun24.com/Mac下Hexo和GitHub-Pages搭建个人博客4/index.html">
 <meta property="og:site_name" content="lijiankun24">
-<meta property="og:description" content="本文是《Mac 下 Hexo 和 Github-Pages 搭建个人博客》系列文章的第二篇。按照介绍 Hexo 第一篇文章搭建好 Hexo 博客以后，发现并不理想，而且在写文章的过程中遇到了一些问题，本文主要记录一下在完善 Hexo 博客过程中，我的一些收获，包括以下四点内容：
+<meta property="og:description" content="本文是《Mac 下 Hexo 和 Github-Pages 搭建个人博客》系列文章的第四篇，也是最后一篇。其他可以写博客的网站，比如：简书、CSDN 等网站，都有一个功能就是统计自己博客的阅读量的功能，这个功能 NexT 也提供了，只不过需要配置一下才可以使用。本文就介绍一下统计功能的配置，并介绍一下 NexT 的主题中一些元素的配置。
 
-配置 Hexo 主题
-Hexo 草稿箱的使用
-文章中图片的插入
-为 Hexo 绑定个人域名">
-<meta property="og:image" content="http://www.lijiankun24.com/Mac下Hexo和GitHub-Pages搭建个人博客2/hexo_scan.png">
-<meta property="og:image" content="http://www.lijiankun24.com/Mac下Hexo和GitHub-Pages搭建个人博客2/hexo_next.png">
-<meta property="og:image" content="http://www.lijiankun24.com/Mac下Hexo和GitHub-Pages搭建个人博客2/hexo_next1.png">
-<meta property="og:image" content="http://www.lijiankun24.com/Mac下Hexo和GitHub-Pages搭建个人博客2/ hexo_next2.png">
-<meta property="og:image" content="http://www.lijiankun24.com/Mac下Hexo和GitHub-Pages搭建个人博客2/hexo_cname1.png">
-<meta property="og:image" content="http://www.lijiankun24.com/Mac下Hexo和GitHub-Pages搭建个人博客2/hexo_cname2.png">
-<meta property="og:image" content="http://www.lijiankun24.com/Mac下Hexo和GitHub-Pages搭建个人博客2/hexo_dnspod.png">
-<meta property="og:image" content="http://www.lijiankun24.com/Mac下Hexo和GitHub-Pages搭建个人博客2/hexo_wanwang.png">
-<meta property="og:updated_time" content="2017-04-12T15:13:58.000Z">
+为 NexT 主题下的文章增加统计阅读量的功能
+NexT">
+<meta property="og:image" content="http://www.lijiankun24.com/Mac下Hexo和GitHub-Pages搭建个人博客4/hexo_leancloud.png">
+<meta property="og:image" content="http://www.lijiankun24.com/Mac下Hexo和GitHub-Pages搭建个人博客4/hexo_leancloud1.png">
+<meta property="og:image" content="http://www.lijiankun24.com/Mac下Hexo和GitHub-Pages搭建个人博客4/hexo_leancloud2.png">
+<meta property="og:image" content="http://www.lijiankun24.com/Mac下Hexo和GitHub-Pages搭建个人博客4/hexo_leancloud4.png">
+<meta property="og:image" content="http://www.lijiankun24.com/Mac下Hexo和GitHub-Pages搭建个人博客4/hexo_leancloud3.png">
+<meta property="og:image" content="http://www.lijiankun24.com/Mac下Hexo和GitHub-Pages搭建个人博客4/hexo_next.png">
+<meta property="og:updated_time" content="2017-04-16T12:18:13.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Mac 下 Hexo 和 GitHub-Pages 搭建个人博客（二）">
-<meta name="twitter:description" content="本文是《Mac 下 Hexo 和 Github-Pages 搭建个人博客》系列文章的第二篇。按照介绍 Hexo 第一篇文章搭建好 Hexo 博客以后，发现并不理想，而且在写文章的过程中遇到了一些问题，本文主要记录一下在完善 Hexo 博客过程中，我的一些收获，包括以下四点内容：
+<meta name="twitter:title" content="Mac下Hexo和GitHub-Pages搭建个人博客(四)">
+<meta name="twitter:description" content="本文是《Mac 下 Hexo 和 Github-Pages 搭建个人博客》系列文章的第四篇，也是最后一篇。其他可以写博客的网站，比如：简书、CSDN 等网站，都有一个功能就是统计自己博客的阅读量的功能，这个功能 NexT 也提供了，只不过需要配置一下才可以使用。本文就介绍一下统计功能的配置，并介绍一下 NexT 的主题中一些元素的配置。
 
-配置 Hexo 主题
-Hexo 草稿箱的使用
-文章中图片的插入
-为 Hexo 绑定个人域名">
-<meta name="twitter:image" content="http://www.lijiankun24.com/Mac下Hexo和GitHub-Pages搭建个人博客2/hexo_scan.png">
+为 NexT 主题下的文章增加统计阅读量的功能
+NexT">
+<meta name="twitter:image" content="http://www.lijiankun24.com/Mac下Hexo和GitHub-Pages搭建个人博客4/hexo_leancloud.png">
 
 
 
@@ -148,13 +140,13 @@ Hexo 草稿箱的使用
 
 
 
-  <link rel="canonical" href="http://www.lijiankun24.com/Mac下Hexo和GitHub-Pages搭建个人博客2/"/>
+  <link rel="canonical" href="http://www.lijiankun24.com/Mac下Hexo和GitHub-Pages搭建个人博客4/"/>
 
 
 
 
 
-  <title> Mac 下 Hexo 和 GitHub-Pages 搭建个人博客（二） | lijiankun24 </title>
+  <title> Mac下Hexo和GitHub-Pages搭建个人博客(四) | lijiankun24 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
@@ -283,7 +275,7 @@ Hexo 草稿箱的使用
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://www.lijiankun24.com/Mac下Hexo和GitHub-Pages搭建个人博客2/">
+    <link itemprop="mainEntityOfPage" href="http://www.lijiankun24.com/Mac下Hexo和GitHub-Pages搭建个人博客4/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="lijiankun24">
@@ -304,7 +296,7 @@ Hexo 草稿箱的使用
             
             
               
-                Mac 下 Hexo 和 GitHub-Pages 搭建个人博客（二）
+                Mac下Hexo和GitHub-Pages搭建个人博客(四)
               
             
           </h1>
@@ -319,8 +311,8 @@ Hexo 草稿箱的使用
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-03-22T23:22:29+08:00">
-                2017-03-22
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-04-16T13:19:44+08:00">
+                2017-04-16
               </time>
             
 
@@ -337,7 +329,7 @@ Hexo 草稿箱的使用
 
           
           
-             <span id="/Mac下Hexo和GitHub-Pages搭建个人博客2/" class="leancloud_visitors" data-flag-title="Mac 下 Hexo 和 GitHub-Pages 搭建个人博客（二）">
+             <span id="/Mac下Hexo和GitHub-Pages搭建个人博客4/" class="leancloud_visitors" data-flag-title="Mac下Hexo和GitHub-Pages搭建个人博客(四)">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -366,81 +358,43 @@ Hexo 草稿箱的使用
       
 
       
-        <p>本文是《Mac 下 Hexo 和 Github-Pages 搭建个人博客》系列文章的第二篇。按照介绍 Hexo 第一篇文章搭建好 Hexo 博客以后，发现并不理想，而且在写文章的过程中遇到了一些问题，本文主要记录一下在完善 Hexo 博客过程中，我的一些收获，包括以下四点内容：</p>
+        <p>本文是《Mac 下 Hexo 和 Github-Pages 搭建个人博客》系列文章的第四篇，也是最后一篇。其他可以写博客的网站，比如：<code>简书</code>、<code>CSDN</code> 等网站，都有一个功能就是统计自己博客的阅读量的功能，这个功能 NexT 也提供了，只不过需要配置一下才可以使用。本文就介绍一下统计功能的配置，并介绍一下 NexT 的主题中一些元素的配置。</p>
 <ol>
-<li>配置 Hexo 主题</li>
-<li>Hexo 草稿箱的使用</li>
-<li>文章中图片的插入</li>
-<li>为 Hexo 绑定个人域名<a id="more"></a>
-<h2 id="配置-Hexo-主题"><a href="#配置-Hexo-主题" class="headerlink" title="配置 Hexo 主题"></a>配置 Hexo 主题</h2><h3 id="NexT-主题预览"><a href="#NexT-主题预览" class="headerlink" title="NexT 主题预览"></a>NexT 主题预览</h3>按照《Mac 下 Hexo 和 Github-Pages 搭建个人博客（一）》，已经成功地搭建了 Hexo 博客，下图是默认主题的预览效果</li>
+<li>为 NexT 主题下的文章增加统计阅读量的功能</li>
+<li>NexT 主题中一些元素的配置<a id="more"></a>
+</li>
 </ol>
-<div align="center"><br>    <img src="/Mac下Hexo和GitHub-Pages搭建个人博客2/hexo_scan.png" width="460" height="408" alt=""><br></div>
+<h2 id="为-NexT-主题下的文章增加统计阅读量的功能"><a href="#为-NexT-主题下的文章增加统计阅读量的功能" class="headerlink" title="为 NexT 主题下的文章增加统计阅读量的功能"></a>为 NexT 主题下的文章增加统计阅读量的功能</h2><p>为 NexT 中的文章增加统计阅读量的功能的话，需要使用到 <a href="https://leancloud.cn/" target="_blank" rel="external">LeanCloud</a> 提供的服务。</p>
+<h3 id="注册并配置-LeanCloud"><a href="#注册并配置-LeanCloud" class="headerlink" title="注册并配置 LeanCloud"></a>注册并配置 LeanCloud</h3><h4 id="注册-LeanCloud"><a href="#注册-LeanCloud" class="headerlink" title="注册 LeanCloud"></a>注册 LeanCloud</h4><p>打开 <a href="https://leancloud.cn/" target="_blank" rel="external">LeanCloud</a> 官网，进行注册并通过邮箱验证以后，登录 LeanCloud，点击头像，进入控制台，如下图所示：</p>
+<div align="center"><br>    <img src="/Mac下Hexo和GitHub-Pages搭建个人博客4/hexo_leancloud.png" width="520" height="249"><br></div>
 
-<p>为了达到自己理想的效果，找了一款自认为非常美观而且简洁的主题：<a href="https://github.com/iissnan/hexo-theme-next" target="_blank" rel="external">NexT</a>，显示效果如下所示：</p>
-<div align="center"><br>    <img src="/Mac下Hexo和GitHub-Pages搭建个人博客2/hexo_next.png" width="460" height="333" alt=""><br></div>
+<h4 id="创建应用"><a href="#创建应用" class="headerlink" title="创建应用"></a>创建应用</h4><p>点击<code>创建应用</code>，填写<code>新应用名称</code>，如果只是用于个人博客网站的统计功能，选择<code>开发版</code>即可，如下图所示：</p>
+<div align="center"><br>    <img src="/Mac下Hexo和GitHub-Pages搭建个人博客4/hexo_leancloud1.png" width="520" height="279"><br></div>
 
-<p>对比一下，差距是不是很明显。^-^</p>
-<h3 id="具体操作"><a href="#具体操作" class="headerlink" title="具体操作"></a>具体操作</h3><p>接下来介绍如何配置主题，其实非常简单：</p>
-<ol>
-<li><p>从 Mac Terminal 进入 <code>hexo/themes</code> 目录下，输入以下命令，将 NexT 主题从 GitHub 上 clone 下来：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git clone https://github.com/iissnan/hexo-theme-next.git</div></pre></td></tr></table></figure>
-<p>等待 clone 完成以后，将该文件重命名为 <code>next</code>，如下图所示：</p>
-<div align="center"><br> <img src="/Mac下Hexo和GitHub-Pages搭建个人博客2/hexo_next1.png" width="460" height="202" alt=""><br></div>
-</li>
-<li><p>打开<code>hexo/_config.yml</code>文件，并修改里面的 <code>theme</code> 属性为 <code>next</code> ，如下图所示：</p>
-</li>
-</ol>
-<div align="center"><br>    <img src="/Mac下Hexo和GitHub-Pages搭建个人博客2/ hexo_next2.png" width="460" height="76" alt=""><br></div>
+<p>创建名为 <code>Counter</code> 的 Class。数据对象的默认 ACL 权限设置，仅在创建 Class 时可以调整，如果想避免后续因为权限的问题导致次数统计显示不正常，建议在此处选择<code>无限制</code>，如下图所示：</p>
+<div align="center"><br>    <img src="/Mac下Hexo和GitHub-Pages搭建个人博客4/hexo_leancloud2.png" width="520" height="448"><br></div>
 
-<p>此时，Hexo 主题配置已经完成，通过命令 <code>hexo s</code> ,即可在本地预览 NexT 主题效果。</p>
-<h2 id="Hexo-草稿箱的使用"><a href="#Hexo-草稿箱的使用" class="headerlink" title="Hexo 草稿箱的使用"></a>Hexo 草稿箱的使用</h2><p>创建一篇文章的命令是：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo new &quot;new_page_name&quot;</div></pre></td></tr></table></figure></p>
-<p>该命令创建的博客在 <code>hexo/source/_posts</code> 目录下<br>创建一篇草稿文章的命令是：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo new draft &quot;new_page_name&quot;</div></pre></td></tr></table></figure></p>
-<p>该命令会在 <code>hexo/source/_drafts</code> 目录下创建一个 <code>new_page_name.md</code> 文件。<br>预览草稿文章：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo s --draft</div></pre></td></tr></table></figure></p>
-<p>当文章创作完成以后，使用以下命令发布文章，即会发表该文章，文章及其所属的同名资源文件夹则会从 <code>hexo/source/_drafts</code> 移到 <code>hexo/source/_posts</code> 下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo publish “new_page_name”</div></pre></td></tr></table></figure></p>
-<h2 id="文章中图片的插入"><a href="#文章中图片的插入" class="headerlink" title="文章中图片的插入"></a>文章中图片的插入</h2><ol>
-<li>确认 <code>source/_config.yml</code> 中有 <code>post_asset_folder: true</code> 属性。这样设置以后，每次新建文章的时候，Hexo 都会创建一个与文章同名的文件夹，可以把与文章相关的资源都放在该文件夹下，方便管理。</li>
-<li><p>进入 <code>hexo</code> 目录下，执行以下命令，完成 <a href="https://github.com/CodeFalling/hexo-asset-image" target="_blank" rel="external">CodeFalling/hexo-asset-image</a> 插件的安装：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install https://github.com/CodeFalling/hexo-asset-image --save</div></pre></td></tr></table></figure>
-</li>
-<li><p>在文章中插入图片。首先将图片放入与文章名称相同的文件夹内，然后在文章中用以下方式引用。例如在一篇 <code>test.md</code> 的文章中插入图片，与其对应的文件夹下有一张名为 <code>test.jpg</code> 的图片，那么引用方式则是：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">![logo](&apos;test&apos;/test.jpg)</div></pre></td></tr></table></figure>
-</li>
-</ol>
-<blockquote>
-<p>用上面这种方式引用图片并不能设置图片的大小，经过查找，可以使用以下方式插入图片，并且可以设置图片的大小：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;div align=center&gt;</div><div class="line">    &lt;img src=&quot;test/test.jpg&quot; width=&quot;100&quot; height=&quot;80&quot; alt=&quot;&quot;/&gt;</div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure></p>
-</blockquote>
-<h2 id="为-Hexo-绑定个人域名"><a href="#为-Hexo-绑定个人域名" class="headerlink" title="为 Hexo 绑定个人域名"></a>为 Hexo 绑定个人域名</h2><h3 id="条件"><a href="#条件" class="headerlink" title="条件"></a>条件</h3><p>为 Hexo 绑定个人域名需要两个条件：1.个人域名；2.有一个域名解析提供商账号。</p>
-<ol>
-<li>首先，你需要一个域名，在 <a href="https://wanwang.aliyun.com/" target="_blank" rel="external">万网</a> 可以购买，笔者购买的是 <code>lijiankun24.com</code>。</li>
-<li>DNS 解析的服务推荐使用 <a href="http://www.dnspod.cn" target="_blank" rel="external">DNSPod</a> (速度快，免费)，在该网站下注册一个账号，用于 DNS 解析使用。</li>
-</ol>
-<h3 id="具体操作-1"><a href="#具体操作-1" class="headerlink" title="具体操作"></a>具体操作</h3><ol>
-<li>在 <code>hexo/source/</code> 路径下创建一个名为 <code>CNAME</code> 的文件(注意：没有扩展名)，如下图所示：<div align="center"><br><img src="/Mac下Hexo和GitHub-Pages搭建个人博客2/hexo_cname1.png" width="460" height="221" alt=""><br></div></li>
-<li>使用文本编辑器打开 <code>CNAME</code> 文件，在首行添加个人域名信息(注意：不加 <code>http://</code>，也不加 <code>www</code>)，如下图所示：<div align="center"><br><img src="/Mac下Hexo和GitHub-Pages搭建个人博客2/hexo_cname2.png" width="460" height="63" alt=""><br></div></li>
-<li>完成第2步之后，重新部署到 <code>github pages</code> 上去，部署简写命令 <code>hexo d -g</code>。</li>
-<li>在 <a href="https://wanwang.aliyun.com/" target="_blank" rel="external">万网</a> 注册，并购买域名。</li>
-<li><p>在 <a href="http://www.dnspod.cn" target="_blank" rel="external">DNSPod</a> 注册完成以后，进入个人中心控制台，添加个人域名，并添加记录:</p>
-<blockquote>
-<ol>
-<li>首先添加一个主机记录为 <code>@</code>，记录类型为 <code>CNAME</code>，记录值为 <code>xxx.github.io</code>(例如：lijiankun24.github.io)的记录；</li>
-<li>再添加一个 主机记录为 <code>www</code>，记录类型为 <code>CNAME</code>，记录值为 <code>xxx.github.io</code>(例如：lijiankun24.github.io)的记录；<blockquote>
-<p>第一条记录 <code>@    CNAME    lijiankun24.github.io</code> 允许用户以 <code>lijiankun24.com</code> 访问你的博客；第二条记录 <code>www    CNAME    lijiankun24.github.io</code> 允许用户以 <code>www.lijiankun24.com</code> 访问你的博客。</p>
-</blockquote>
-</li>
-</ol>
-</blockquote>
-<p>添加完成以后，如下图所示：</p>
-<div align="center"><br> <img src="/Mac下Hexo和GitHub-Pages搭建个人博客2/hexo_dnspod.png" width="460" height="340" alt=""><br></div>
-</li>
-<li><p>在 <a href="https://wanwang.aliyun.com/" target="_blank" rel="external">万网</a> 个人中心的控制台中，修改你的域名的DNS地址为：<code>f1g1ns1.dnspod.net</code> 和 <code>f1g1ns2.dnspod.net</code>，如下图所示：</p>
-<div align="center"><br> <img src="/Mac下Hexo和GitHub-Pages搭建个人博客2/hexo_wanwang.png" width="460" height="232" alt=""><br></div>
+<h4 id="Web安全性"><a href="#Web安全性" class="headerlink" title="Web安全性"></a>Web安全性</h4><p>为了保证应用的统计计数功能仅应用于自己的博客系统，可以在<code>应用-&gt;设置-&gt;安全中心</code>的 <code>Web 安全域名</code>中加入自己的博客域名，以保证数据的调用安全，如下图所示：</p>
+<div align="center"><br>    <img src="/Mac下Hexo和GitHub-Pages搭建个人博客4/hexo_leancloud4.png" width="520" height="367"><br></div>
 
-</li>
-</ol>
-<p>这样就可以愉快的使用个人域名访问个人博客啦~</p>
-<p><strong>参考资料：</strong></p>
-<p><a href="https://www.zhihu.com/question/31377141" target="_blank" rel="external">github怎么绑定自己的域名？</a>   – 知乎</p>
-<p><a href="http://www.jianshu.com/p/834d7cc0668d" target="_blank" rel="external">我的博客是如何搭建的（github pages + HEXO + 域名绑定）</a> – 水瓶座iOSer</p>
+<h3 id="配置-NexT-站点"><a href="#配置-NexT-站点" class="headerlink" title="配置 NexT 站点"></a>配置 NexT 站点</h3><h4 id="修改主题-config-yml-配置文件"><a href="#修改主题-config-yml-配置文件" class="headerlink" title="修改主题 _config.yml 配置文件"></a>修改主题 <code>_config.yml</code> 配置文件</h4><p>打开在 <code>LeanCloud</code> 中刚刚新建的应用（我的是 <code>lijiankun24.com</code> 应用）。通过 <code>设置 ---&gt; 应用 Key</code>，找到 <code>App ID</code> 和 <code>App Key</code>，如下图所示：</p>
+<div align="center"><br>    <img src="/Mac下Hexo和GitHub-Pages搭建个人博客4/hexo_leancloud3.png" width="520" height="264"><br></div>
+
+<p>打开主题配置文件 <code>_config.yml</code>(<code>/hexo/theme/next/_config.yml</code>)，添加如下代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># add post views</div><div class="line">leancloud_visitors:</div><div class="line">  enable: true</div><div class="line">  app_id: **你的app_id**</div><div class="line">  app_key: **你的app_key**</div></pre></td></tr></table></figure></p>
+<h3 id="增加网站的浏览次数与访客数量统计功能"><a href="#增加网站的浏览次数与访客数量统计功能" class="headerlink" title="增加网站的浏览次数与访客数量统计功能"></a>增加网站的浏览次数与访客数量统计功能</h3><p>网站的浏览次数，即pv；网站的访客数为uv。pv的计算方式是，单个用户连续点击n篇文章，记录n次访问量；uv的计算方式是，单个用户连续点击n篇文章，只记录1次访客数。你可以根据需要添加相应的统计功能。</p>
+<h4 id="安装busuanzi-js脚本"><a href="#安装busuanzi-js脚本" class="headerlink" title="安装busuanzi.js脚本"></a>安装busuanzi.js脚本</h4><p>如果你使用的是 <code>NexT</code> 主题（其他主题类似），打开 <code>/theme/next/layout/_partial/footer.swig</code> 文件，拷贝下面的代码至文件的开头<br><figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&lt;script <span class="keyword">async</span> src=<span class="string">"https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"</span>&gt;</div><div class="line">&lt;/script&gt;</div></pre></td></tr></table></figure></p>
+<h4 id="显示统计标签"><a href="#显示统计标签" class="headerlink" title="显示统计标签"></a>显示统计标签</h4><p>编辑 <code>/theme/next/layout/_partial/footer.swig</code> 文件，在你想要显示的位置放置如下代码即可：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;!-- pv 统计量的显示--&gt;</div><div class="line">&lt;span id="busuanzi_container_site_pv"&gt;</div><div class="line">    本站总访问量&lt;span id="busuanzi_value_site_pv"&gt;&lt;/span&gt;次</div><div class="line">&lt;/span&gt;</div></pre></td></tr></table></figure></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;!-- uv 统计量的显示--&gt;</div><div class="line">&lt;span id="busuanzi_container_site_uv"&gt;</div><div class="line">  本站访客数&lt;span id="busuanzi_value_site_uv"&gt;&lt;/span&gt;人次</div><div class="line">&lt;/span&gt;</div></pre></td></tr></table></figure>
+<p><strong>至此，为 NexT 主题中的博客文章添加了统计阅读量的功能就已经完成。</strong></p>
+<h2 id="NexT-主题中一些元素的配置"><a href="#NexT-主题中一些元素的配置" class="headerlink" title="NexT 主题中一些元素的配置"></a>NexT 主题中一些元素的配置</h2><p>如果对 Hexo 博客站点的一些地方还有所不满的话，可以参考 <a href="http://theme-next.iissnan.com/" target="_blank" rel="external">NexT 官网</a>，如下图所示：</p>
+<div align="center"><br>    <img src="/Mac下Hexo和GitHub-Pages搭建个人博客4/hexo_next.png" width="520" height="407"><br></div>
+
+<p>可以按照官方文档的说明设置 <code>背景动画</code>、<code>404公益页面</code>等。</p>
+<hr>
+<p><strong>本篇文章至此结束，欢迎转载，转载请注明本文的连接</strong><br><a href="http://www.lijiankun24.com/Mac下Hexo和GitHub-Pages搭建个人博客4/#more">http://www.lijiankun24.com/Mac下Hexo和GitHub-Pages搭建个人博客4/#more</a></p>
+<p><strong>参考资料</strong></p>
+<p><a href="https://notes.wanghao.work/2015-10-21-%E4%B8%BANexT%E4%B8%BB%E9%A2%98%E6%B7%BB%E5%8A%A0%E6%96%87%E7%AB%A0%E9%98%85%E8%AF%BB%E9%87%8F%E7%BB%9F%E8%AE%A1%E5%8A%9F%E8%83%BD.html" target="_blank" rel="external">为NexT主题添加文章阅读量统计功能</a></p>
+<p><a href="http://www.jeyzhang.com/hexo-next-add-post-views.html" target="_blank" rel="external">Hexo的NexT主题个性化：添加文章阅读量</a> – Jey Zhang</p>
 
       
     </div>
@@ -487,8 +441,8 @@ Hexo 草稿箱的使用
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/Mac下Hexo和GitHub-Pages搭建个人博客1/" rel="next" title="Mac 下 Hexo 和 GitHub-Pages 搭建个人博客（一）">
-                <i class="fa fa-chevron-left"></i> Mac 下 Hexo 和 GitHub-Pages 搭建个人博客（一）
+              <a href="/Mac下Hexo和GitHub-Pages搭建个人博客3/" rel="next" title="Mac下Hexo和GitHub-Pages搭建个人博客(三)">
+                <i class="fa fa-chevron-left"></i> Mac下Hexo和GitHub-Pages搭建个人博客(三)
               </a>
             
           </div>
@@ -496,10 +450,6 @@ Hexo 草稿箱的使用
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/Mac下Hexo和GitHub-Pages搭建个人博客3/" rel="prev" title="Mac下Hexo和GitHub-Pages搭建个人博客(三)">
-                Mac下Hexo和GitHub-Pages搭建个人博客(三) <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -639,7 +589,7 @@ Hexo 草稿箱的使用
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#配置-Hexo-主题"><span class="nav-number">1.</span> <span class="nav-text">配置 Hexo 主题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#NexT-主题预览"><span class="nav-number">1.1.</span> <span class="nav-text">NexT 主题预览</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#具体操作"><span class="nav-number">1.2.</span> <span class="nav-text">具体操作</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hexo-草稿箱的使用"><span class="nav-number">2.</span> <span class="nav-text">Hexo 草稿箱的使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文章中图片的插入"><span class="nav-number">3.</span> <span class="nav-text">文章中图片的插入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为-Hexo-绑定个人域名"><span class="nav-number">4.</span> <span class="nav-text">为 Hexo 绑定个人域名</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#条件"><span class="nav-number">4.1.</span> <span class="nav-text">条件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#具体操作-1"><span class="nav-number">4.2.</span> <span class="nav-text">具体操作</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#为-NexT-主题下的文章增加统计阅读量的功能"><span class="nav-number">1.</span> <span class="nav-text">为 NexT 主题下的文章增加统计阅读量的功能</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#注册并配置-LeanCloud"><span class="nav-number">1.1.</span> <span class="nav-text">注册并配置 LeanCloud</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#注册-LeanCloud"><span class="nav-number">1.1.1.</span> <span class="nav-text">注册 LeanCloud</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#创建应用"><span class="nav-number">1.1.2.</span> <span class="nav-text">创建应用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Web安全性"><span class="nav-number">1.1.3.</span> <span class="nav-text">Web安全性</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置-NexT-站点"><span class="nav-number">1.2.</span> <span class="nav-text">配置 NexT 站点</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#修改主题-config-yml-配置文件"><span class="nav-number">1.2.1.</span> <span class="nav-text">修改主题 _config.yml 配置文件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#增加网站的浏览次数与访客数量统计功能"><span class="nav-number">1.3.</span> <span class="nav-text">增加网站的浏览次数与访客数量统计功能</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#安装busuanzi-js脚本"><span class="nav-number">1.3.1.</span> <span class="nav-text">安装busuanzi.js脚本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#显示统计标签"><span class="nav-number">1.3.2.</span> <span class="nav-text">显示统计标签</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NexT-主题中一些元素的配置"><span class="nav-number">2.</span> <span class="nav-text">NexT 主题中一些元素的配置</span></a></li></ol></div>
             
 
           </div>
