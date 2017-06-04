@@ -1,0 +1,1012 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,DataBinding," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="本文建立在有一定使用 DataBinding 经验的基础之上，若还不熟悉 DataBinding 的用法，请参考前一篇博客Data Binding 数据绑定(一)。
+在学习 DataBinding 的过程中，参考 Google 官方的 DataBinding 示例 Demo，自己写了一个 DataBindingPractice Demo，用于练手。整个工程采用 MVP 架构 + DataBindi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DataBinding-数据绑定(二)">
+<meta property="og:url" content="http://www.lijiankun24.com/DataBinding-数据绑定2/index.html">
+<meta property="og:site_name" content="lijiankun24">
+<meta property="og:description" content="本文建立在有一定使用 DataBinding 经验的基础之上，若还不熟悉 DataBinding 的用法，请参考前一篇博客Data Binding 数据绑定(一)。
+在学习 DataBinding 的过程中，参考 Google 官方的 DataBinding 示例 Demo，自己写了一个 DataBindingPractice Demo，用于练手。整个工程采用 MVP 架构 + DataBindi">
+<meta property="og:updated_time" content="2017-06-04T16:01:15.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="DataBinding-数据绑定(二)">
+<meta name="twitter:description" content="本文建立在有一定使用 DataBinding 经验的基础之上，若还不熟悉 DataBinding 的用法，请参考前一篇博客Data Binding 数据绑定(一)。
+在学习 DataBinding 的过程中，参考 Google 官方的 DataBinding 示例 Demo，自己写了一个 DataBindingPractice Demo，用于练手。整个工程采用 MVP 架构 + DataBindi">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.lijiankun24.com/DataBinding-数据绑定2/"/>
+
+
+
+
+
+  <title> DataBinding-数据绑定(二) | lijiankun24 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">lijiankun24</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://www.lijiankun24.com/DataBinding-数据绑定2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="lijiankun24">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="lijiankun24">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                DataBinding-数据绑定(二)
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-06-03T10:02:03+08:00">
+                2017-06-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/DataBinding-数据绑定2/" class="leancloud_visitors" data-flag-title="DataBinding-数据绑定(二)">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Views </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文建立在有一定使用 DataBinding 经验的基础之上，若还不熟悉 DataBinding 的用法，请参考前一篇博客<a href="http://lijiankun24.com/DataBinding-%E6%95%B0%E6%8D%AE%E7%BB%91%E5%AE%9A1/" target="_blank" rel="external">Data Binding 数据绑定(一)</a>。</p>
+<p>在学习 DataBinding 的过程中，参考 Google 官方的 <a href="https://github.com/googlesamples/android-architecture/tree/todo-databinding/" target="_blank" rel="external">DataBinding 示例 Demo</a>，自己写了一个 <a href="https://github.com/lijiankun24/DataBindingPractice" target="_blank" rel="external">DataBindingPractice</a> Demo，用于练手。整个工程采用 MVP 架构 + DataBinding，欢迎 star、fork 和沟通交流。</p>
+<p>本文介绍了 DataBinding 一些稍微高级的用法，主要包括以下四部分内容：</p>
+<ol>
+<li>DataBinding 中的数据对象(Data Objects)</li>
+<li>DataBinding 中生成绑定类(Generated Binding)</li>
+<li>DataBinding 中的属性设置(Attribute Setters)</li>
+<li>DataBinding 中的转换器(Converters)<a id="more"></a>
+</li>
+</ol>
+<h2 id="数据对象-Data-Objects"><a href="#数据对象-Data-Objects" class="headerlink" title="数据对象(Data Objects)"></a>数据对象(Data Objects)</h2><ol>
+<li><p>任何普通的 Java 对象(POJO)都可以被 DataBinding 所使用，但是改变 POJO 对象的属性值并不会更新 UI 界面的显示。DataBinding 真正强大之处在于，它可以让你的数据对象具有通知 UI 界面对象的属性已经发生改变的能力。</p>
+</li>
+<li><p>有三种不同的数据变化通知机制：</p>
+<ul>
+<li>Observable objects</li>
+<li>observable fields</li>
+<li>observable collection</li>
+</ul>
+</li>
+<li><p>如果这其中的一种数据对象被绑定到 UI 界面上，当数据对象的属性值发生变化时，UI 界面会自动更新。</p>
+</li>
+</ol>
+<h3 id="可观察对象-Observable-Objects"><a href="#可观察对象-Observable-Objects" class="headerlink" title="可观察对象(Observable Objects)"></a>可观察对象(Observable Objects)</h3><ol>
+<li>一个类如果实现了 <code>Observable</code> 接口，那么 DataBinding 则会将一个 <code>listener</code> 绑定到该类上，就可以监听该类对象中的属性的变化。<code>Observable</code> 接口具有添加和移除 <code>listener</code> 的机制，但是否通知则取决于开发者。</li>
+<li>为了使开发更容易，DataBinding 提供了一个名为 <code>BaseObservable</code> 的基类，它用于实现 <code>listener</code> 注册机制。</li>
+<li><p>实现 <code>Observable</code> 的类负责什么时候通知该类的属性发生了变化，只需要在类的 <code>getter</code> 方法上添加 <code>Bindable</code> 注解，并在 <code>setter</code> 方法中通知更新即可。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> <span class="keyword">extends</span> <span class="title">BaseObservable</span> </span>&#123;</div><div class="line">   <span class="keyword">private</span> String firstName;</div><div class="line">   <span class="keyword">private</span> String lastName;</div><div class="line">   <span class="meta">@Bindable</span></div><div class="line">   <span class="function"><span class="keyword">public</span> String <span class="title">getFirstName</span><span class="params">()</span> </span>&#123;</div><div class="line">       <span class="keyword">return</span> <span class="keyword">this</span>.firstName;</div><div class="line">   &#125;</div><div class="line">   <span class="meta">@Bindable</span></div><div class="line">   <span class="function"><span class="keyword">public</span> String <span class="title">getLastName</span><span class="params">()</span> </span>&#123;</div><div class="line">       <span class="keyword">return</span> <span class="keyword">this</span>.lastName;</div><div class="line">   &#125;</div><div class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setFirstName</span><span class="params">(String firstName)</span> </span>&#123;</div><div class="line">       <span class="keyword">this</span>.firstName = firstName;</div><div class="line">       notifyPropertyChanged(BR.firstName);</div><div class="line">   &#125;</div><div class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setLastName</span><span class="params">(String lastName)</span> </span>&#123;</div><div class="line">       <span class="keyword">this</span>.lastName = lastName;</div><div class="line">       notifyPropertyChanged(BR.lastName);</div><div class="line">   &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>在编译期间，使用 <code>Bindable</code> 注解标记过的 <code>getter</code> 方法会在 <code>BR</code> class 文件中生成一个入口，<code>BR</code> class 文件是在 Module 的包下，<code>BR.class</code> 与 <code>R.class</code> 的功能类似。</p>
+</blockquote>
+</li>
+</ol>
+<h3 id="可观察属性-ObservableFields"><a href="#可观察属性-ObservableFields" class="headerlink" title="可观察属性(ObservableFields)"></a>可观察属性(ObservableFields)</h3><ol>
+<li>创建一个 <code>Observable</code> 类还是需要一些工作量的，如果开发者不想花费太多的时间和精力，或者没有太多的属性需要观察监听的话，那么可以使用 <code>ObservableField</code>，或者它的子类： <code>ObservableBoolean</code>，<code>ObservableByte</code>，<code>ObservableChar</code>，<code>ObservableShort</code>， <code>ObservableInt</code>，<code>ObservableLong</code>，<code>ObservableFloat</code>，<code>ObservableDouble</code> 和  <code>ObservableParcelable</code>。</li>
+<li><p><code>ObservableField</code> 是包含 <code>Observable Object</code> 对象的单一字段。原始版本避免了在获取过程中做打包和解包的操作。在数据对象中使用 <code>ObservableField</code>，需要创建一个 <code>public final</code> 字段，如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</div><div class="line">   <span class="keyword">public</span> <span class="keyword">final</span> ObservableField&lt;String&gt; firstName =</div><div class="line">       <span class="keyword">new</span> ObservableField&lt;&gt;();</div><div class="line">   <span class="keyword">public</span> <span class="keyword">final</span> ObservableField&lt;String&gt; lastName =</div><div class="line">       <span class="keyword">new</span> ObservableField&lt;&gt;();</div><div class="line">   <span class="keyword">public</span> <span class="keyword">final</span> ObservableInt age = <span class="keyword">new</span> ObservableInt();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可以通过 <code>set</code> 方法和 <code>get</code> 方法存取数据</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">user.firstName.set(<span class="string">"Google"</span>);</div><div class="line"><span class="keyword">int</span> age = user.age.get();</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="可观察集合-Observable-Collections"><a href="#可观察集合-Observable-Collections" class="headerlink" title="可观察集合(Observable Collections)"></a>可观察集合(Observable Collections)</h3><ol>
+<li>一些应用会使用动态的结构持有数据，可观察容器类允许使用键值对的形式来存取数据。</li>
+<li><p>当键值对中的键是应用型数据(比如：String)时，<code>ObservableArrayMap</code> 是非常有用的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">ObservableArrayMap&lt;String, Object&gt; user = <span class="keyword">new</span> ObservableArrayMap&lt;&gt;();</div><div class="line">user.put(<span class="string">"firstName"</span>, <span class="string">"Google"</span>);</div><div class="line">user.put(<span class="string">"lastName"</span>, <span class="string">"Inc."</span>);</div><div class="line">user.put(<span class="string">"age"</span>, <span class="number">17</span>);</div></pre></td></tr></table></figure>
+<p>在布局文件中，也可以通过使用 String 类型的键来获取到相应的值。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">data</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">import</span> <span class="attr">type</span>=<span class="string">"android.databinding.ObservableMap"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">variable</span> <span class="attr">name</span>=<span class="string">"user"</span> <span class="attr">type</span>=<span class="string">"ObservableMap&amp;lt;String, Object&amp;gt;"</span>/&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">data</span>&gt;</span></div><div class="line">  …</div><div class="line">  <span class="tag">&lt;<span class="name">TextView</span></span></div><div class="line">    <span class="attr">android:text</span>=<span class="string">'@&#123;user["lastName"]&#125;'</span></div><div class="line">    <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></div><div class="line">    <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span>/&gt;</div><div class="line">  <span class="tag">&lt;<span class="name">TextView</span></span></div><div class="line">    <span class="attr">android:text</span>=<span class="string">'@&#123;String.valueOf(1 + (Integer)user["age"])&#125;'</span></div><div class="line">    <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></div><div class="line">    <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span>/&gt;</div></pre></td></tr></table></figure>
+</li>
+<li><p>当键值对中的键是 Integer 型的，<code>ObservableArrayList</code> 则是非常有用的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">ObservableArrayList&lt;Object&gt; user = <span class="keyword">new</span> ObservableArrayList&lt;&gt;();</div><div class="line">user.add(<span class="string">"Google"</span>);</div><div class="line">user.add(<span class="string">"Inc."</span>);</div><div class="line">user.add(<span class="number">17</span>);</div></pre></td></tr></table></figure>
+<p>在布局文件中，也可以通过使用 Integer 类型的键来获取到相应的值。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">data</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">import</span> <span class="attr">type</span>=<span class="string">"android.databinding.ObservableList"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">import</span> <span class="attr">type</span>=<span class="string">"com.example.my.app.Fields"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">variable</span> <span class="attr">name</span>=<span class="string">"user"</span> <span class="attr">type</span>=<span class="string">"ObservableList&amp;lt;Object&amp;gt;"</span>/&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">data</span>&gt;</span></div><div class="line">  …</div><div class="line">  <span class="tag">&lt;<span class="name">TextView</span></span></div><div class="line">    <span class="attr">android:text</span>=<span class="string">'@&#123;user[Fields.LAST_NAME]&#125;'</span></div><div class="line">    <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></div><div class="line">    <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span>/&gt;</div><div class="line">  <span class="tag">&lt;<span class="name">TextView</span></span></div><div class="line">    <span class="attr">android:text</span>=<span class="string">'@&#123;String.valueOf(1 + (Integer)user[Fields.AGE])&#125;'</span></div><div class="line">    <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></div><div class="line">    <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span>/&gt;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="生成绑定类-Generated-Binding"><a href="#生成绑定类-Generated-Binding" class="headerlink" title="生成绑定类(Generated Binding)"></a>生成绑定类(Generated Binding)</h2><ol>
+<li>生成的绑定类通过布局文件中的 Views 和布局文件中的变量联系起来。</li>
+<li>如之前所讨论的那样，绑定类的名称和所在的位置都是可以自定义的。</li>
+<li>生成的所有的绑定类都是 <code>ViewDataBinding</code> 的子类。</li>
+</ol>
+<h3 id="构建-Creating"><a href="#构建-Creating" class="headerlink" title="构建(Creating)"></a>构建(Creating)</h3><ol>
+<li>绑定类在 View Inflate 之后立即被创建，以确保在布局中的表达式被绑定到视图之前，View 的层次结构不会被打乱。</li>
+<li>有几种方式绑定布局文件，最常用的是使用 Binding 类中的静态方法来绑定类。<code>inflate</code> 方法调用一次就可以 Inflate View 并将 View 绑定到 Binding 类上。</li>
+<li><p>还有一个更加简单的方法，只需要一个 <code>LayoutInflater</code> 对象和一个 <code>viewGroup</code> 对象。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">MyLayoutBinding binding = MyLayoutBinding.inflate(layoutInflater);</div><div class="line">MyLayoutBinding binding = MyLayoutBinding.inflate(layoutInflater, viewGroup, <span class="keyword">false</span>);</div></pre></td></tr></table></figure>
+</li>
+<li><p>如果布局使用另外不同的机制来 inflate，则可以单独绑定：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">MyLayoutBinding binding = MyLayoutBinding.bind(viewRoot);</div></pre></td></tr></table></figure>
+</li>
+<li><p>有时候，Binding 类的名字不得而知，在这种情况下，则可以使用 <code>DataBindingUtil</code> 生成该 Binding 类:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">ViewDataBinding binding = DataBindingUtil.inflate(LayoutInflater, layoutId,</div><div class="line">    parent, attachToParent);</div><div class="line">ViewDataBinding binding = DataBindingUtil.bindTo(viewRoot, layoutId);</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="带-ID-的-View-Views-with-IDs"><a href="#带-ID-的-View-Views-with-IDs" class="headerlink" title="带 ID 的 View(Views with IDs)"></a>带 ID 的 View(Views with IDs)</h3><ol>
+<li>使用 DataBinding 库的布局文件，其中的每个带 ID 的 View，编译以后，都会在该布局文件对应的 Binding 类中生成一个被 <code>public final</code> 修饰的属性，Data Binding 会做一个简单的赋值，在 Binding 类中保存对应 ID 的 View。</li>
+<li><p>通过这种机制获取控件比通过 <code>findViewById</code> 获取控件的速度会更快。例如：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">layout</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span>&gt;</span></div><div class="line">   <span class="tag">&lt;<span class="name">data</span>&gt;</span></div><div class="line">       <span class="tag">&lt;<span class="name">variable</span> <span class="attr">name</span>=<span class="string">"user"</span> <span class="attr">type</span>=<span class="string">"com.example.User"</span>/&gt;</span></div><div class="line">   <span class="tag">&lt;/<span class="name">data</span>&gt;</span></div><div class="line">   <span class="tag">&lt;<span class="name">LinearLayout</span></span></div><div class="line">       <span class="attr">android:orientation</span>=<span class="string">"vertical"</span></div><div class="line">       <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">       <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span>&gt;</div><div class="line">       <span class="tag">&lt;<span class="name">TextView</span> <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></span></div><div class="line">           <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">           <span class="attr">android:text</span>=<span class="string">"@&#123;user.firstName&#125;"</span></div><div class="line">           <span class="attr">android:id</span>=<span class="string">"@+id/firstName"</span>/&gt;</div><div class="line">       <span class="tag">&lt;<span class="name">TextView</span> <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></span></div><div class="line">           <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">           <span class="attr">android:text</span>=<span class="string">"@&#123;user.lastName&#125;"</span></div><div class="line">           <span class="attr">android:id</span>=<span class="string">"@+id/lastName"</span>/&gt;</div><div class="line">   <span class="tag">&lt;/<span class="name">LinearLayout</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">layout</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>在生成的 Binding 类中会有对应的字段：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">final</span> TextView firstName;</div><div class="line"><span class="keyword">public</span> <span class="keyword">final</span> TextView lastName;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>如果使用 DataBinding 库的话，在布局文件中为控件设置 <code>Id</code> 不是必须的，但是在某些情况下，在代码中通过 <code>Id</code> 得到控件还是有必要的。</p>
+</blockquote>
+</li>
+</ol>
+<h3 id="变量-Variables"><a href="#变量-Variables" class="headerlink" title="变量(Variables)"></a>变量(Variables)</h3><p>布局文件中的每个变量都会生成对应的存取方法，如：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">data</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">import</span> <span class="attr">type</span>=<span class="string">"android.graphics.drawable.Drawable"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">variable</span> <span class="attr">name</span>=<span class="string">"user"</span>  <span class="attr">type</span>=<span class="string">"com.example.User"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">variable</span> <span class="attr">name</span>=<span class="string">"image"</span> <span class="attr">type</span>=<span class="string">"Drawable"</span>/&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">variable</span> <span class="attr">name</span>=<span class="string">"note"</span>  <span class="attr">type</span>=<span class="string">"String"</span>/&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">data</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<p>在该布局文件对应的 Binding 类中，都会生成对应的存取方法，如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> com.example.<span class="function">User <span class="title">getUser</span><span class="params">()</span></span>;</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">setUser</span><span class="params">(com.example.User user)</span></span>;</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> Drawable <span class="title">getImage</span><span class="params">()</span></span>;</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">setImage</span><span class="params">(Drawable image)</span></span>;</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> String <span class="title">getNote</span><span class="params">()</span></span>;</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">setNote</span><span class="params">(String note)</span></span>;</div></pre></td></tr></table></figure></p>
+<h3 id="ViewStubs"><a href="#ViewStubs" class="headerlink" title="ViewStubs"></a>ViewStubs</h3><ol>
+<li>ViewStub 和普通的 View 相比是不一样的。它们最开始是不可见的，当它们被设置为可见的或者调用 <code>inflate</code> 方法时，ViewStub 会被替换为另外一个控件或布局。</li>
+<li>因为最开始的时候，ViewStub 在布局层级中不可见，Binding 类中对应的控件也应该被移除，以便回收。</li>
+<li>因为在 Binding 类中，所有 View 对应的属性都是被 <code>final</code> 字段修饰的，所以一个 <code>ViewStubProxy</code> 对象代替该 ViewStub，当 ViewStub 被设置为可见的或调用 <code>inflate</code> 方法之后，开发者可以通过此代理类 <code>ViewStubProxy</code> 得到对应的 ViewStub。</li>
+<li>当 <code>inflate</code> 一个新的布局时，必须为新的布局创建新的 Binding 类。所以 ViewStubProxy 必须监听 ViewStub 的 <code>ViewStub.OnInflateListener</code>，当 ViewStub 被 <code>inflate</code> 的时候，则建立一个新的 Binding 类。</li>
+<li><p>因为 ViewStub 只能设置一个 <code>OnInflateListener</code>，开发者可以为 <code>ViewStubProxy</code> 设置一个 <code>OnInflateListener</code>，在 Binding 类被建立以后，<code>OnInflateListener</code> 就会被触发。<br>代码如下所示：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">layout</span>&gt;</span></div><div class="line">  ...</div><div class="line">  <span class="tag">&lt;<span class="name">ViewStub</span></span></div><div class="line">      <span class="attr">android:id</span>=<span class="string">"@+id/viewStub"</span></div><div class="line">      <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">      <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">      <span class="attr">android:layout</span>=<span class="string">"@layout/layout_view_stub"</span>/&gt;</div><div class="line">  ...</div><div class="line"><span class="tag">&lt;/<span class="name">layout</span>&gt;</span></div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">mBinding.viewStub.setOnInflateListener(<span class="keyword">new</span> ViewStub.OnInflateListener() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onInflate</span><span class="params">(ViewStub stub, View inflated)</span> </span>&#123;</div><div class="line">                LayoutViewStubBinding mStubBinding = DataBindingUtil.findBinding(inflated);</div><div class="line">                mStubBinding.tvViewStub.setOnClickListener((view1 -&gt; showClickToast()));</div><div class="line">            &#125;</div><div class="line">          &#125;);</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="高级绑定-Advanced-Binding"><a href="#高级绑定-Advanced-Binding" class="headerlink" title="高级绑定(Advanced Binding)"></a>高级绑定(Advanced Binding)</h3><h4 id="动态变量-Dynamic-Variables"><a href="#动态变量-Dynamic-Variables" class="headerlink" title="动态变量(Dynamic Variables)"></a>动态变量(Dynamic Variables)</h4><ol>
+<li>有时候，一些 Binding 类不为人所知。比如，在 <code>RecyclerView.Adapter</code> 中可以用来处理不同的布局，此时便不知道该 Binding 类具体是什么类型的。而在 <code>onBindViewHolder(VH, int)</code> 方法中，ViewHolder 中的 Binding 类又必须被赋值。</li>
+<li>在这个例子中，所有 RecyclerView 涉及到的布局中，都有一个 <code>item</code> 的变量。</li>
+<li>Adapter 所使用的 ViewHolder 中有一个 <code>getBinding</code> 的方法得到一个 <code>ViewDataBinding</code> 的 Binding 类。如下所示：<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onBindViewHolder</span><span class="params">(BindingHolder holder, <span class="keyword">int</span> position)</span> </span>&#123;</div><div class="line">   <span class="keyword">final</span> T item = mItems.get(position);</div><div class="line">   holder.getBinding().setVariable(BR.item, item);</div><div class="line">   holder.getBinding().executePendingBindings();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="立即绑定-Immediate-Binding"><a href="#立即绑定-Immediate-Binding" class="headerlink" title="立即绑定(Immediate Binding)"></a>立即绑定(Immediate Binding)</h4><p>当变量或者 <code>observable</code> 变量发生变化时，会在下一帧才触发 Binding，但是有时候需要立即 Binding，可以通过 <code>executePendingBindings()</code> 方法立即触发 Binding。</p>
+<h4 id="后台线程"><a href="#后台线程" class="headerlink" title="后台线程"></a>后台线程</h4><p>只要不是集合类型的数据，你可以在后台线程中更改数据。Data Binding 会在计算时将每个变量/字段在各个线程中做一份数据拷贝，以避免同步问题。</p>
+<h2 id="属性设置-Attribute-Setters"><a href="#属性设置-Attribute-Setters" class="headerlink" title="属性设置(Attribute Setters)"></a>属性设置(Attribute Setters)</h2><p>当一个属性值发生变化时，生成的 Binding 类必须调用该控件对应 data binding 表达式的 <code>setter</code> 方法。Data Binding 框架允许自定义调用何种方法改变值。</p>
+<h3 id="自动设置属性-Automatic-Setters"><a href="#自动设置属性-Automatic-Setters" class="headerlink" title="自动设置属性(Automatic Setters)"></a>自动设置属性(Automatic Setters)</h3><ol>
+<li>对于一个属性 <code>attribute</code>，Data Binding 会尝试着去找 <code>setAttribute</code> 方法。属性的命名空间是什么并没有什么关系，只和属性本身的名称有关。例如，为 TextView 的属性 <code>android:text</code> 设置了一个 binding 表达式，则 Data Binding 库会去寻找 <code>setText(String)</code> 的方法。</li>
+<li>如果 data binding 表达式返回了一个 int 型数据，Data Binding 则会去寻找 <code>setText(int)</code> 的方法。对于 data binding 表达式的返回值一定要小心处理，如果必要的话，需要做类型强制装换。</li>
+<li>需要注意的是，就算给定名称的属性不存在，Data Binding也会生效。正是因为如此，使用 Data Binding 则可以方便地自定义属性。例如，<code>DrawerLayout</code> 控件并没有什么属性，但是却有很多的 <code>setters</code> 方法，就可以方便地使用自动设置属性给 <code>DrawerLayout</code> 设置属性。<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">android.support.v4.widget.DrawerLayout</span></span></div><div class="line">    <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></div><div class="line">    <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">    <span class="attr">app:scrimColor</span>=<span class="string">"@&#123;@color/scrim&#125;"</span></div><div class="line">    <span class="attr">app:drawerListener</span>=<span class="string">"@&#123;fragment.drawerListener&#125;"</span>/&gt;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="重命名属性设置-Renamed-Setters"><a href="#重命名属性设置-Renamed-Setters" class="headerlink" title="重命名属性设置(Renamed Setters)"></a>重命名属性设置(Renamed Setters)</h3><p>有些属性有其对应的 <code>setter</code> 方法，但是该 <code>setter</code> 方法和其属性名称并不是那么相匹配。对于这些方法，可以使用 <code>BindingMethods</code> 注解将该属性与对应的方法关联起来。例如：属性 <code>android:tint</code> 真正是和 <code>setImageTintList(ColorStateList)</code> 关联起来的，而不是和 <code>setTint</code> 方法关联：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@BindingMethods</span>(&#123;</div><div class="line">       <span class="meta">@BindingMethod</span>(type = <span class="string">"android.widget.ImageView"</span>,</div><div class="line">                      attribute = <span class="string">"android:tint"</span>,</div><div class="line">                      method = <span class="string">"setImageTintList"</span>),</div><div class="line">&#125;)</div></pre></td></tr></table></figure></p>
+<p>在 Android 框架中实现的属性的 <code>setter</code> 方法已经不错，所以不需要开发者重命名属性设置了。</p>
+<h3 id="自定义属性设置-Custom-Setters"><a href="#自定义属性设置-Custom-Setters" class="headerlink" title="自定义属性设置(Custom Setters)"></a>自定义属性设置(Custom Setters)</h3><ol>
+<li><p>一些属性需要自定义逻辑。例如，没有一个 <code>setter</code> 方法和属性 <code>android:paddingLeft</code> 相关联，但是却存在 <code>setPadding(left, top, right, bottom)</code> 方法。被 <code>BindingAdapter</code> 注解修饰的静态 binding adapter 方法允许开发者自定义一个属性的 <code>setter</code> 方法如何被调用。<br>Android 已经内置了一些 <code>BindingAdapters</code>。如下是一个与属性 <code>paddingLeft</code> 相关联的 <code>setter</code> 方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@BindingAdapter</span>(<span class="string">"android:paddingLeft"</span>)</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setPaddingLeft</span><span class="params">(View view, <span class="keyword">int</span> padding)</span> </span>&#123;</div><div class="line">   view.setPadding(padding,</div><div class="line">                   view.getPaddingTop(),</div><div class="line">                   view.getPaddingRight(),</div><div class="line">                   view.getPaddingBottom());</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>Binding adapters 在其他自定义类型上也非常好用。<br>当开发者自定义的 <code>binding adapters</code> 与默认的 <code>adapters</code> 冲突时，开发者自定义的会覆盖默认的。<br>当然也可以自定义接收多个参数的 <code>adapters</code>，一个在非主线程中加载图片的 <code>Loader</code> 如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@BindingAdapter</span>(&#123;<span class="string">"bind:imageUrl"</span>, <span class="string">"bind:error"</span>&#125;)</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">loadImage</span><span class="params">(ImageView view, String url, Drawable error)</span> </span>&#123;</div><div class="line">   Picasso.with(view.getContext())    </div><div class="line">          .load(url)</div><div class="line">          .error(error)</div><div class="line">          .into(view);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">ImageView</span></span></div><div class="line">  <span class="attr">app:imageUrl</span>=<span class="string">"@&#123;venue.imageUrl&#125;"</span></div><div class="line">  <span class="attr">app:error</span>=<span class="string">"@&#123;@drawable/venueError&#125;"</span>/&gt;</div></pre></td></tr></table></figure>
+<p>如果在一个 ImageView 中 <code>imageUrl</code> 属性和 <code>error</code> 属性同时被使用，并且 <code>imageUrl</code> 是 String 类型的，<code>error</code> 属性是 Drawable 类型的，则这个 <code>adapter</code> 将会被调用。</p>
+<ul>
+<li>在匹配的过程中，自定义的命名空间将会被忽略</li>
+<li>也可以为 android 命名空间编写 adapter</li>
+</ul>
+</li>
+<li><p><code>binding adapter</code> 中的方法可以获取旧值，只需要将旧值放置在前，而新值放置在后，如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@BindingAdapter</span>(<span class="string">"android:paddingLeft"</span>)</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setPaddingLeft</span><span class="params">(View view, <span class="keyword">int</span> oldPadding, <span class="keyword">int</span> newPadding)</span> </span>&#123;</div><div class="line">   <span class="keyword">if</span> (oldPadding != newPadding) &#123;</div><div class="line">       view.setPadding(newPadding,</div><div class="line">                       view.getPaddingTop(),</div><div class="line">                       view.getPaddingRight(),</div><div class="line">                       view.getPaddingBottom());</div><div class="line">   &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>事件处理 <code>handlers</code> 中，只可用于只拥有一个抽象方法的接口或抽象类，如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@BindingAdapter</span>(<span class="string">"android:onLayoutChange"</span>)</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setOnLayoutChangeListener</span><span class="params">(View view, View.OnLayoutChangeListener oldValue,</span></span></div><div class="line">       View.OnLayoutChangeListener newValue) &#123;</div><div class="line">    <span class="keyword">if</span> (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.HONEYCOMB) &#123;</div><div class="line">        <span class="keyword">if</span> (oldValue != <span class="keyword">null</span>) &#123;</div><div class="line">            view.removeOnLayoutChangeListener(oldValue);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (newValue != <span class="keyword">null</span>) &#123;</div><div class="line">            view.addOnLayoutChangeListener(newValue);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>当一个 <code>listener</code> 中有多个方法时，它必须拆分成多个 <code>listener</code>。例如：<code>View.OnAttachStateChangeListener</code> 有两个方法：<code>onViewAttachedToWindow()</code> 和 <code>onViewDetachedFromWindow()</code>。则必须为这两个方法设置不同的属性，分别处理其响应事件。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@TargetApi</span>(VERSION_CODES.HONEYCOMB_MR1)</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">OnViewDetachedFromWindow</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">onViewDetachedFromWindow</span><span class="params">(View v)</span></span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta">@TargetApi</span>(VERSION_CODES.HONEYCOMB_MR1)</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">OnViewAttachedToWindow</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">onViewAttachedToWindow</span><span class="params">(View v)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>因为改变一个 <code>listener</code> 必将会影响到另一个，所以我们必须有三个不同<code>binding adapters</code>，包括修改一个属性和修改两个属性的，如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@BindingAdapter</span>(<span class="string">"android:onViewAttachedToWindow"</span>)</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setListener</span><span class="params">(View view, OnViewAttachedToWindow attached)</span></span>&#123;</div><div class="line">    setListener(view, <span class="keyword">null</span>, attached);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta">@BindingAdapter</span>(<span class="string">"android:onViewDetachedFromWindow"</span>)</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setListener</span><span class="params">(View view, OnViewDetachedFromWindow detached)</span> </span>&#123;</div><div class="line">    setListener(view, detached, <span class="keyword">null</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta">@BindingAdapter</span>(&#123;<span class="string">"android:onViewDetachedFromWindow"</span>, <span class="string">"android:onViewAttachedToWindow"</span>&#125;)</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setListener</span><span class="params">(View view, <span class="keyword">final</span> OnViewDetachedFromWindow detach,</span></span></div><div class="line">        <span class="keyword">final</span> OnViewAttachedToWindow attach) &#123;</div><div class="line">    <span class="keyword">if</span> (VERSION.SDK_INT &gt;= VERSION_CODES.HONEYCOMB_MR1) &#123;</div><div class="line">        <span class="keyword">final</span> OnAttachStateChangeListener newListener;</div><div class="line">        <span class="keyword">if</span> (detach == <span class="keyword">null</span> &amp;&amp; attach == <span class="keyword">null</span>) &#123;</div><div class="line">            newListener = <span class="keyword">null</span>;</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            newListener = <span class="keyword">new</span> OnAttachStateChangeListener() &#123;</div><div class="line">                <span class="meta">@Override</span></div><div class="line">                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onViewAttachedToWindow</span><span class="params">(View v)</span> </span>&#123;</div><div class="line">                    <span class="keyword">if</span> (attach != <span class="keyword">null</span>) &#123;</div><div class="line">                        attach.onViewAttachedToWindow(v);</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line"></div><div class="line">                <span class="meta">@Override</span></div><div class="line">                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onViewDetachedFromWindow</span><span class="params">(View v)</span> </span>&#123;</div><div class="line">                    <span class="keyword">if</span> (detach != <span class="keyword">null</span>) &#123;</div><div class="line">                        detach.onViewDetachedFromWindow(v);</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">              &#125;;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">final</span> OnAttachStateChangeListener oldListener = ListenerUtil.trackListener(view,</div><div class="line">              newListener, R.id.onAttachStateChangeListener);</div><div class="line">        <span class="keyword">if</span> (oldListener != <span class="keyword">null</span>) &#123;</div><div class="line">            view.removeOnAttachStateChangeListener(oldListener);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (newListener != <span class="keyword">null</span>) &#123;</div><div class="line">            view.addOnAttachStateChangeListener(newListener);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>上面这个例子比正常情况下要更复杂一些，因为 View 是通过在代码使用 add/remove 方法添加和移除 <code>View.OnAttachStateChangeListener</code>，而不是通过 <code>setter</code> 方法设置监听器的。<code>android.databinding.adapters.ListenerUtil</code> 可以用来跟踪之前的 <code>listener</code>，并可以在 <code>Binding Adaper</code> 中移除监听器 <code>listener</code>。<br>通过向 <code>OnViewDetachedFromWindow</code> 和 <code>OnViewAttachedToWindow</code> 接口添加 <code>@TargetApi(VERSION_CODES.HONEYCOMB_MR1)</code> 注解，Data Binding 代码生成器知道监听器只在 Honeycomb MR1 设备或更新版本的设备中使用。</p>
+</blockquote>
+</li>
+</ol>
+<h2 id="转换器-Converters"><a href="#转换器-Converters" class="headerlink" title="转换器(Converters)"></a>转换器(Converters)</h2><h3 id="对象转换-Object-Conversions"><a href="#对象转换-Object-Conversions" class="headerlink" title="对象转换(Object Conversions)"></a>对象转换(Object Conversions)</h3><p>当 binding 表达式返回一个对象时，一个 <code>setter</code> 方法(自动 Setter，重命名 Setter，自定义 Setter)，并将返回的对象强制转换成所选择的 <code>setter</code> 方法所需要的类型。<br>以下是一个使用 <code>ObservableMaps</code> 持有数据并转换的例子：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">TextView</span></span></div><div class="line">   <span class="attr">android:text</span>=<span class="string">'@&#123;userMap["lastName"]&#125;'</span></div><div class="line">   <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></div><div class="line">   <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span>/&gt;</div></pre></td></tr></table></figure></p>
+<p><code>userMap</code> 返回一个对象，并且这个对象会被自动地转换为 setter <code>setText(CharSequence)</code> 所需要的类型。当参数类型选择存在疑惑时，需要开发者手动地将数据类型进行转换。</p>
+<h3 id="自定义类型转换器-Custom-Conversions"><a href="#自定义类型转换器-Custom-Conversions" class="headerlink" title="自定义类型转换器(Custom Conversions)"></a>自定义类型转换器(Custom Conversions)</h3><p>有时候，属性的值需要在特定类型之间自动转换。例如，在设置背景的时候：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">View</span></span></div><div class="line">   <span class="attr">android:background</span>=<span class="string">"@&#123;isError ? @color/red : @color/white&#125;"</span></div><div class="line">   <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></div><div class="line">   <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span>/&gt;</div></pre></td></tr></table></figure></p>
+<p>在这里，背景需要 Drawable 类型的，但是颜色却是 Integer 类型的。当需要一个 Drawable，binding 表达式返回的却是 Integer 的，所以此 int 型数据应该转换成 ColorDrawable，此转换可以通过一个被 <code>BindingConversion</code> 注解修饰的静态方法完成。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@BindingConversion</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ColorDrawable <span class="title">convertColorToDrawable</span><span class="params">(<span class="keyword">int</span> color)</span> </span>&#123;</div><div class="line">   <span class="keyword">return</span> <span class="keyword">new</span> ColorDrawable(color);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>需要注意的是，此转换只能在 <code>setter</code> 阶段完成，所以它不允许如下面这样混合类型的：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">View</span></span></div><div class="line">   <span class="attr">android:background</span>=<span class="string">"@&#123;isError ? @drawable/error : @color/white&#125;"</span></div><div class="line">   <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></div><div class="line">   <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span>/&gt;</div></pre></td></tr></table></figure></p>
+<hr>
+<p>DataBinding 第二篇文章也介绍完成。至此，关于 DataBinding 的文章到此就告一段落。如果有什么问题欢迎指出。我的工作邮箱：jiankunli24@gmail.com</p>
+<hr>
+<p><strong>参考资料：</strong></p>
+<p><a href="https://developer.android.com/topic/libraries/data-binding/index.html" target="_blank" rel="external">DataBInding 官方文档</a></p>
+<p><a href="http://yamlee.me/2016/10/24/2016-10-25-%E6%B7%B1%E5%85%A5Android%20Data%20Binding%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9A%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/" target="_blank" rel="external">深入Android Data Binding（一）：使用详解</a>   – YamLee</p>
+<p><a href="http://connorlin.github.io/2016/07/02/Android-Data-Binding-%E7%B3%BB%E5%88%97-%E4%B8%80-%E8%AF%A6%E7%BB%86%E4%BB%8B%E7%BB%8D%E4%B8%8E%E4%BD%BF%E7%94%A8/" target="_blank" rel="external">Android Data Binding 系列(一) – 详细介绍与使用</a>   – ConnorLin</p>
+<p><a href="http://www.jianshu.com/p/6cd7d19c1f9a" target="_blank" rel="external">DataBinding（一）-初识</a> – sakasa</p>
+<p><a href="http://yanghui.name/blog/2016/02/17/data-binding-guide/" target="_blank" rel="external">(译)Data Binding 指南</a>  – 杨辉</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/DataBinding/" rel="tag"># DataBinding</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/DataBinding-数据绑定1/" rel="next" title="Data Binding 数据绑定(一)">
+                <i class="fa fa-chevron-left"></i> Data Binding 数据绑定(一)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="lijiankun24" />
+          <p class="site-author-name" itemprop="name">lijiankun24</p>
+           
+              <p class="site-description motion-element" itemprop="description">守得云开见月明。</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/lijiankun24" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/lijiankun24" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#数据对象-Data-Objects"><span class="nav-number">1.</span> <span class="nav-text">数据对象(Data Objects)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#可观察对象-Observable-Objects"><span class="nav-number">1.1.</span> <span class="nav-text">可观察对象(Observable Objects)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可观察属性-ObservableFields"><span class="nav-number">1.2.</span> <span class="nav-text">可观察属性(ObservableFields)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可观察集合-Observable-Collections"><span class="nav-number">1.3.</span> <span class="nav-text">可观察集合(Observable Collections)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#生成绑定类-Generated-Binding"><span class="nav-number">2.</span> <span class="nav-text">生成绑定类(Generated Binding)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#构建-Creating"><span class="nav-number">2.1.</span> <span class="nav-text">构建(Creating)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#带-ID-的-View-Views-with-IDs"><span class="nav-number">2.2.</span> <span class="nav-text">带 ID 的 View(Views with IDs)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#变量-Variables"><span class="nav-number">2.3.</span> <span class="nav-text">变量(Variables)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ViewStubs"><span class="nav-number">2.4.</span> <span class="nav-text">ViewStubs</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#高级绑定-Advanced-Binding"><span class="nav-number">2.5.</span> <span class="nav-text">高级绑定(Advanced Binding)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#动态变量-Dynamic-Variables"><span class="nav-number">2.5.1.</span> <span class="nav-text">动态变量(Dynamic Variables)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#立即绑定-Immediate-Binding"><span class="nav-number">2.5.2.</span> <span class="nav-text">立即绑定(Immediate Binding)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#后台线程"><span class="nav-number">2.5.3.</span> <span class="nav-text">后台线程</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#属性设置-Attribute-Setters"><span class="nav-number">3.</span> <span class="nav-text">属性设置(Attribute Setters)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#自动设置属性-Automatic-Setters"><span class="nav-number">3.1.</span> <span class="nav-text">自动设置属性(Automatic Setters)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重命名属性设置-Renamed-Setters"><span class="nav-number">3.2.</span> <span class="nav-text">重命名属性设置(Renamed Setters)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义属性设置-Custom-Setters"><span class="nav-number">3.3.</span> <span class="nav-text">自定义属性设置(Custom Setters)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#转换器-Converters"><span class="nav-number">4.</span> <span class="nav-text">转换器(Converters)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#对象转换-Object-Conversions"><span class="nav-number">4.1.</span> <span class="nav-text">对象转换(Object Conversions)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义类型转换器-Custom-Conversions"><span class="nav-number">4.2.</span> <span class="nav-text">自定义类型转换器(Custom Conversions)</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lijiankun24</span>
+  
+</div>
+
+
+<div>
+  <span id="busuanzi_container_site_pv">
+    Total views <span id="busuanzi_value_site_pv">   </span>
+  </span>
+
+  <span id="busuanzi_container_site_uv">
+    |   Total visitors <span id="busuanzi_value_site_uv"/>
+  </span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("tWG63sCRtLhi5NFeaXtWqtnv-gzGzoHsz", "lPLcNFpeOoNc6wr9PVX8XdbI");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+
+  
+
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+          bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+      } else {
+          bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+</body>
+</html>
