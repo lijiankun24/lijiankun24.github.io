@@ -1,0 +1,948 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,Volley,OKHttp,Network," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="由于项目开始的时间比较早，其中的网络请求使用的还是 Volley 网络请求库，不过也不是直接使用 Volley，而是对 Volley 进行了一个简单的封装。前段时间提了一个新的需求，就是需要对每次网络请求的耗时和请求结果进行统计，并上传服务器。 针对此功能需求，就引出了本系列的文章。
+针对本系列博客，写了一个简单的练习 Volley 的 VolleyPractice，放在了 GitHub上，欢迎沟">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Volley 源码解析及对 Volley 的扩展（一）">
+<meta property="og:url" content="http://www.lijiankun24.com/Volley源码解析及对Volley的扩展1/index.html">
+<meta property="og:site_name" content="lijiankun24">
+<meta property="og:description" content="由于项目开始的时间比较早，其中的网络请求使用的还是 Volley 网络请求库，不过也不是直接使用 Volley，而是对 Volley 进行了一个简单的封装。前段时间提了一个新的需求，就是需要对每次网络请求的耗时和请求结果进行统计，并上传服务器。 针对此功能需求，就引出了本系列的文章。
+针对本系列博客，写了一个简单的练习 Volley 的 VolleyPractice，放在了 GitHub上，欢迎沟">
+<meta property="og:updated_time" content="2017-06-18T14:57:34.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Volley 源码解析及对 Volley 的扩展（一）">
+<meta name="twitter:description" content="由于项目开始的时间比较早，其中的网络请求使用的还是 Volley 网络请求库，不过也不是直接使用 Volley，而是对 Volley 进行了一个简单的封装。前段时间提了一个新的需求，就是需要对每次网络请求的耗时和请求结果进行统计，并上传服务器。 针对此功能需求，就引出了本系列的文章。
+针对本系列博客，写了一个简单的练习 Volley 的 VolleyPractice，放在了 GitHub上，欢迎沟">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.lijiankun24.com/Volley源码解析及对Volley的扩展1/"/>
+
+
+
+
+
+  <title> Volley 源码解析及对 Volley 的扩展（一） | lijiankun24 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">lijiankun24</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://www.lijiankun24.com/Volley源码解析及对Volley的扩展1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="lijiankun24">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="lijiankun24">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Volley 源码解析及对 Volley 的扩展（一）
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-06-13T21:54:09+08:00">
+                2017-06-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/Volley源码解析及对Volley的扩展1/" class="leancloud_visitors" data-flag-title="Volley 源码解析及对 Volley 的扩展（一）">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Views </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>由于项目开始的时间比较早，其中的网络请求使用的还是 Volley 网络请求库，不过也不是直接使用 Volley，而是对 Volley 进行了一个简单的封装。前段时间提了一个新的需求，就是需要<strong>对每次网络请求的耗时和请求结果进行统计，并上传服务器。</strong> 针对此功能需求，就引出了本系列的文章。</p>
+<p>针对本系列博客，写了一个简单的练习 Volley 的 <a href="https://github.com/lijiankun24/VolleyPractice" target="_blank" rel="external">VolleyPractice</a>，放在了 GitHub上，欢迎沟通交流。</p>
+<p>本文是<code>Volley 源码解析及对 Volley 的扩展</code>系列的第一篇文章，主要介绍以下内容：</p>
+<ol>
+<li>Volley 的简单使用及简单封装</li>
+<li>简单却不准确的统计时长的方法</li>
+<li>改进后更加准确的统计时长的方法<a id="more"></a>
+</li>
+</ol>
+<h2 id="Volley-的简单使用及简单封装"><a href="#Volley-的简单使用及简单封装" class="headerlink" title="Volley 的简单使用及简单封装"></a>Volley 的简单使用及简单封装</h2><h3 id="Volley-的简单使用"><a href="#Volley-的简单使用" class="headerlink" title="Volley 的简单使用"></a>Volley 的简单使用</h3><p>Volley 使用还是比较简单方便的，相关的资料和博客有很多，而且不是本文在重点，简单放点代码，展示一个简单的 <code>GET</code> 请求，如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">String url = <span class="string">"http://gank.io/api/data/Android/10/1"</span>;</div><div class="line"><span class="comment">// 创建一个 Request 的对象，并设置好回调函数，StringRequest 默认是 GET 请求</span></div><div class="line">StringRequest stringRequest = <span class="keyword">new</span> StringRequest(url, <span class="keyword">new</span> Response.Listener&lt;String&gt;() &#123;</div><div class="line">          <span class="meta">@Override</span></div><div class="line">          <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResponse</span><span class="params">(String response)</span> </span>&#123;</div><div class="line">              Log.i(<span class="string">"lijk"</span>, <span class="string">"onResponse "</span> + response);</div><div class="line">          &#125;</div><div class="line">        &#125;, <span class="keyword">new</span> Response.ErrorListener() &#123;</div><div class="line">          <span class="meta">@Override</span></div><div class="line">          <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onErrorResponse</span><span class="params">(VolleyError error)</span> </span>&#123;</div><div class="line">              Log.i(<span class="string">"lijk"</span>, <span class="string">"onErrorResponse "</span> + error);</div><div class="line">      &#125;</div><div class="line">  &#125;);</div><div class="line"><span class="comment">// 创建一个请求队列 RequestQueue 的对象</span></div><div class="line">RequestQueue queue = Volley.newRequestQueue(MainActivity.<span class="keyword">this</span>.getApplicationContext());</div><div class="line"><span class="comment">// 将请求加入到请求队列中，就会执行网络请求</span></div><div class="line">queue.add(stringRequest);</div></pre></td></tr></table></figure>
+<h3 id="Volley-的简单封装"><a href="#Volley-的简单封装" class="headerlink" title="Volley 的简单封装"></a>Volley 的简单封装</h3><p>先来看看封装后，进行一次和上面相同的网络请求的代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">String url = <span class="string">"http://gank.io/api/data/Android/10/1"</span>;</div><div class="line">VolleyManager.getInstance(MainActivity.<span class="keyword">this</span>).addStringRequest(url, <span class="keyword">new</span> OnHttpListener&lt;String&gt;() &#123;</div><div class="line">     <span class="meta">@Override</span></div><div class="line">     <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onSuccess</span><span class="params">(String result)</span> </span>&#123;</div><div class="line">         Log.i(<span class="string">"lijk"</span>, <span class="string">"onSuccess "</span> + result);</div><div class="line">     &#125;</div><div class="line"></div><div class="line">     <span class="meta">@Override</span></div><div class="line">     <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onError</span><span class="params">(VolleyError error)</span> </span>&#123;</div><div class="line">         Log.i(<span class="string">"lijk"</span>, <span class="string">"onError "</span> + error);</div><div class="line">     &#125;</div><div class="line"> &#125;);</div></pre></td></tr></table></figure></p>
+<p>可以看到，两次请求从功能和效果来看是一样的，但是代码要简洁明了一些，下面对上面的代码做一些解释。</p>
+<p>其中 <code>OnHttpListener</code> 是一个回调接口，用于回调请求的结果，由于有 <code>成功</code> 和 <code>失败</code> 两种结果，所以有两个回调方法。如下代码所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">OnHttpListener</span>&lt;<span class="title">T</span>&gt; </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">onSuccess</span><span class="params">(T result)</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">onError</span><span class="params">(VolleyError error)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><code>VolleyManager</code> 是一个管理 <code>Volley</code> 的类，具有如下特点：</p>
+<ul>
+<li>其中使用单例模式，保证在整个应用生命周期内只存在一个 <code>VolleyManager</code> 对象</li>
+<li>使用弱引用的方式持有 <code>Context</code> 对象，防止造成内存泄露</li>
+<li>在 <code>VolleyManager</code> 中只有一个 <code>RequestQueue</code> 对象，以免创建多个 <code>RequestQueue</code> 对象，从而造成资源的浪费</li>
+</ul>
+<p><code>VolleyManager</code> 的代码如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">VolleyManager</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> VolleyManager INSTANCE = <span class="keyword">null</span>;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> WeakReference&lt;Context&gt; mWRContext = <span class="keyword">null</span>;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> RequestQueue mQueue = <span class="keyword">null</span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="title">VolleyManager</span><span class="params">(Context context)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (mWRContext == <span class="keyword">null</span> || mWRContext.get() == <span class="keyword">null</span>) &#123;</div><div class="line">            mWRContext = <span class="keyword">new</span> WeakReference&lt;&gt;(context);</div><div class="line">        &#125;</div><div class="line">        mQueue = getRequestQueue();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> VolleyManager <span class="title">getInstance</span><span class="params">(Context context)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (INSTANCE == <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">synchronized</span> (VolleyManager.class) &#123;</div><div class="line">                <span class="keyword">if</span> (INSTANCE == <span class="keyword">null</span>) &#123;</div><div class="line">                    INSTANCE = <span class="keyword">new</span> VolleyManager(context);</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> INSTANCE;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addStringRequest</span><span class="params">(String url, <span class="keyword">final</span> OnHttpListener httpListener)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.addStringRequest(Request.Method.GET, url, httpListener);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addStringRequest</span><span class="params">(<span class="keyword">int</span> method, <span class="keyword">final</span> String url, <span class="keyword">final</span> OnHttpListener&lt;String&gt; httpListener)</span> </span>&#123;</div><div class="line">        StringRequest request = <span class="keyword">new</span> StringRequest(method, url, <span class="keyword">new</span> Response.Listener&lt;String&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResponse</span><span class="params">(String response)</span> </span>&#123;</div><div class="line">                httpListener.onSuccess(response);</div><div class="line">            &#125;</div><div class="line">        &#125;, <span class="keyword">new</span> Response.ErrorListener() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onErrorResponse</span><span class="params">(VolleyError error)</span> </span>&#123;</div><div class="line">                httpListener.onError(error);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line"></div><div class="line">        addRequest(request);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addJsonObjectRequest</span><span class="params">(String url, JSONObject jsonRequest, <span class="keyword">final</span> OnHttpListener&lt;JSONObject&gt; httpListener)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.addJsonObjectRequest(jsonRequest == <span class="keyword">null</span> ? Request.Method.GET : Request.Method.POST, url, jsonRequest, httpListener);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addJsonObjectRequest</span><span class="params">(<span class="keyword">int</span> method,<span class="keyword">final</span> String url, JSONObject jsonRequest, <span class="keyword">final</span> OnHttpListener&lt;JSONObject&gt; httpListener)</span> </span>&#123;</div><div class="line">        JsonObjectRequest request = <span class="keyword">new</span> JsonObjectRequest(method, url, jsonRequest, <span class="keyword">new</span> Response.Listener&lt;JSONObject&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResponse</span><span class="params">(JSONObject response)</span> </span>&#123;</div><div class="line">                httpListener.onSuccess(response);</div><div class="line">            &#125;</div><div class="line">        &#125;, <span class="keyword">new</span> Response.ErrorListener() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onErrorResponse</span><span class="params">(VolleyError error)</span> </span>&#123;</div><div class="line">                httpListener.onError(error);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line"></div><div class="line">        addRequest(request);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addJsonArrayRequest</span><span class="params">(<span class="keyword">final</span> String url, <span class="keyword">final</span> OnHttpListener&lt;JSONArray&gt; httpListener)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.addJsonArrayRequest(Request.Method.GET, url, <span class="keyword">null</span>, httpListener);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addJsonArrayRequest</span><span class="params">(<span class="keyword">int</span> method, <span class="keyword">final</span> String url, JSONArray jsonRequest, <span class="keyword">final</span> OnHttpListener&lt;JSONArray&gt; httpListener)</span> </span>&#123;</div><div class="line">        JsonArrayRequest request = <span class="keyword">new</span> JsonArrayRequest(method, url, jsonRequest, <span class="keyword">new</span> Response.Listener&lt;JSONArray&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResponse</span><span class="params">(JSONArray response)</span> </span>&#123;</div><div class="line">                httpListener.onSuccess(response);</div><div class="line">            &#125;</div><div class="line">        &#125;, <span class="keyword">new</span> Response.ErrorListener() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onErrorResponse</span><span class="params">(VolleyError error)</span> </span>&#123;</div><div class="line">                httpListener.onError(error);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line"></div><div class="line">        addRequest(request);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addImageRequest</span><span class="params">(String url, <span class="keyword">int</span> maxWidth, <span class="keyword">int</span> maxHeight,</span></span></div><div class="line">                                Bitmap.Config decodeConfig, <span class="keyword">final</span> OnHttpListener&lt;Bitmap&gt; httpListener) &#123;</div><div class="line">        <span class="keyword">this</span>.addImageRequest(url, maxWidth, maxHeight, ImageView.ScaleType.CENTER_INSIDE, decodeConfig, httpListener);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addImageRequest</span><span class="params">(<span class="keyword">final</span> String url, <span class="keyword">int</span> maxWidth, <span class="keyword">int</span> maxHeight,</span></span></div><div class="line">                                ImageView.ScaleType scaleType, Bitmap.Config decodeConfig,</div><div class="line">                                <span class="keyword">final</span> OnHttpListener&lt;Bitmap&gt; httpListener) &#123;</div><div class="line">        ImageRequest request = <span class="keyword">new</span> ImageRequest(url, <span class="keyword">new</span> Response.Listener&lt;Bitmap&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResponse</span><span class="params">(Bitmap response)</span> </span>&#123;</div><div class="line">                httpListener.onSuccess(response);</div><div class="line">            &#125;</div><div class="line">        &#125;, maxWidth, maxHeight, scaleType, decodeConfig, <span class="keyword">new</span> Response.ErrorListener() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onErrorResponse</span><span class="params">(VolleyError error)</span> </span>&#123;</div><div class="line">                httpListener.onError(error);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line"></div><div class="line">        addRequest(request);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">addRequest</span><span class="params">(Request request)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (request == <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125;</div><div class="line">        mQueue.add(request);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> RequestQueue <span class="title">getRequestQueue</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (mQueue == <span class="keyword">null</span> &amp;&amp; mWRContext != <span class="keyword">null</span> &amp;&amp; mWRContext.get() != <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="comment">// getApplicationContext() is key, it keeps you from leaking the</span></div><div class="line">            <span class="comment">// Activity or BroadcastReceiver if someone passes one in.</span></div><div class="line">            mQueue = Volley.newRequestQueue(mWRContext.get().getApplicationContext());</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> mQueue;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>整体来讲，代码还是不难的，要得懂还是不难的。</p>
+<h2 id="简单却不准确的统计方法"><a href="#简单却不准确的统计方法" class="headerlink" title="简单却不准确的统计方法"></a>简单却不准确的统计方法</h2><h3 id="统计的回调接口"><a href="#统计的回调接口" class="headerlink" title="统计的回调接口"></a>统计的回调接口</h3><p>首先，需要明确一下统计的数据：网络请求的耗时、网络请求的结果(正确/失败)。每次网络请求都会对应一个 URL 的地址，所以需要把耗时、结果和 URL 对应起来。<br>根据上面的想法，创建一个回调接口，如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">OnResponseInfoInterceptor</span> </span>&#123;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 网络请求耗时、网络请求结果的回调接口</div><div class="line">     *</div><div class="line">     * <span class="doctag">@param</span> url           网络请求对应的 URL</div><div class="line">     * <span class="doctag">@param</span> networkTimeMs 网络请求的耗时</div><div class="line">     * <span class="doctag">@param</span> statusCode    网络请求结果的状态码(其实就是 Http 响应中的状态码)</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">onResponseInfo</span><span class="params">(String url, <span class="keyword">long</span> networkTimeMs, <span class="keyword">int</span> statusCode)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="统计方法"><a href="#统计方法" class="headerlink" title="统计方法"></a>统计方法</h3><p>如果对 OkHttp 有所了解的话，那应该知道在 OkHttp 有 <strong>拦截器</strong> 这个东西。拦截器顾名思义，它可以拦截一些东西，可以拦截发出的请求，也可以拦截收到的响应，从而可以对请求或者响应做一些处理(我是这么理解的，如果不同的想法和见解，欢迎沟通交流<code>jiankunli24@gmail.com</code>)。</p>
+<p>因为需要统计网络请求结果的状态码，必须是在收到请求结果之后才可以得到；而网络请求耗时，则比较容易想得到，在网络请求开始的时候记录一下，在收到网络响应之后再次记录一下，中间这段时间就是网络请求的耗时了。</p>
+<p>按照上面的思路，对 <code>VolleyManager</code> 中发送网络请求方法稍微进行修改，如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">VolleyManager</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> OnResponseInfoInterceptor mResponseInfoListener = <span class="keyword">null</span>;</div><div class="line"></div><div class="line">    ....</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setOnResponseInfoInterceptor</span><span class="params">(OnResponseInfoInterceptor responseInfoListener)</span> </span>&#123;</div><div class="line">            mResponseInfoInterceptor = responseInfoListener;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    ....</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addStringRequest</span><span class="params">(String url, <span class="keyword">final</span> OnHttpListener httpListener)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.addStringRequest(Request.Method.GET, url, httpListener);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addStringRequest</span><span class="params">(<span class="keyword">int</span> method, <span class="keyword">final</span> String url, <span class="keyword">final</span> OnHttpListener&lt;String&gt; httpListener)</span> </span>&#123;</div><div class="line">        <span class="comment">// 记录网络请求开始的时间</span></div><div class="line">        <span class="keyword">final</span> <span class="keyword">long</span> startTimeStamp = SystemClock.elapsedRealtime();</div><div class="line">        StringRequest request = <span class="keyword">new</span> CustomStringRequest(method, url, <span class="keyword">new</span> Response.Listener&lt;String&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResponse</span><span class="params">(String response)</span> </span>&#123;</div><div class="line">                httpListener.onSuccess(response);</div><div class="line">                <span class="comment">// 收到正确的网络请求结果</span></div><div class="line">                handleInterceptor(url, startTimeStamp, <span class="number">1</span>, interceptor);</div><div class="line">            &#125;</div><div class="line">        &#125;, <span class="keyword">new</span> Response.ErrorListener() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onErrorResponse</span><span class="params">(VolleyError error)</span> </span>&#123;</div><div class="line">                httpListener.onError(error);</div><div class="line">                <span class="comment">// 收到错误的网络请求结果</span></div><div class="line">                handleInterceptor(url, startTimeStamp, <span class="number">0</span>, interceptor);</div><div class="line">            &#125;</div><div class="line">        &#125;)</div><div class="line"></div><div class="line">        addRequest(request);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 处理 OnResponseInfoInterceptor 拦截器</div><div class="line">     *</div><div class="line">     * <span class="doctag">@param</span> url            网络请求对应的URL</div><div class="line">     * <span class="doctag">@param</span> startTimeStamp 网络请求开始的时间，用于计算网络请求耗时</div><div class="line">     * <span class="doctag">@param</span> statusCode     网络请求结果的状态，1表示网络请求成功，0表示网络请求失败</div><div class="line">     * <span class="doctag">@param</span> interceptor    拦截器 &#123;<span class="doctag">@link</span> OnResponseInfoInterceptor&#125; ，有一个默认的拦截器 mResponseInfoInterceptor，</div><div class="line">     *                       用户也可以通过&#123;<span class="doctag">@link</span> #addStringRequest(int, String,</div><div class="line">     *                       OnHttpListener, OnResponseInfoInterceptor)&#125; 给网络请求设置单独的拦截器</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">handleInterceptor</span><span class="params">(String url, <span class="keyword">long</span> startTimeStamp, <span class="keyword">int</span> statusCode,</span></span></div><div class="line">                                   OnResponseInfoInterceptor interceptor) &#123;</div><div class="line">        <span class="keyword">long</span> apiDuration = SystemClock.elapsedRealtime() - startTimeStamp;</div><div class="line">        <span class="keyword">if</span> (apiDuration &lt; <span class="number">0</span> || TextUtils.isEmpty(url) || interceptor == <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125;</div><div class="line">        interceptor.onResponseInfo(url, apiDuration, statusCode);</div><div class="line">    &#125;</div><div class="line">    ....</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>在上面的代码中，我只举了做 <code>String</code> 请求的例子，其他 <code>JsonObject</code>、<code>JsonArray</code> 和 <code>Bitmap</code> 请求的例子也是一样的。</p>
+<p>在业务代码中像下面这样使用：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 通过 &#123;@link VolleyManager#setOnResponseInfoInterceptor(OnResponseInfoInterceptor)&#125; 设置拦截器，这样应用中所有通过</span></div><div class="line"><span class="comment">// VolleyManager 发出的网络请求都会将网络请求的相关信息(url, networkTimeMs, statusCode) 回调到这儿。</span></div><div class="line">VolleyManager.getInstance(MyApplication.<span class="keyword">this</span>).setOnResponseInfoInterceptor(<span class="keyword">new</span> OnResponseInfoInterceptor() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResponseInfo</span><span class="params">(String url, <span class="keyword">long</span> networkTimeMs, <span class="keyword">int</span> statusCode)</span> </span>&#123;</div><div class="line">                L.i(<span class="string">"url "</span> + url);</div><div class="line">                L.i(<span class="string">"networkTimeMs "</span> + networkTimeMs);</div><div class="line">                L.i(<span class="string">"statusCode "</span> + statusCode);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div></pre></td></tr></table></figure></p>
+<p>我是在 <code>Application</code> 中设置 <code>VolleyManager</code> 的拦截器的，其他地方如之前一样，正常调用网络请求即可。</p>
+<p>这种统计方法不准确的原因主要有两点(<strong>前方高能，是重点</strong>)：</p>
+<ol>
+<li>上面这种做法，乍一看没什么问题，但是如果对 <code>Volley</code> 的工作原理有一定了解的话，就会明白其实用这种方法统计的网络请求时间并不十分准确。因为在 <code>Volley</code> 的 <code>RequestQueue</code> 类中维护着几个队列，包括：网络请求队列、缓存请求队列、一个正在进行但是尚未完成的请求集合和一个等待请求的集合，如果向 <code>RequestQueue</code> 添加一个网络请求，首先会进入队列，然后等待进行真正的网络请求。所以如果像上面这种的做法的话，会把网络请求在队列中排队的时间也计算在内。</li>
+<li>如果有多个线程在短时间内进行多次网络请求的话，都会去调用 <code>addStringRequest()</code> 方法，这样 <code>startTimeStamp</code> 有可能会出现错乱的问题，多个网络请求开始的时间和结束的时间不能一一对应，这也是一个问题。</li>
+</ol>
+<p>综上所述，上面这种统计方法并不准确(如果有不同的想法和见解，欢迎沟通交流 <code>jiankunli24@gmail.com</code>)。</p>
+<h2 id="改进后更加准确的统计时长的方法"><a href="#改进后更加准确的统计时长的方法" class="headerlink" title="改进后更加准确的统计时长的方法"></a>改进后更加准确的统计时长的方法</h2><p>改进后的方法，在使用时并没有什么区别，不同的是在 <code>VolleyManager</code> 中对网络请求相关信息统计的方法和之前的不一样了。</p>
+<p>之前在看 <code>Volley</code> 源码的时候，无意间看到在 <code>Volley</code> 的 <code>NetworkResponse</code> 中有 <code>networkTimeMs</code> 这样一个属性，看了其英文注释，我明白了这个 <code>networkTimeMs</code> 属性就代表着一个网络请求的时间。既然 <code>Volley</code> 已经记录了网络请求耗时，我们只需要通过一定的方法将 <code>networkTimeMs</code> 暴露给开发者，供开发者可以获取到即可。</p>
+<p>新的统计方法需要继承 <code>StringRequest</code>、<code>JsonObjectRequest</code> 、<code>JsonArrayRequest</code> 和 <code>ImageRequest</code>，重写其中的几个方法，生成其子类。拿 <code>StringRequest</code> 举例，自定义的 <code>CustomStringRequest</code> 类，如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 在 StringRequest 中，&#123;@link deliverResponse(String)&#125; 方法和 &#123;@link deliverError(VolleyError)&#125; 方法，只会调用其中的一个</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CustomStringRequest</span> <span class="keyword">extends</span> <span class="title">StringRequest</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">// 网络请求耗时</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">long</span> mNetworkTimeMs = <span class="number">0L</span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">CustomStringRequest</span><span class="params">(<span class="keyword">int</span> method, String url, Response.Listener&lt;String&gt; listener, Response.ErrorListener errorListener)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>(method, url, listener, errorListener);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> Response&lt;String&gt; <span class="title">parseNetworkResponse</span><span class="params">(NetworkResponse response)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (response != <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="comment">// 若网络请求正确，则在 NetworkResponse 类中含有网络请求耗时的属性：networkTimeMs</span></div><div class="line">            mNetworkTimeMs = response.networkTimeMs;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.parseNetworkResponse(response);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">deliverResponse</span><span class="params">(String response)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.deliverResponse(response);</div><div class="line">        <span class="comment">// 如果已经调用了这个方法，则表明网络请求成功。在 parseNetworkResponse(NetworkResponse) 方法中，为 mNetworkTimeMs 赋值</span></div><div class="line">        <span class="keyword">if</span> (mNetworkTimeMs &gt; <span class="number">0</span>) &#123;</div><div class="line">            <span class="keyword">this</span>.onResponseTimeAndCode(mNetworkTimeMs, <span class="number">1</span>);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">deliverError</span><span class="params">(VolleyError error)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.deliverError(error);</div><div class="line">        <span class="comment">// 如果调用了这个方法，则表明网络请求失败时。若 VolleyError 中的 networkResponse 不为空，则 networkResponse 中的</span></div><div class="line">        <span class="comment">// networkTimeMs 和 statusCode 表示网络请求耗时和 Http 状态码；若 networkResponse 为空，则</span></div><div class="line">        <span class="comment">// VolleyError 中的 getNetworkTimeMs() 方法可以获得网络请求耗时。</span></div><div class="line">        NetworkResponse response = error.networkResponse;</div><div class="line">        <span class="keyword">if</span> (response != <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">this</span>.onResponseTimeAndCode(response.networkTimeMs, response.statusCode);</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="comment">// Http 协议中 417 表示 Expectation Failed</span></div><div class="line">            <span class="keyword">this</span>.onResponseTimeAndCode(error.getNetworkTimeMs(), <span class="number">417</span>);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 在子类中重写此方法，即可得到网络请求耗时和网络请求结果</div><div class="line">     *</div><div class="line">     * <span class="doctag">@param</span> networkTimeMs 网络请求耗时，单位：毫秒</div><div class="line">     * <span class="doctag">@param</span> statusCode    网络请求结果，成功则为1；失败则是具体的Http状态码，如404，500等(容易定位到请求失败的原因)</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onResponseTimeAndCode</span><span class="params">(<span class="keyword">long</span> networkTimeMs, <span class="keyword">int</span> statusCode)</span> </span>&#123;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>自定义好 <code>Custom***Request</code> 之后，在 <code>VolleyManager</code> 中需要使用自定义的 <code>Custom***Request</code>，所以需要对 <code>VolleyManager</code> 做一定的修改，如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">VolleyManager</span> </span>&#123;</div><div class="line"></div><div class="line">    ......</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addStringRequest</span><span class="params">(String url, <span class="keyword">final</span> OnHttpListener httpListener)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.addStringRequest(Request.Method.GET, url, httpListener);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addStringRequest</span><span class="params">(<span class="keyword">int</span> method, <span class="keyword">final</span> String url, <span class="keyword">final</span> OnHttpListener&lt;String&gt; httpListener)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.addStringRequest(method, url, httpListener, mResponseInfoInterceptor);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addStringRequest</span><span class="params">(<span class="keyword">int</span> method, <span class="keyword">final</span> String url,</span></span></div><div class="line">                                 <span class="keyword">final</span> OnHttpListener&lt;String&gt; httpListener, <span class="keyword">final</span> OnResponseInfoInterceptor interceptor) &#123;</div><div class="line">        StringRequest request = <span class="keyword">new</span> CustomStringRequest(method, url, <span class="keyword">new</span> Response.Listener&lt;String&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResponse</span><span class="params">(String response)</span> </span>&#123;</div><div class="line">                httpListener.onSuccess(response);</div><div class="line">            &#125;</div><div class="line">        &#125;, <span class="keyword">new</span> Response.ErrorListener() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onErrorResponse</span><span class="params">(VolleyError error)</span> </span>&#123;</div><div class="line">                httpListener.onError(error);</div><div class="line">            &#125;</div><div class="line">        &#125;) &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onResponseTimeAndCode</span><span class="params">(<span class="keyword">long</span> networkTimeMs, <span class="keyword">int</span> statusCode)</span> </span>&#123;</div><div class="line">                sendResponseInfo(url, networkTimeMs, statusCode, interceptor);</div><div class="line">            &#125;</div><div class="line">        &#125;;</div><div class="line">        addRequest(request);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 处理 OnResponseInfoInterceptor 拦截器</div><div class="line">     *</div><div class="line">     * <span class="doctag">@param</span> url            网络请求对应的URL</div><div class="line">     * <span class="doctag">@param</span> startTimeStamp 网络请求开始的时间，用于计算网络请求耗时</div><div class="line">     * <span class="doctag">@param</span> statusCode     网络请求结果的状态，1表示网络请求成功，0表示网络请求失败</div><div class="line">     * <span class="doctag">@param</span> interceptor    拦截器 &#123;<span class="doctag">@link</span> OnResponseInfoInterceptor&#125; ，有一个默认的拦截器 mResponseInfoInterceptor，用户也可以通过&#123;<span class="doctag">@link</span> #addStringRequest(int, String,</div><div class="line">     *                       OnHttpListener, OnResponseInfoInterceptor)&#125; 给网络请求设置单独的拦截器</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">handleInterceptor</span><span class="params">(String url, <span class="keyword">long</span> startTimeStamp, <span class="keyword">int</span> statusCode,</span></span></div><div class="line">                                   OnResponseInfoInterceptor interceptor) &#123;</div><div class="line">        <span class="keyword">long</span> apiDuration = SystemClock.elapsedRealtime() - startTimeStamp;</div><div class="line">        <span class="keyword">if</span> (apiDuration &lt; <span class="number">0</span> || TextUtils.isEmpty(url) || interceptor == <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125;</div><div class="line">        interceptor.onResponseInfo(url, apiDuration, statusCode);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    ......</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>还是以 <code>StringRequest</code> 为例，在使用自定义的 <code>CustomStringRequest</code> 时，需要重写其中的 <code>onResponseTimeAndCode(long, int)</code>，并使用 <code>handleInterceptor(String , long , int , OnResponseInfoInterceptor )</code> 处理得到的网络请求耗时和请求结果的状态码。</p>
+<p>通过使用这种方法，可以很好的解决第一种统计方法的两个问题：</p>
+<ol>
+<li>因为是通过 <code>Volley</code> 中的属性 <code>networkTimeMs</code> 得到的网络请求耗时，如果分析源码的话，会发现 <code>networkTimeMs</code> 就是在网络请求开始时记录开始时间，在网络请求结束时记录结束时间，从而得到网络请求耗时，不包括请求排队的时间，所以统计更准确。</li>
+<li>不管有多少个线程进行网络请求，每发送一个请求，就会创建一个 <code>CustomStringRequest</code> 对象，而 <code>mNetworkTimeMs</code> 是每个 <code>CustomStringRequest</code> 对象的一个属性，所以并不会出现错乱的问题。</li>
+<li>如果请求成功，<code>statusCode</code> 则为1；如果请求失败，<code>statusCode</code> 则为具体的网络请求状态码，这样更容易定位问题所在。</li>
+</ol>
+<hr>
+<p>至此，关于<code>Volley 源码解析及对 Volley 的扩展</code>系列的第一篇文章就结束了，在第二篇文章中会对 <code>Volley</code> 的源码进行分析，解释通过第二种方法可以更准确的统计到网络请求耗时的原因。如果有什么问题欢迎指出。我的工作邮箱：jiankunli24@gmail.com</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/Volley/" rel="tag"># Volley</a>
+          
+            <a href="/tags/OKHttp/" rel="tag"># OKHttp</a>
+          
+            <a href="/tags/Network/" rel="tag"># Network</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/Bottom-Sheet-及相关知识/" rel="next" title="Bottom Sheet 及相关知识">
+                <i class="fa fa-chevron-left"></i> Bottom Sheet 及相关知识
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="lijiankun24" />
+          <p class="site-author-name" itemprop="name">lijiankun24</p>
+           
+              <p class="site-description motion-element" itemprop="description">守得云开见月明。</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/lijiankun24" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/lijiankun24" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.jianshu.com/u/1abe21b7ff5f" target="_blank" title="Jianshu">
+                  
+                    <i class="fa fa-fw fa-jianshu"></i>
+                  
+                  Jianshu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://gank.io/post/published" title="匠心写作" target="_blank">匠心写作</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/lmj623565791" title="Hongyang" target="_blank">Hongyang</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.liaohuqiu.net/cn/" title="Huqiu Liao" target="_blank">Huqiu Liao</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://drakeet.me/" title="drakeet" target="_blank">drakeet</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.jianshu.com/u/df40282480b4" title="小鄧子" target="_blank">小鄧子</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://yuweiguocn.github.io/" title="于卫国" target="_blank">于卫国</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Volley-的简单使用及简单封装"><span class="nav-number">1.</span> <span class="nav-text">Volley 的简单使用及简单封装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Volley-的简单使用"><span class="nav-number">1.1.</span> <span class="nav-text">Volley 的简单使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Volley-的简单封装"><span class="nav-number">1.2.</span> <span class="nav-text">Volley 的简单封装</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#简单却不准确的统计方法"><span class="nav-number">2.</span> <span class="nav-text">简单却不准确的统计方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#统计的回调接口"><span class="nav-number">2.1.</span> <span class="nav-text">统计的回调接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#统计方法"><span class="nav-number">2.2.</span> <span class="nav-text">统计方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#改进后更加准确的统计时长的方法"><span class="nav-number">3.</span> <span class="nav-text">改进后更加准确的统计时长的方法</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lijiankun24</span>
+  
+</div>
+
+
+<div>
+  <span id="busuanzi_container_site_pv">
+    Total views <span id="busuanzi_value_site_pv">   </span>
+  </span>
+
+  <span id="busuanzi_container_site_uv">
+    |   Total visitors <span id="busuanzi_value_site_uv"/>
+  </span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("tWG63sCRtLhi5NFeaXtWqtnv-gzGzoHsz", "lPLcNFpeOoNc6wr9PVX8XdbI");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+
+  
+
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+          bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+      } else {
+          bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+</body>
+</html>
