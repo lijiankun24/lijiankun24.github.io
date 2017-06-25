@@ -98,7 +98,7 @@
 <meta property="og:image" content="http://www.lijiankun24.com/Volley源码解析及对Volley的扩展2/RequestQueue-add-flow-chart.png">
 <meta property="og:image" content="http://www.lijiankun24.com/Volley源码解析及对Volley的扩展2/NetworkDispatcher-run-flow-chart.png">
 <meta property="og:image" content="http://www.lijiankun24.com/Volley源码解析及对Volley的扩展2/CacheDispatcher-run-flow-chart.png">
-<meta property="og:updated_time" content="2017-06-25T02:24:26.000Z">
+<meta property="og:updated_time" content="2017-06-25T02:39:05.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Volley 源码解析及对 Volley 的扩展（二）">
 <meta name="twitter:description" content="在Volley 源码解析及对 Volley 的扩展系列的第一篇文章中，介绍了一种通过继承 StringRequest、JsonObjectRequest等自定义类，只需要重写其中的一个方法，即可获得网络请求的耗时和网络请求的结果，详见第一篇文章。
@@ -431,6 +431,13 @@
 <li><p>在 <code>ExecutorDelivery</code> 中的内部类 <code>ResponseDeliveryRunnable</code> ，是非常重要的，在它的 <code>run()</code> 方法中，如果成功则调用 <code>request</code> 的 <code>deliverResponse(T)</code> 方法，否则调用 <code>deliverError(VolleyError)</code><br>方法。这里的 <code>deliverResponse(T)</code> 方法内部最终会回调我们在构建 <code>Request</code> 时设置的 <code>Response.Listener</code> 对象 <code>onResponse(T)</code> 方法的。</p>
 <hr>
 <p>至此，关于<code>Volley 源码解析及对 Volley 的扩展</code>系列的第二篇文章就结束了，从这边文章中也可以知道为什么都说 <code>Volley</code> 具有很强的扩展性，因为很多地方依赖的属性都是接口，而不是具体的实现类。接下来在第三篇文章中就会对 <code>Volley</code> 做一些扩展。如果有什么问题欢迎指出。我的工作邮箱：jiankunli24@gmail.com</p>
+<hr>
+<p><strong>参考资料：</strong></p>
+<p><a href="http://p.codekk.com/blogs/detail/54cfab086c4761e5001b2542" target="_blank" rel="external">Volley 源码解析</a> – <a href="http://www.zhangxuzhou.cn/" target="_blank" rel="external">grumoon</a></p>
+<p><a href="http://yongyu.itscoder.com/2016/08/07/yongyu_20160803_volley_use_and_source_code_study/" target="_blank" rel="external">Volley学习笔记之简单使用及部分源码详解</a>  – <a href="http://yongyu.itscoder.com/" target="_blank" rel="external">Yongyu</a></p>
+<p><a href="http://blog.csdn.net/wangshihui512/article/details/51570254" target="_blank" rel="external">Volley源码分析【面向接口编程的典范】</a> – <a href="http://blog.csdn.net/wangshihui512?viewmode=contents" target="_blank" rel="external">王世晖</a></p>
+<p><a href="http://blog.csdn.net/fenggit/article/details/50727768" target="_blank" rel="external">Volley源码解析&lt;四&gt; RequestQueue请求队列</a> – <a href="http://blog.csdn.net/fenggit?viewmode=contents" target="_blank" rel="external">fenggit</a></p>
+<p><a href="http://blog.csdn.net/guolin_blog/article/details/17656437" target="_blank" rel="external">Android Volley完全解析(四)，带你从源码的角度理解Volley</a> – <a href="http://blog.csdn.net/guolin_blog?viewmode=contents" target="_blank" rel="external">郭霖</a></p>
 </li>
 </ol>
 
