@@ -1,0 +1,1014 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,Volley,OKHttp,Network," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="在 Volley 源码解析及对 Volley 的扩展系列的第二篇文章中对 Volley 的部分源码进行了分析，也知道了 Volley 具有很强的扩展性。这边文章主要就是对 Volley 进行了一定的扩展，包括以下两部分内容，具体的代码可以参照我写的练手 Demo VolleyPractice。
+
+自定义 Request
+使用 OKHttp3 自定义 OkHttpStack">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Volley源码解析及对Volley的扩展3">
+<meta property="og:url" content="http://www.lijiankun24.com/Volley源码解析及对Volley的扩展3/index.html">
+<meta property="og:site_name" content="lijiankun24">
+<meta property="og:description" content="在 Volley 源码解析及对 Volley 的扩展系列的第二篇文章中对 Volley 的部分源码进行了分析，也知道了 Volley 具有很强的扩展性。这边文章主要就是对 Volley 进行了一定的扩展，包括以下两部分内容，具体的代码可以参照我写的练手 Demo VolleyPractice。
+
+自定义 Request
+使用 OKHttp3 自定义 OkHttpStack">
+<meta property="og:updated_time" content="2017-06-26T15:32:21.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Volley源码解析及对Volley的扩展3">
+<meta name="twitter:description" content="在 Volley 源码解析及对 Volley 的扩展系列的第二篇文章中对 Volley 的部分源码进行了分析，也知道了 Volley 具有很强的扩展性。这边文章主要就是对 Volley 进行了一定的扩展，包括以下两部分内容，具体的代码可以参照我写的练手 Demo VolleyPractice。
+
+自定义 Request
+使用 OKHttp3 自定义 OkHttpStack">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.lijiankun24.com/Volley源码解析及对Volley的扩展3/"/>
+
+
+
+
+
+  <title> Volley源码解析及对Volley的扩展3 | lijiankun24 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">lijiankun24</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://www.lijiankun24.com/Volley源码解析及对Volley的扩展3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="lijiankun24">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="lijiankun24">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Volley源码解析及对Volley的扩展3
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-06-25T11:03:02+08:00">
+                2017-06-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/Volley源码解析及对Volley的扩展3/" class="leancloud_visitors" data-flag-title="Volley源码解析及对Volley的扩展3">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Views </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在 <code>Volley 源码解析及对 Volley 的扩展</code>系列的<a href="http://lijiankun24.com/Volley源码解析及对Volley的扩展2/" target="_blank" rel="external">第二篇文章</a>中对 Volley 的部分源码进行了分析，也知道了 Volley 具有很强的扩展性。这边文章主要就是对 Volley 进行了一定的扩展，包括以下两部分内容，具体的代码可以参照我写的练手 Demo <a href="https://github.com/lijiankun24/VolleyPractice" target="_blank" rel="external">VolleyPractice</a>。</p>
+<ol>
+<li>自定义 <code>Request</code></li>
+<li>使用 <code>OKHttp3</code> 自定义 <code>OkHttpStack</code></li>
+</ol>
+<a id="more"></a>
+<h2 id="自定义-Request"><a href="#自定义-Request" class="headerlink" title="自定义 Request"></a>自定义 Request</h2><p>在项目的开发中，相信大多数的网络请求接口返回的数据都是 <code>Json</code> 格式的，接收到该 <code>Json</code> 对象以后，还要解析 <code>Json</code> 格式的结果并生成对应的 Model 类对象才能做进一步的操作。如果能稍微封装一下，使返回的结果就是想要的 Model 类对象，这样是不就很方便了呢？下面以 <code>http://gank.io/api/data/Android/10/1</code>(该接口出自<code>http://gank.io/api</code>) 为例，自定义 <code>Request</code>，实现上述需求。</p>
+<h3 id="添加-Gson"><a href="#添加-Gson" class="headerlink" title="添加 Gson"></a>添加 Gson</h3><p>为了方便进行 Json 结果的解析，使用 Google 官方的 Json 解析库 — Gson，添加以下依赖：<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">compile <span class="string">'com.google.code.gson:gson:2.8.0'</span></div></pre></td></tr></table></figure></p>
+<h3 id="抽象类-Request"><a href="#抽象类-Request" class="headerlink" title="抽象类 Request"></a>抽象类 Request</h3><p>通过<a href="http://lijiankun24.com/Volley源码解析及对Volley的扩展2/" target="_blank" rel="external">上篇博客</a>知道如果想要实现自定义的 <code>Request</code>，需要实现以下两个方法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 子类必须实现此方法，用于解析网络请求的响应，并返回合适的类型对象。这个方法会在一个</div><div class="line"> * 工作线程中被调用(即不会在 UI 线程中调用此方法)，如果此方法返回 null，则结果并不会被发送。</div><div class="line"> *</div><div class="line"> * <span class="doctag">@param</span> response 来自于网络请求的响应</div><div class="line"> * <span class="doctag">@return</span> 解析的结果，如果发生错误则返回 null</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">abstract</span> <span class="keyword">protected</span> Response&lt;T&gt; <span class="title">parseNetworkResponse</span><span class="params">(NetworkResponse response)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 子类必须实现这个方法，把解析的结果发送给监听器。其中 T 类型的参数 response 要保证</div><div class="line"> * 不可以为 null，如果解析失败，则解析的结果不会通过此方法发送。</div><div class="line"> *</div><div class="line"> * <span class="doctag">@param</span> response 通过 &#123;<span class="doctag">@link</span> #parseNetworkResponse(NetworkResponse)&#125; 方法解析的结果</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">abstract</span> <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">deliverResponse</span><span class="params">(T response)</span></span>;</div></pre></td></tr></table></figure></p>
+<p>看一下 Volley 中默认的 <code>Request</code> 实现类 <code>StringReqeust</code> 的源码如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StringRequest</span> <span class="keyword">extends</span> <span class="title">Request</span>&lt;<span class="title">String</span>&gt; </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Listener&lt;String&gt; mListener;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 构造方法，创建一个 SringRequest 类的请求对象</div><div class="line">     *</div><div class="line">     * <span class="doctag">@param</span> method         请求方法，参见 &#123;<span class="doctag">@link</span> Method&#125;</div><div class="line">     * <span class="doctag">@param</span> url            请求的 url 地址</div><div class="line">     * <span class="doctag">@param</span> listener       接收请求结果的监听器</div><div class="line">     * <span class="doctag">@param</span> errorListener  异常监听器，如果忽略异常可传入 null</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">StringRequest</span><span class="params">(<span class="keyword">int</span> method, String url, Listener&lt;String&gt; listener,</span></span></div><div class="line">            ErrorListener errorListener) &#123;</div><div class="line">        <span class="keyword">super</span>(method, url, errorListener);</div><div class="line">        mListener = listener;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 重载的构造方法，调用 &#123;<span class="doctag">@ling</span> StringRequest(int, String, Listener&lt;String&gt;, ErrorListener)&#125; 构造方法实现</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">StringRequest</span><span class="params">(String url, Listener&lt;String&gt; listener, ErrorListener errorListener)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>(Method.GET, url, listener, errorListener);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 通过构造方法中传入的 mListener 接口，回调接收到的请求响应结果</div><div class="line">     */</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">deliverResponse</span><span class="params">(String response)</span> </span>&#123;</div><div class="line">        mListener.onResponse(response);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 解析传入的网络请求响应 NetworkResponse 对象，并生成具体的结果</div><div class="line">     */</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> Response&lt;String&gt; <span class="title">parseNetworkResponse</span><span class="params">(NetworkResponse response)</span> </span>&#123;</div><div class="line">        String parsed;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            parsed = <span class="keyword">new</span> String(response.data, HttpHeaderParser.parseCharset(response.headers));</div><div class="line">        &#125; <span class="keyword">catch</span> (UnsupportedEncodingException e) &#123;</div><div class="line">            parsed = <span class="keyword">new</span> String(response.data);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> Response.success(parsed, HttpHeaderParser.parseCacheHeaders(response));</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="定义-Model-对象"><a href="#定义-Model-对象" class="headerlink" title="定义 Model 对象"></a>定义 Model 对象</h3><p>因为 <code>http://gank.io/api/data/Android/10/1</code> 返回的数据格式如下：<br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">   <span class="attr">"error"</span>: <span class="literal">false</span>,</div><div class="line">   <span class="attr">"results"</span>:</div><div class="line">   [</div><div class="line">       &#123;</div><div class="line">          <span class="attr">"_id"</span>: <span class="string">"593f2091421aa92c769a8c6a"</span>,</div><div class="line">          <span class="attr">"createdAt"</span>: <span class="string">"2017-06-13T07:15:29.423Z"</span>,</div><div class="line">          <span class="attr">"desc"</span>: <span class="string">"Android之自定义View：侧滑删除"</span>,</div><div class="line">          <span class="attr">"publishedAt"</span>: <span class="string">"2017-06-15T13:55:57.947Z"</span>,</div><div class="line">          <span class="attr">"source"</span>: <span class="string">"web"</span>,</div><div class="line">          <span class="attr">"type"</span>: <span class="string">"Android"</span>,</div><div class="line">          <span class="attr">"url"</span>: <span class="string">"https://mp.weixin.qq.com/s?__biz=MzIwMzYwMTk1NA==&amp;mid=2247484934&amp;idx=1&amp;sn=f2a40261efe8ebee45804e9df93c1cce&amp;chksm=96cda74ba1ba2e5dbbac15a9e57b5329176d1fe43478e5c63f7bc502a6ca50e4dfa6c0a9041e#rd"</span>,</div><div class="line">          <span class="attr">"used"</span>: <span class="literal">true</span>,</div><div class="line">          <span class="attr">"who"</span>: <span class="string">"陈宇明"</span></div><div class="line">      &#125;,</div><div class="line">      ......</div><div class="line">  ]</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>所以定义对应的 Model 类，如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AndroidModel</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">boolean</span> error;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> List&lt;Android&gt; results;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">AndroidModel</span><span class="params">(<span class="keyword">boolean</span> error, List&lt;Android&gt; results)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.error = error;</div><div class="line">        <span class="keyword">this</span>.results = results;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Android</span> </span>&#123;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> String _id;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> String createdAt;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> String desc;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> String publishedAt;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> String source;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> String type;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> String url;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">boolean</span> used;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> String who;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Android</span><span class="params">(String _id, String createdAt, String desc,</span></span></div><div class="line">                   String publishedAt, String source, String type,</div><div class="line">                   String url, <span class="keyword">boolean</span> used, String who) &#123;</div><div class="line">        <span class="keyword">this</span>._id = _id;</div><div class="line">        <span class="keyword">this</span>.createdAt = createdAt;</div><div class="line">        <span class="keyword">this</span>.desc = desc;</div><div class="line">        <span class="keyword">this</span>.publishedAt = publishedAt;</div><div class="line">        <span class="keyword">this</span>.source = source;</div><div class="line">        <span class="keyword">this</span>.type = type;</div><div class="line">        <span class="keyword">this</span>.url = url;</div><div class="line">        <span class="keyword">this</span>.used = used;</div><div class="line">        <span class="keyword">this</span>.who = who;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="自定义GsonRequest"><a href="#自定义GsonRequest" class="headerlink" title="自定义GsonRequest"></a>自定义GsonRequest</h3><p>话不多说，直接上代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GsonRequest</span>&lt;<span class="title">T</span>&gt; <span class="keyword">extends</span> <span class="title">Request</span>&lt;<span class="title">T</span>&gt; </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> Gson mGson = <span class="keyword">new</span> Gson();</div><div class="line"></div><div class="line">    <span class="keyword">private</span> Response.Listener&lt;T&gt; mListener = <span class="keyword">null</span>;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> Class&lt;T&gt; mClass = <span class="keyword">null</span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">GsonRequest</span><span class="params">(String url, Response.Listener&lt;T&gt; listener, Response.ErrorListener errorListener, Class&lt;T&gt; aClass)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>(Method.GET, url, listener, errorListener, aClass);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">GsonRequest</span><span class="params">(<span class="keyword">int</span> method, String url, Response.Listener&lt;T&gt; listener, Response.ErrorListener errorListener, Class&lt;T&gt; aClass)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>(method, url, errorListener);</div><div class="line">        mListener = listener;</div><div class="line">        mClass = aClass;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> Response&lt;T&gt; <span class="title">parseNetworkResponse</span><span class="params">(NetworkResponse response)</span> </span>&#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            String res = <span class="keyword">new</span> String(response.data, HttpHeaderParser.parseCharset(response.headers));</div><div class="line">            <span class="keyword">return</span> Response.success(mGson.fromJson(res, mClass), HttpHeaderParser.parseCacheHeaders(response));</div><div class="line">        &#125; <span class="keyword">catch</span> (UnsupportedEncodingException e) &#123;</div><div class="line">            <span class="keyword">return</span> Response.error(<span class="keyword">new</span> ParseError(e));</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">deliverResponse</span><span class="params">(T response)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (mListener != <span class="keyword">null</span>) &#123;</div><div class="line">            mListener.onResponse(response);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<ol>
+<li>使用泛型将需要得到的数据类型传入 <code>GsonRequest</code> 对象中，构造方法中的 <code>Class&lt;T&gt; aClass</code> 是使用 <code>Gson</code> 解析数据时需要使用的</li>
+<li>通过 <code>Response.Listener&lt;T&gt;</code> 对象 <code>mListener</code> 回调接收到的响应结果</li>
+</ol>
+<h3 id="如何使用"><a href="#如何使用" class="headerlink" title="如何使用"></a>如何使用</h3><p>定义好 <code>GsonRequest</code> 之后，就可以尝试使用一下了，使用的方式如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">GsonRequest&lt;AndroidModel&gt; request = <span class="keyword">new</span> GsonRequest&lt;AndroidModel&gt;(mUrl,</div><div class="line">    <span class="keyword">new</span> Response.Listener&lt;AndroidModel&gt;() &#123;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResponse</span><span class="params">(AndroidModel response)</span> </span>&#123;</div><div class="line">            L.i(<span class="string">"onResponse "</span> + response.error);</div><div class="line">        &#125;</div><div class="line">    &#125;,</div><div class="line">    <span class="keyword">new</span> Response.ErrorListener() &#123;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onErrorResponse</span><span class="params">(VolleyError error)</span> </span>&#123;</div><div class="line">            L.i(<span class="string">"onErrorResponse "</span> + error);</div><div class="line">        &#125;</div><div class="line">    &#125;, AndroidModel.class);</div><div class="line"></div><div class="line">RequestQueue queue = Volley.newRequestQueue(MainActivity.<span class="keyword">this</span>.getApplicationContext());</div><div class="line">queue.add(request);</div></pre></td></tr></table></figure></p>
+<p>具体的用法和默认的 <code>***Request</code> 的用法基本一样，只不过需要需要向 <code>GsonRequest</code> 中传入具体的 Model 类的 Class 类型。这样一看，使用 <code>GsonRequest</code> 进行网络请求是不是方便了很多，就不需要在自己进行 Json 数据解析，可以直接得到需要类的对象。</p>
+<h2 id="使用-OKHttp3-自定义-OkHttpStack"><a href="#使用-OKHttp3-自定义-OkHttpStack" class="headerlink" title="使用 OKHttp3 自定义 OkHttpStack"></a>使用 OKHttp3 自定义 OkHttpStack</h2><p>在第二篇博客分析 <code>Volley</code> 类的源码的时候，使用 <code>Volley</code> 的静态方法创建 <code>RequestQueue</code> 对象的时候，源码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> RequestQueue <span class="title">newRequestQueue</span><span class="params">(Context context)</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> newRequestQueue(context, <span class="keyword">null</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> RequestQueue <span class="title">newRequestQueue</span><span class="params">(Context context, HttpStack stack)</span> </span>&#123;</div><div class="line">    File cacheDir = <span class="keyword">new</span> File(context.getCacheDir(), DEFAULT_CACHE_DIR);</div><div class="line"></div><div class="line">    String userAgent = <span class="string">"volley/0"</span>;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        String packageName = context.getPackageName();</div><div class="line">        PackageInfo info = context.getPackageManager().getPackageInfo(packageName, <span class="number">0</span>);</div><div class="line">        userAgent = packageName + <span class="string">"/"</span> + info.versionCode;</div><div class="line">    &#125; <span class="keyword">catch</span> (NameNotFoundException e) &#123;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (stack == <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="keyword">if</span> (Build.VERSION.SDK_INT &gt;= <span class="number">9</span>) &#123;</div><div class="line">            stack = <span class="keyword">new</span> HurlStack();</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="comment">// Prior to Gingerbread, HttpUrlConnection was unreliable.</span></div><div class="line">            <span class="comment">// See: http://android-developers.blogspot.com/2011/09/androids-http-clients.html</span></div><div class="line">            stack = <span class="keyword">new</span> HttpClientStack(AndroidHttpClient.newInstance(userAgent));</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    Network network = <span class="keyword">new</span> BasicNetwork(stack);</div><div class="line"></div><div class="line">    RequestQueue queue = <span class="keyword">new</span> RequestQueue(<span class="keyword">new</span> DiskBasedCache(cacheDir), network);</div><div class="line">    queue.start();</div><div class="line"></div><div class="line">    <span class="keyword">return</span> queue;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>一般我们使用一个参数的方法 <code>newRequestQueue(Context)</code> 即可创建 <code>RequestQueue</code> 对象，在此方法内部又是使用了 <code>newRequestQueue(Context, HttpStack)</code> 方法构建 <code>RequestQueue</code> 对象的，第二个参数 <code>HttpStack</code> 传入的是 <code>null</code>，分析 <code>newRequestQueue(Context, HttpStack)</code> 方法的源码可见，如果传入的 <code>HttpStack</code> 对象为 <code>null</code>，则创建一个 <code>HttpStack</code> 的对象，在 Android SDK 9(不包括9)之前使用 <code>HttpClientStack</code>；在 Android SDK 9(包括9)之后使用 <code>HurlStack</code></p>
+<p>这两个类都实现了 <code>HttpStack</code> 接口，用于执行具体的网络请求。<code>HurlStack</code> 内部是使用 <code>HttpURLConnection</code> 类实现的，<code>HttpClientStack</code> 内部是使用 <code>HttpClient</code> 实现的。这两个类的区别如下所示：</p>
+<blockquote>
+<p>在 <code>Froyo(2.2)</code> 之前，<code>HttpURLConnection</code> 有个重大 Bug，调用 <code>close()</code> 函数会影响连接池，导致连接复用失效，所以在 <code>Froyo</code> 之前使用 <code>HttpURLConnection</code> 需要关闭 <code>keepAlive</code>。<br>另外在 <code>Gingerbread(2.3) HttpURLConnection</code> 默认开启了 <code>gzip</code> 压缩，提高了 <code>HTTPS</code> 的性能，<code>Ice Cream Sandwich(4.0) HttpURLConnection</code> 支持了请求结果缓存。<br>再加上 <code>HttpURLConnection</code> 本身 API 相对简单，所以对 Android 来说，在 2.3 之后建议使用 <code>HttpURLConnection</code>，之前建议使用 <code>AndroidHttpClient</code>。 — <a href="http://p.codekk.com/blogs/detail/54cfab086c4761e5001b2542" target="_blank" rel="external">Volley 源码解析</a></p>
+</blockquote>
+<p>由此可见，我们完全可以自定义一个实现了 <code>HttpStack</code> 接口的类，使用两个参数的方法 <code>newRequestQueue(Context, HttpStack)</code> 创建一个 <code>RequestQueue</code> 对象。</p>
+<p>现在 OkHttp3 使用的很广泛，而且优点很多，我就不多说了，那我们可以使用 OkHttp3 定义一个实现了 <code>HttpStack</code> 接口的类。照猫画虎，先分析一下 <code>HurlStack</code> 和 <code>HttpClientStack</code> 的源码。</p>
+<h3 id="HurlStack-源码解析"><a href="#HurlStack-源码解析" class="headerlink" title="HurlStack 源码解析"></a>HurlStack 源码解析</h3><p><code>HttpStack</code> 接口只有一个方法 <code>performRequest(Request&lt;?&gt;, Map&lt;String, String&gt;)</code>，所以我们重点分析 <code>HurlStack</code> 中的 <code>performRequest(Request&lt;?&gt;, Map&lt;String, String&gt;)</code> 方法，源码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> HttpResponse <span class="title">performRequest</span><span class="params">(Request&lt;?&gt; request, Map&lt;String, String&gt; additionalHeaders)</span></span></div><div class="line">        <span class="keyword">throws</span> IOException, AuthFailureError &#123;</div><div class="line">    <span class="comment">// 请求的 url</span></div><div class="line">    String url = request.getUrl();</div><div class="line">    <span class="comment">// 添加请求头</span></div><div class="line">    HashMap&lt;String, String&gt; map = <span class="keyword">new</span> HashMap&lt;String, String&gt;();</div><div class="line">    map.putAll(request.getHeaders());</div><div class="line">    map.putAll(additionalHeaders);</div><div class="line">    <span class="comment">// 若 mUrlRewriter 对象不为空，则通过 `mUrlRewriter.rewriteUrl(url)` 重新改写 url</span></div><div class="line">    <span class="keyword">if</span> (mUrlRewriter != <span class="keyword">null</span>) &#123;</div><div class="line">        String rewritten = mUrlRewriter.rewriteUrl(url);</div><div class="line">        <span class="keyword">if</span> (rewritten == <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IOException(<span class="string">"URL blocked by rewriter: "</span> + url);</div><div class="line">        &#125;</div><div class="line">        url = rewritten;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 生成 URL 对象</span></div><div class="line">    URL parsedUrl = <span class="keyword">new</span> URL(url);</div><div class="line">    <span class="comment">// 生成 HttpURLConnection 对象 connection</span></div><div class="line">    HttpURLConnection connection = openConnection(parsedUrl, request);</div><div class="line">    <span class="comment">// 向 connection 中添加请求头</span></div><div class="line">    <span class="keyword">for</span> (String headerName : map.keySet()) &#123;</div><div class="line">        connection.addRequestProperty(headerName, map.get(headerName));</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 根据不同的请求方法向 connection 对象中添加请求的参数</span></div><div class="line">    setConnectionParametersForRequest(connection, request);</div><div class="line">    <span class="comment">// Initialize HttpResponse with data from the HttpURLConnection.</span></div><div class="line">    <span class="comment">// 通过 connection 请求服务器，得到响应，并初始化 HttpResponse 对象</span></div><div class="line">    ProtocolVersion protocolVersion = <span class="keyword">new</span> ProtocolVersion(<span class="string">"HTTP"</span>, <span class="number">1</span>, <span class="number">1</span>);</div><div class="line">    <span class="keyword">int</span> responseCode = connection.getResponseCode();</div><div class="line">    <span class="keyword">if</span> (responseCode == -<span class="number">1</span>) &#123;</div><div class="line">        <span class="comment">// -1 is returned by getResponseCode() if the response code could not be retrieved.</span></div><div class="line">        <span class="comment">// Signal to the caller that something was wrong with the connection.</span></div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IOException(<span class="string">"Could not retrieve response code from HttpUrlConnection."</span>);</div><div class="line">    &#125;</div><div class="line">    StatusLine responseStatus = <span class="keyword">new</span> BasicStatusLine(protocolVersion,</div><div class="line">            connection.getResponseCode(), connection.getResponseMessage());</div><div class="line">    BasicHttpResponse response = <span class="keyword">new</span> BasicHttpResponse(responseStatus);</div><div class="line">    <span class="keyword">if</span> (hasResponseBody(request.getMethod(), responseStatus.getStatusCode())) &#123;</div><div class="line">        response.setEntity(entityFromConnection(connection));</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">for</span> (Entry&lt;String, List&lt;String&gt;&gt; header : connection.getHeaderFields().entrySet()) &#123;</div><div class="line">        <span class="keyword">if</span> (header.getKey() != <span class="keyword">null</span>) &#123;</div><div class="line">            Header h = <span class="keyword">new</span> BasicHeader(header.getKey(), header.getValue().get(<span class="number">0</span>));</div><div class="line">            response.addHeader(h);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> response;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>对上面的源码分析如下：</p>
+<ol>
+<li>首先得到 <code>String</code> 类型的 <code>url</code></li>
+<li>创建 <code>Map&lt;String, String&gt;</code> 类型的对象 <code>map</code>，并向其添加请求头。请求头来自两部分，一部分来自 <code>request.getHeaders()</code>; 另一部分来自从该方法传入的 <code>additionalHeaders</code></li>
+<li><p>若 <code>UrlRewriter</code> 接口类型的的 <code>mUrlRewriter</code> 对象不为空，则通过 <code>UrlRewriter.rewriteUrl(String)</code> 重写 <code>url</code> 对象，并得到重写后的 <code>url</code>。<code>UrlRewriter</code> 源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * An interface for transforming URLs before use.</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">UrlRewriter</span> </span>&#123;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * Returns a URL to use instead of the provided one, or null to indicate</div><div class="line">     * this URL should not be used at all.</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">rewriteUrl</span><span class="params">(String originalUrl)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>接着通过 <code>openConnection(URL, Request&lt;?&gt;)</code> 方法新建一个 <code>HttpURLConnection</code> 对象，该方法主要是打开一个连接，设置超时响应时间；如果 <code>SSLSocketFactory</code> 类型的对象 <code>mSslSocketFactory</code> 不为空，则设置 <code>HTTPS</code>；设置是否使用缓存等。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Opens an &#123;<span class="doctag">@link</span> HttpURLConnection&#125; with parameters.</div><div class="line"> * <span class="doctag">@param</span> url</div><div class="line"> * <span class="doctag">@return</span> an open connection</div><div class="line"> * <span class="doctag">@throws</span> IOException</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">private</span> HttpURLConnection <span class="title">openConnection</span><span class="params">(URL url, Request&lt;?&gt; request)</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">    HttpURLConnection connection = createConnection(url);</div><div class="line"></div><div class="line">    <span class="keyword">int</span> timeoutMs = request.getTimeoutMs();</div><div class="line">    connection.setConnectTimeout(timeoutMs);</div><div class="line">    connection.setReadTimeout(timeoutMs);</div><div class="line">    connection.setUseCaches(<span class="keyword">false</span>);</div><div class="line">    connection.setDoInput(<span class="keyword">true</span>);</div><div class="line"></div><div class="line">    <span class="comment">// use caller-provided custom SslSocketFactory, if any, for HTTPS</span></div><div class="line">    <span class="keyword">if</span> (<span class="string">"https"</span>.equals(url.getProtocol()) &amp;&amp; mSslSocketFactory != <span class="keyword">null</span>) &#123;</div><div class="line">        ((HttpsURLConnection)connection).setSSLSocketFactory(mSslSocketFactory);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> connection;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * Create an &#123;<span class="doctag">@link</span> HttpURLConnection&#125; for the specified &#123;<span class="doctag">@code</span> url&#125;.</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">protected</span> HttpURLConnection <span class="title">createConnection</span><span class="params">(URL url)</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">    HttpURLConnection connection = (HttpURLConnection) url.openConnection();</div><div class="line"></div><div class="line">    <span class="comment">// Workaround for the M release HttpURLConnection not observing the</span></div><div class="line">    <span class="comment">// HttpURLConnection.setFollowRedirects() property.</span></div><div class="line">    <span class="comment">// https://code.google.com/p/android/issues/detail?id=194495</span></div><div class="line">    connection.setInstanceFollowRedirects(HttpURLConnection.getFollowRedirects());</div><div class="line"></div><div class="line">    <span class="keyword">return</span> connection;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>然后通过一个循环，向 <code>HttpURLConnection</code> 类的连接对象 <code>connection</code> 设置请求头</p>
+</li>
+<li><p>使用 <code>setConnectionParametersForRequest(HttpURLConnection, Request&lt;?&gt;)</code> 方法设置请求方法和请求体，如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@SuppressWarnings</span>(<span class="string">"deprecation"</span>)</div><div class="line"><span class="comment">/* package */</span> <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setConnectionParametersForRequest</span><span class="params">(HttpURLConnection connection,</span></span></div><div class="line">        Request&lt;?&gt; request) <span class="keyword">throws</span> IOException, AuthFailureError &#123;</div><div class="line">    <span class="keyword">switch</span> (request.getMethod()) &#123;</div><div class="line">        <span class="keyword">case</span> Method.DEPRECATED_GET_OR_POST:</div><div class="line">            <span class="comment">// This is the deprecated way that needs to be handled for backwards compatibility.</span></div><div class="line">            <span class="comment">// If the request's post body is null, then the assumption is that the request is</span></div><div class="line">            <span class="comment">// GET.  Otherwise, it is assumed that the request is a POST.</span></div><div class="line">            <span class="keyword">byte</span>[] postBody = request.getPostBody();</div><div class="line">            <span class="keyword">if</span> (postBody != <span class="keyword">null</span>) &#123;</div><div class="line">                <span class="comment">// Prepare output. There is no need to set Content-Length explicitly,</span></div><div class="line">                <span class="comment">// since this is handled by HttpURLConnection using the size of the prepared</span></div><div class="line">                <span class="comment">// output stream.</span></div><div class="line">                connection.setDoOutput(<span class="keyword">true</span>);</div><div class="line">                connection.setRequestMethod(<span class="string">"POST"</span>);</div><div class="line">                connection.addRequestProperty(HEADER_CONTENT_TYPE,</div><div class="line">                        request.getPostBodyContentType());</div><div class="line">                DataOutputStream out = <span class="keyword">new</span> DataOutputStream(connection.getOutputStream());</div><div class="line">                out.write(postBody);</div><div class="line">                out.close();</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> Method.GET:</div><div class="line">            <span class="comment">// Not necessary to set the request method because connection defaults to GET but</span></div><div class="line">            <span class="comment">// being explicit here.</span></div><div class="line">            connection.setRequestMethod(<span class="string">"GET"</span>);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> Method.DELETE:</div><div class="line">            connection.setRequestMethod(<span class="string">"DELETE"</span>);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> Method.POST:</div><div class="line">            connection.setRequestMethod(<span class="string">"POST"</span>);</div><div class="line">            addBodyIfExists(connection, request);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> Method.PUT:</div><div class="line">            connection.setRequestMethod(<span class="string">"PUT"</span>);</div><div class="line">            addBodyIfExists(connection, request);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> Method.HEAD:</div><div class="line">            connection.setRequestMethod(<span class="string">"HEAD"</span>);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> Method.OPTIONS:</div><div class="line">            connection.setRequestMethod(<span class="string">"OPTIONS"</span>);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> Method.TRACE:</div><div class="line">            connection.setRequestMethod(<span class="string">"TRACE"</span>);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> Method.PATCH:</div><div class="line">            connection.setRequestMethod(<span class="string">"PATCH"</span>);</div><div class="line">            addBodyIfExists(connection, request);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">default</span>:</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Unknown method type."</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>接着创建 <code>ProtocolVersion</code> 对象和 <code>StatusLine</code> 对象，并生产 <code>BasicHttpResponse</code> 对象 <code>response</code></p>
+</li>
+<li><p>通过 <code>hasResponseBody(int requestMethod, int responseCode)</code> 方法判断响应中是否有响应体，若有响应体则通过 <code>entityFromConnection(HttpURLConnection)</code> 创建响应体 <code>HttpEntity</code> 对象，并设置给 <code>response</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">hasResponseBody</span><span class="params">(<span class="keyword">int</span> requestMethod, <span class="keyword">int</span> responseCode)</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> requestMethod != Request.Method.HEAD</div><div class="line">        &amp;&amp; !(HttpStatus.SC_CONTINUE &lt;= responseCode &amp;&amp; responseCode &lt; HttpStatus.SC_OK)</div><div class="line">        &amp;&amp; responseCode != HttpStatus.SC_NO_CONTENT</div><div class="line">        &amp;&amp; responseCode != HttpStatus.SC_NOT_MODIFIED;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> HttpEntity <span class="title">entityFromConnection</span><span class="params">(HttpURLConnection connection)</span> </span>&#123;</div><div class="line">    BasicHttpEntity entity = <span class="keyword">new</span> BasicHttpEntity();</div><div class="line">    InputStream inputStream;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        inputStream = connection.getInputStream();</div><div class="line">    &#125; <span class="keyword">catch</span> (IOException ioe) &#123;</div><div class="line">        inputStream = connection.getErrorStream();</div><div class="line">    &#125;</div><div class="line">    entity.setContent(inputStream);</div><div class="line">    entity.setContentLength(connection.getContentLength());</div><div class="line">    entity.setContentEncoding(connection.getContentEncoding());</div><div class="line">    entity.setContentType(connection.getContentType());</div><div class="line">    <span class="keyword">return</span> entity;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>通过如下代码为 <code>response</code> 设置响应头，并返回响应对象</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span> (Entry&lt;String, List&lt;String&gt;&gt; header : connection.getHeaderFields().entrySet()) &#123;</div><div class="line">    <span class="keyword">if</span> (header.getKey() != <span class="keyword">null</span>) &#123;</div><div class="line">        Header h = <span class="keyword">new</span> BasicHeader(header.getKey(), header.getValue().get(<span class="number">0</span>));</div><div class="line">        response.addHeader(h);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="HttpClientStack-源码解析"><a href="#HttpClientStack-源码解析" class="headerlink" title="HttpClientStack 源码解析"></a>HttpClientStack 源码解析</h3><p>和分析 <code>HurlStack</code> 源码类似，直接分析其中的 <code>performRequest(Request&lt;?&gt;, Map&lt;String, String&gt;)</code> 方法，源码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> HttpResponse <span class="title">performRequest</span><span class="params">(Request&lt;?&gt; request, Map&lt;String, String&gt; additionalHeaders)</span></span></div><div class="line">        <span class="keyword">throws</span> IOException, AuthFailureError &#123;</div><div class="line">    HttpUriRequest httpRequest = createHttpRequest(request, additionalHeaders);</div><div class="line">    addHeaders(httpRequest, additionalHeaders);</div><div class="line">    addHeaders(httpRequest, request.getHeaders());</div><div class="line">    onPrepareRequest(httpRequest);</div><div class="line">    HttpParams httpParams = httpRequest.getParams();</div><div class="line">    <span class="keyword">int</span> timeoutMs = request.getTimeoutMs();</div><div class="line">    <span class="comment">// <span class="doctag">TODO:</span> Reevaluate this connection timeout based on more wide-scale</span></div><div class="line">    <span class="comment">// data collection and possibly different for wifi vs. 3G.</span></div><div class="line">    HttpConnectionParams.setConnectionTimeout(httpParams, <span class="number">5000</span>);</div><div class="line">    HttpConnectionParams.setSoTimeout(httpParams, timeoutMs);</div><div class="line">    <span class="keyword">return</span> mClient.execute(httpRequest);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>分析如下：</p>
+<ol>
+<li><p>通过 <code>createHttpRequest(Request&lt;?&gt;, Map&lt;String, String&gt;)</code> 方法生成 <code>HttpUriRequest</code> 类型的对象 <code>httpRequest</code>，在生成的 <code>httpRequest</code> 对象中已经设置了请求的url、请求方式和请求体</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="meta">@SuppressWarnings</span>(<span class="string">"deprecation"</span>)</div><div class="line"><span class="comment">/* protected */</span> <span class="function"><span class="keyword">static</span> HttpUriRequest <span class="title">createHttpRequest</span><span class="params">(Request&lt;?&gt; request,</span></span></div><div class="line">        Map&lt;String, String&gt; additionalHeaders) <span class="keyword">throws</span> AuthFailureError &#123;</div><div class="line">    <span class="keyword">switch</span> (request.getMethod()) &#123;</div><div class="line">        <span class="keyword">case</span> Method.DEPRECATED_GET_OR_POST: &#123;</div><div class="line">            <span class="comment">// This is the deprecated way that needs to be handled for backwards compatibility.</span></div><div class="line">            <span class="comment">// If the request's post body is null, then the assumption is that the request is</span></div><div class="line">            <span class="comment">// GET.  Otherwise, it is assumed that the request is a POST.</span></div><div class="line">            <span class="keyword">byte</span>[] postBody = request.getPostBody();</div><div class="line">            <span class="keyword">if</span> (postBody != <span class="keyword">null</span>) &#123;</div><div class="line">                HttpPost postRequest = <span class="keyword">new</span> HttpPost(request.getUrl());</div><div class="line">                postRequest.addHeader(HEADER_CONTENT_TYPE, request.getPostBodyContentType());</div><div class="line">                HttpEntity entity;</div><div class="line">                entity = <span class="keyword">new</span> ByteArrayEntity(postBody);</div><div class="line">                postRequest.setEntity(entity);</div><div class="line">                <span class="keyword">return</span> postRequest;</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                <span class="keyword">return</span> <span class="keyword">new</span> HttpGet(request.getUrl());</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">case</span> Method.GET:</div><div class="line">            <span class="keyword">return</span> <span class="keyword">new</span> HttpGet(request.getUrl());</div><div class="line">        <span class="keyword">case</span> Method.DELETE:</div><div class="line">            <span class="keyword">return</span> <span class="keyword">new</span> HttpDelete(request.getUrl());</div><div class="line">        <span class="keyword">case</span> Method.POST: &#123;</div><div class="line">            HttpPost postRequest = <span class="keyword">new</span> HttpPost(request.getUrl());</div><div class="line">            postRequest.addHeader(HEADER_CONTENT_TYPE, request.getBodyContentType());</div><div class="line">            setEntityIfNonEmptyBody(postRequest, request);</div><div class="line">            <span class="keyword">return</span> postRequest;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">case</span> Method.PUT: &#123;</div><div class="line">            HttpPut putRequest = <span class="keyword">new</span> HttpPut(request.getUrl());</div><div class="line">            putRequest.addHeader(HEADER_CONTENT_TYPE, request.getBodyContentType());</div><div class="line">            setEntityIfNonEmptyBody(putRequest, request);</div><div class="line">            <span class="keyword">return</span> putRequest;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">case</span> Method.HEAD:</div><div class="line">            <span class="keyword">return</span> <span class="keyword">new</span> HttpHead(request.getUrl());</div><div class="line">        <span class="keyword">case</span> Method.OPTIONS:</div><div class="line">            <span class="keyword">return</span> <span class="keyword">new</span> HttpOptions(request.getUrl());</div><div class="line">        <span class="keyword">case</span> Method.TRACE:</div><div class="line">            <span class="keyword">return</span> <span class="keyword">new</span> HttpTrace(request.getUrl());</div><div class="line">        <span class="keyword">case</span> Method.PATCH: &#123;</div><div class="line">            HttpPatch patchRequest = <span class="keyword">new</span> HttpPatch(request.getUrl());</div><div class="line">            patchRequest.addHeader(HEADER_CONTENT_TYPE, request.getBodyContentType());</div><div class="line">            setEntityIfNonEmptyBody(patchRequest, request);</div><div class="line">            <span class="keyword">return</span> patchRequest;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">default</span>:</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Unknown request method."</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>通过 <code>addHeaders(HttpUriRequest, Map&lt;String, String&gt;)</code> 向 <code>httpRequest</code> 对象中添加请求头，请求头来自两部分，和 <code>HurlStack</code> 是一样的</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">addHeaders</span><span class="params">(HttpUriRequest httpRequest, Map&lt;String, String&gt; headers)</span> </span>&#123;</div><div class="line">    <span class="keyword">for</span> (String key : headers.keySet()) &#123;</div><div class="line">        httpRequest.setHeader(key, headers.get(key));</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>设置超时连接</p>
+</li>
+<li>然后调用 <code>HttpClient</code> 对象的 <code>execute</code> 方法，获得 <code>HttpResponse</code> 对象并返回</li>
+</ol>
+<h3 id="自定义-OkHttpStack"><a href="#自定义-OkHttpStack" class="headerlink" title="自定义 OkHttpStack"></a>自定义 <code>OkHttpStack</code></h3><p>通过分析 <code>HurlStack</code> 和 <code>HttpClientStack</code> 源码可知，在其中的 <code>performRequest(Request&lt;?&gt;, Map&lt;String, String&gt;)</code> 方法中大致有以下几个行为：</p>
+<ol>
+<li>设置请求头，请求头来自两个地方：一个来自 <code>request.getHeaders()</code> 方法，另一个来自从方法传入的参数 <code>additionalHeaders</code></li>
+<li>设置请求方法和请求体</li>
+<li>设置超时时间</li>
+<li>生成响应对象并向响应对象中添加参数，包括：响应头和响应体</li>
+</ol>
+<p>有了如上的流程，<code>OkHttpStack</code> 也是这样的流程。<br>要使用 OKHttp3 库需要在 <code>gradle</code> 中添加对 OKHttp3 的依赖，如下所示：<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">compile <span class="string">'com.squareup.okhttp3:okhttp:3.8.0'</span></div></pre></td></tr></table></figure></p>
+<p><code>OkHttpStack</code> 源码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OkHttpStack</span> <span class="keyword">implements</span> <span class="title">HttpStack</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> OkHttpClient mOkHttpClient;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">OkHttpStack</span><span class="params">(OkHttpClient okHttpClient)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (okHttpClient == <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"OkHttpClient can't be null"</span>);</div><div class="line">        &#125;</div><div class="line">        mOkHttpClient = okHttpClient;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> HttpResponse <span class="title">performRequest</span><span class="params">(Request&lt;?&gt; request, Map&lt;String, String&gt; additionalHeaders)</span></span></div><div class="line">            <span class="keyword">throws</span> IOException, AuthFailureError &#123;</div><div class="line">        <span class="keyword">int</span> timeoutMs = request.getTimeoutMs();</div><div class="line">        OkHttpClient okHttpClient = mOkHttpClient</div><div class="line">                .newBuilder()</div><div class="line">                .connectTimeout(timeoutMs, TimeUnit.MILLISECONDS)</div><div class="line">                .readTimeout(timeoutMs, TimeUnit.MILLISECONDS)</div><div class="line">                .writeTimeout(timeoutMs, TimeUnit.MILLISECONDS)</div><div class="line">                .build();</div><div class="line"></div><div class="line">        HashMap&lt;String, String&gt; headers = <span class="keyword">new</span> HashMap&lt;String, String&gt;();</div><div class="line">        headers.putAll(request.getHeaders());</div><div class="line">        headers.putAll(additionalHeaders);</div><div class="line"></div><div class="line">        okhttp3.Request.Builder builder = <span class="keyword">new</span> okhttp3.Request</div><div class="line">                .Builder()</div><div class="line">                .url(request.getUrl());</div><div class="line">        <span class="keyword">for</span> (String key : headers.keySet()) &#123;</div><div class="line">            builder.header(key, headers.get(key));</div><div class="line">        &#125;</div><div class="line">        setConnectionParametersForRequest(builder, request);</div><div class="line"></div><div class="line">        okhttp3.Request okRequest = builder.build();</div><div class="line">        Call call = okHttpClient.newCall(okRequest);</div><div class="line">        Response okResponse = call.execute();</div><div class="line">        BasicStatusLine responseStatus = <span class="keyword">new</span> BasicStatusLine(</div><div class="line">                parseProtocol(okResponse.protocol()),</div><div class="line">                okResponse.code(),</div><div class="line">                okResponse.message()</div><div class="line">        );</div><div class="line"></div><div class="line">        BasicHttpResponse response = <span class="keyword">new</span> BasicHttpResponse(responseStatus);</div><div class="line">        response.setEntity(entityFromOkHttpResponse(okResponse));</div><div class="line"></div><div class="line">        Headers responseHeaders = okResponse.headers();</div><div class="line">        <span class="keyword">int</span> size = responseHeaders.size();</div><div class="line">        String name;</div><div class="line">        String value;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; i++) &#123;</div><div class="line">            name = responseHeaders.name(i);</div><div class="line">            value = responseHeaders.value(i);</div><div class="line">            <span class="keyword">if</span> (value != <span class="keyword">null</span>) &#123;</div><div class="line">                response.addHeader(<span class="keyword">new</span> BasicHeader(name, value));</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> response;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">setConnectionParametersForRequest</span><span class="params">(okhttp3.Request.Builder builder, Request&lt;?&gt; request)</span></span></div><div class="line">            <span class="keyword">throws</span> AuthFailureError &#123;</div><div class="line">        <span class="keyword">switch</span> (request.getMethod()) &#123;</div><div class="line">            <span class="keyword">case</span> Request.Method.DEPRECATED_GET_OR_POST:</div><div class="line">                <span class="keyword">byte</span>[] postBody = request.getPostBody();</div><div class="line">                <span class="keyword">if</span> (postBody != <span class="keyword">null</span>) &#123;</div><div class="line">                    builder.post(RequestBody.create(MediaType.parse(request.getPostBodyContentType()), postBody));</div><div class="line">                &#125;</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> Request.Method.GET:</div><div class="line">                builder.get();</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> Request.Method.DELETE:</div><div class="line">                builder.delete();</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> Request.Method.POST:</div><div class="line">                builder.post(createRequestBody(request));</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> Request.Method.PUT:</div><div class="line">                builder.put(createRequestBody(request));</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> Request.Method.HEAD:</div><div class="line">                builder.head();</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> Request.Method.OPTIONS:</div><div class="line">                builder.method(<span class="string">"OPTIONS"</span>, <span class="keyword">null</span>);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> Request.Method.TRACE:</div><div class="line">                builder.method(<span class="string">"TRACE"</span>, <span class="keyword">null</span>);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> Request.Method.PATCH:</div><div class="line">                builder.patch(createRequestBody(request));</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">default</span>:</div><div class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Unknown method type."</span>);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> RequestBody <span class="title">createRequestBody</span><span class="params">(Request&lt;?&gt; r)</span> <span class="keyword">throws</span> AuthFailureError </span>&#123;</div><div class="line">        <span class="keyword">final</span> <span class="keyword">byte</span>[] body = r.getBody();</div><div class="line">        <span class="keyword">if</span> (body == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line"></div><div class="line">        <span class="keyword">return</span> RequestBody.create(MediaType.parse(r.getBodyContentType()), body);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> ProtocolVersion <span class="title">parseProtocol</span><span class="params">(<span class="keyword">final</span> Protocol p)</span> </span>&#123;</div><div class="line">        <span class="keyword">switch</span> (p) &#123;</div><div class="line">            <span class="keyword">case</span> HTTP_1_0:</div><div class="line">                <span class="keyword">return</span> <span class="keyword">new</span> ProtocolVersion(<span class="string">"HTTP"</span>, <span class="number">1</span>, <span class="number">0</span>);</div><div class="line">            <span class="keyword">case</span> HTTP_1_1:</div><div class="line">                <span class="keyword">return</span> <span class="keyword">new</span> ProtocolVersion(<span class="string">"HTTP"</span>, <span class="number">1</span>, <span class="number">1</span>);</div><div class="line">            <span class="keyword">case</span> SPDY_3:</div><div class="line">                <span class="keyword">return</span> <span class="keyword">new</span> ProtocolVersion(<span class="string">"SPDY"</span>, <span class="number">3</span>, <span class="number">1</span>);</div><div class="line">            <span class="keyword">case</span> HTTP_2:</div><div class="line">                <span class="keyword">return</span> <span class="keyword">new</span> ProtocolVersion(<span class="string">"HTTP"</span>, <span class="number">2</span>, <span class="number">0</span>);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalAccessError(<span class="string">"Unkwown protocol"</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> HttpEntity <span class="title">entityFromOkHttpResponse</span><span class="params">(Response r)</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">        BasicHttpEntity entity = <span class="keyword">new</span> BasicHttpEntity();</div><div class="line">        ResponseBody body = r.body();</div><div class="line"></div><div class="line">        entity.setContent(body.byteStream());</div><div class="line">        entity.setContentLength(body.contentLength());</div><div class="line">        entity.setContentEncoding(r.header(<span class="string">"Content-Encoding"</span>));</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (body.contentType() != <span class="keyword">null</span>) &#123;</div><div class="line">            entity.setContentType(body.contentType().type());</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> entity;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>以分析 <code>performRequest(Request&lt;?&gt;, Map&lt;String, String&gt;)</code> 方法为线索，进行分析：</p>
+<ol>
+<li><p>通过下面代码生成一个 <code>OkHttpClient</code> 对象，并设置超时时间</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">int</span> timeoutMs = request.getTimeoutMs();</div><div class="line">OkHttpClient okHttpClient = mOkHttpClient</div><div class="line">        .newBuilder()</div><div class="line">        .connectTimeout(timeoutMs, TimeUnit.MILLISECONDS)</div><div class="line">        .readTimeout(timeoutMs, TimeUnit.MILLISECONDS)</div><div class="line">        .writeTimeout(timeoutMs, TimeUnit.MILLISECONDS)</div><div class="line">        .build();</div></pre></td></tr></table></figure>
+</li>
+<li><p>通过下面代码设置请求的 <code>url</code> 和请求头</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">HashMap&lt;String, String&gt; headers = <span class="keyword">new</span> HashMap&lt;String, String&gt;();</div><div class="line">headers.putAll(request.getHeaders());</div><div class="line">headers.putAll(additionalHeaders);</div><div class="line"></div><div class="line">okhttp3.Request.Builder builder = <span class="keyword">new</span> okhttp3.Request</div><div class="line">        .Builder()</div><div class="line">        .url(request.getUrl());</div><div class="line"><span class="keyword">for</span> (String key : headers.keySet()) &#123;</div><div class="line">    builder.header(key, headers.get(key));</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>通过 <code>setConnectionParametersForRequest(okhttp3.Request.Builder, Request&lt;?&gt;)</code> 方法设置请求方式和请求体</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">setConnectionParametersForRequest</span><span class="params">(okhttp3.Request.Builder builder, Request&lt;?&gt; request)</span></span></div><div class="line">        <span class="keyword">throws</span> AuthFailureError &#123;</div><div class="line">    <span class="keyword">switch</span> (request.getMethod()) &#123;</div><div class="line">        <span class="keyword">case</span> Request.Method.DEPRECATED_GET_OR_POST:</div><div class="line">            <span class="keyword">byte</span>[] postBody = request.getPostBody();</div><div class="line">            <span class="keyword">if</span> (postBody != <span class="keyword">null</span>) &#123;</div><div class="line">                builder.post(RequestBody.create(MediaType.parse(request.getPostBodyContentType()), postBody));</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> Request.Method.GET:</div><div class="line">            builder.get();</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> Request.Method.DELETE:</div><div class="line">            builder.delete();</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> Request.Method.POST:</div><div class="line">            builder.post(createRequestBody(request));</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> Request.Method.PUT:</div><div class="line">            builder.put(createRequestBody(request));</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> Request.Method.HEAD:</div><div class="line">            builder.head();</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> Request.Method.OPTIONS:</div><div class="line">            builder.method(<span class="string">"OPTIONS"</span>, <span class="keyword">null</span>);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> Request.Method.TRACE:</div><div class="line">            builder.method(<span class="string">"TRACE"</span>, <span class="keyword">null</span>);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> Request.Method.PATCH:</div><div class="line">            builder.patch(createRequestBody(request));</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">default</span>:</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Unknown method type."</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>通过如下代码得到 OKHttp3 的响应，注意：下面得到的响应是 <code>Response</code> 类型的，并不是 <code>HttpResponse</code> 类型的，需要通过它生成对应的 <code>HttpResponse</code> 对象才可以返回</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">okhttp3.Request okRequest = builder.build();</div><div class="line">Call call = okHttpClient.newCall(okRequest);</div><div class="line">Response okResponse = call.execute();</div></pre></td></tr></table></figure>
+</li>
+<li><p>通过下面的代码和 <code>entityFromOkHttpResponse(Response)</code> 方法生成 <code>BasicHttpResponse</code> 类型的对象 <code>response</code>，并设置 <code>response</code> 的响应体。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">BasicStatusLine responseStatus = <span class="keyword">new</span> BasicStatusLine(</div><div class="line">            parseProtocol(okResponse.protocol()),</div><div class="line">            okResponse.code(),</div><div class="line">            okResponse.message()</div><div class="line">    );</div><div class="line">BasicHttpResponse response = <span class="keyword">new</span> BasicHttpResponse(responseStatus);</div><div class="line">response.setEntity(entityFromOkHttpResponse(okResponse));</div></pre></td></tr></table></figure>
+ <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> HttpEntity <span class="title">entityFromOkHttpResponse</span><span class="params">(Response r)</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">    BasicHttpEntity entity = <span class="keyword">new</span> BasicHttpEntity();</div><div class="line">    ResponseBody body = r.body();</div><div class="line"></div><div class="line">    entity.setContent(body.byteStream());</div><div class="line">    entity.setContentLength(body.contentLength());</div><div class="line">    entity.setContentEncoding(r.header(<span class="string">"Content-Encoding"</span>));</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (body.contentType() != <span class="keyword">null</span>) &#123;</div><div class="line">        entity.setContentType(body.contentType().type());</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> entity;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>通过如下方法设置响应头</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">Headers responseHeaders = okResponse.headers();</div><div class="line"><span class="keyword">int</span> size = responseHeaders.size();</div><div class="line">String name;</div><div class="line">String value;</div><div class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; i++) &#123;</div><div class="line">    name = responseHeaders.name(i);</div><div class="line">    value = responseHeaders.value(i);</div><div class="line">    <span class="keyword">if</span> (value != <span class="keyword">null</span>) &#123;</div><div class="line">        response.addHeader(<span class="keyword">new</span> BasicHeader(name, value));</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>通过上面六步便大功告成了。</p>
+<h3 id="OkHttpStack-的使用"><a href="#OkHttpStack-的使用" class="headerlink" title="OkHttpStack 的使用"></a><code>OkHttpStack</code> 的使用</h3><p>可以通过如下方式使用 <code>OkHttpStack</code><br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">RequestQueue queue = Volley.newRequestQueue(MainActivity.<span class="keyword">this</span>,</div><div class="line">            <span class="keyword">new</span> OkHttpStack(OkHttpManager.getInstance().getHttpClient()));</div><div class="line">StringRequest request = <span class="keyword">new</span> StringRequest(mUrl, <span class="keyword">new</span> Response.Listener&lt;String&gt;() &#123;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResponse</span><span class="params">(String response)</span> </span>&#123;</div><div class="line">            L.i(<span class="string">"onResponse "</span> + response);</div><div class="line">        &#125;</div><div class="line">    &#125;, <span class="keyword">new</span> Response.ErrorListener() &#123;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onErrorResponse</span><span class="params">(VolleyError error)</span> </span>&#123;</div><div class="line">            L.i(<span class="string">"onErrorResponse "</span> + error);</div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">queue.add(request);</div></pre></td></tr></table></figure></p>
+<p>除了在生成 <code>RequestQueue</code> 对象的时候，和普通的使用 Volley 不同，其他都是一样的。其中 <code>OkHttpManager.getInstance().getHttpClient()</code> 是我对 OKHttp3 进行的一个简单的封装，返回的是一个 <code>OKHttpClient</code> 的对象</p>
+<hr>
+<p>至此，关于<code>Volley 源码解析及对 Volley 的扩展</code>系列的第三篇文章也结束了，主要介绍了自定义 <code>Request</code> 类，并使用 <code>GsonReqeust</code> 举例；并使用 <code>OkHttp</code> 自定义了实现 <code>HttpStack</code> 接口的 <code>OkHttpStack</code> 类，这样通过 <code>OkHttpStack</code> 创建的 <code>RequestQueue</code> 对象处理的请求使用的都是 OKHttp3 了。</p>
+<p>至此 <code>Volley 源码解析及对 Volley 的扩展</code>系列的文章全部结束了，其中的代码都在 GitHub 上的 <a href="https://github.com/lijiankun24/VolleyPractice" target="_blank" rel="external">VolleyPractice</a> 工程里，<br>如果有什么问题欢迎指出。我的工作邮箱：jiankunli24@gmail.com</p>
+<hr>
+<p><strong>参考资料：</strong></p>
+<p><a href="http://p.codekk.com/blogs/detail/54cfab086c4761e5001b2542" target="_blank" rel="external">Volley 源码解析</a> – <a href="http://www.zhangxuzhou.cn/" target="_blank" rel="external">grumoon</a></p>
+<p><a href="http://blog.csdn.net/lmj623565791/article/details/24589837" target="_blank" rel="external">Android Volley 之自定义Request</a>  – <a href="http://blog.csdn.net/lmj623565791?viewmode=contents" target="_blank" rel="external">鸿洋_</a></p>
+<p><a href="http://blog.csdn.net/sbsujjbcy/article/details/49406749" target="_blank" rel="external">Android 使用OkHttp扩展Volley</a> – <a href="http://blog.csdn.net/sbsujjbcy?viewmode=contents" target="_blank" rel="external">_区长</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/Volley/" rel="tag"># Volley</a>
+          
+            <a href="/tags/OKHttp/" rel="tag"># OKHttp</a>
+          
+            <a href="/tags/Network/" rel="tag"># Network</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/Volley源码解析及对Volley的扩展2/" rel="next" title="Volley 源码解析及对 Volley 的扩展（二）">
+                <i class="fa fa-chevron-left"></i> Volley 源码解析及对 Volley 的扩展（二）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="lijiankun24" />
+          <p class="site-author-name" itemprop="name">lijiankun24</p>
+           
+              <p class="site-description motion-element" itemprop="description">守得云开见月明。</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/lijiankun24" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/lijiankun24" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.jianshu.com/u/1abe21b7ff5f" target="_blank" title="Jianshu">
+                  
+                    <i class="fa fa-fw fa-jianshu"></i>
+                  
+                  Jianshu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://gank.io/post/published" title="匠心写作" target="_blank">匠心写作</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/lmj623565791" title="Hongyang" target="_blank">Hongyang</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.liaohuqiu.net/cn/" title="Huqiu Liao" target="_blank">Huqiu Liao</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://drakeet.me/" title="drakeet" target="_blank">drakeet</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.jianshu.com/u/df40282480b4" title="小鄧子" target="_blank">小鄧子</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://yuweiguocn.github.io/" title="于卫国" target="_blank">于卫国</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义-Request"><span class="nav-number">1.</span> <span class="nav-text">自定义 Request</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#添加-Gson"><span class="nav-number">1.1.</span> <span class="nav-text">添加 Gson</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#抽象类-Request"><span class="nav-number">1.2.</span> <span class="nav-text">抽象类 Request</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#定义-Model-对象"><span class="nav-number">1.3.</span> <span class="nav-text">定义 Model 对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义GsonRequest"><span class="nav-number">1.4.</span> <span class="nav-text">自定义GsonRequest</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何使用"><span class="nav-number">1.5.</span> <span class="nav-text">如何使用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用-OKHttp3-自定义-OkHttpStack"><span class="nav-number">2.</span> <span class="nav-text">使用 OKHttp3 自定义 OkHttpStack</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#HurlStack-源码解析"><span class="nav-number">2.1.</span> <span class="nav-text">HurlStack 源码解析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HttpClientStack-源码解析"><span class="nav-number">2.2.</span> <span class="nav-text">HttpClientStack 源码解析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义-OkHttpStack"><span class="nav-number">2.3.</span> <span class="nav-text">自定义 OkHttpStack</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OkHttpStack-的使用"><span class="nav-number">2.4.</span> <span class="nav-text">OkHttpStack 的使用</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lijiankun24</span>
+  
+</div>
+
+
+<div>
+  <span id="busuanzi_container_site_pv">
+    Total views <span id="busuanzi_value_site_pv">   </span>
+  </span>
+
+  <span id="busuanzi_container_site_uv">
+    |   Total visitors <span id="busuanzi_value_site_uv"/>
+  </span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("tWG63sCRtLhi5NFeaXtWqtnv-gzGzoHsz", "lPLcNFpeOoNc6wr9PVX8XdbI");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+
+  
+
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+          bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+      } else {
+          bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+</body>
+</html>
