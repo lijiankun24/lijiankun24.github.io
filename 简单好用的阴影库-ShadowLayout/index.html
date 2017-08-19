@@ -1,0 +1,944 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,UI,Library," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="在开发过程中常会遇见带阴影效果的控件，通过 SDK 提供的 CardView 和 android:elevation 可以实现，也可以通过 .9 图实现。但是使用这两种方法会有一些弊端，比如：不可以控制阴影颜色，如果使用 .9 图片过多，会增加 APK 安装文件的体积。针对以上问题，自己写了一个为控件添加阴影的库 —- ShadowLayout。接下来就 ShadowLayout 展开本文，本文主">
+<meta property="og:type" content="article">
+<meta property="og:title" content="简单好用的阴影库 ShadowLayout">
+<meta property="og:url" content="http://www.lijiankun24.com/简单好用的阴影库-ShadowLayout/index.html">
+<meta property="og:site_name" content="一些无处安放的代码和故事">
+<meta property="og:description" content="在开发过程中常会遇见带阴影效果的控件，通过 SDK 提供的 CardView 和 android:elevation 可以实现，也可以通过 .9 图实现。但是使用这两种方法会有一些弊端，比如：不可以控制阴影颜色，如果使用 .9 图片过多，会增加 APK 安装文件的体积。针对以上问题，自己写了一个为控件添加阴影的库 —- ShadowLayout。接下来就 ShadowLayout 展开本文，本文主">
+<meta property="og:image" content="http://www.lijiankun24.com/简单好用的阴影库-ShadowLayout/shadowlayout.png">
+<meta property="og:image" content="http://www.lijiankun24.com/简单好用的阴影库-ShadowLayout/shadowlayout1.png">
+<meta property="og:image" content="http://www.lijiankun24.com/简单好用的阴影库-ShadowLayout/QR.png">
+<meta property="og:updated_time" content="2017-08-19T04:17:38.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="简单好用的阴影库 ShadowLayout">
+<meta name="twitter:description" content="在开发过程中常会遇见带阴影效果的控件，通过 SDK 提供的 CardView 和 android:elevation 可以实现，也可以通过 .9 图实现。但是使用这两种方法会有一些弊端，比如：不可以控制阴影颜色，如果使用 .9 图片过多，会增加 APK 安装文件的体积。针对以上问题，自己写了一个为控件添加阴影的库 —- ShadowLayout。接下来就 ShadowLayout 展开本文，本文主">
+<meta name="twitter:image" content="http://www.lijiankun24.com/简单好用的阴影库-ShadowLayout/shadowlayout.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.lijiankun24.com/简单好用的阴影库-ShadowLayout/"/>
+
+
+
+
+
+  <title> 简单好用的阴影库 ShadowLayout | 一些无处安放的代码和故事 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">一些无处安放的代码和故事</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://www.lijiankun24.com/简单好用的阴影库-ShadowLayout/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="lijiankun24">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一些无处安放的代码和故事">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                简单好用的阴影库 ShadowLayout
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-13T09:43:40+08:00">
+                2017-08-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/简单好用的阴影库-ShadowLayout/" class="leancloud_visitors" data-flag-title="简单好用的阴影库 ShadowLayout">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Views </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在开发过程中常会遇见带阴影效果的控件，通过 SDK 提供的 <code>CardView</code> 和 <code>android:elevation</code> 可以实现，也可以通过 <code>.9</code> 图实现。但是使用这两种方法会有一些弊端，比如：不可以控制阴影颜色，如果使用 <code>.9</code> 图片过多，会增加 <code>APK</code> 安装文件的体积。针对以上问题，自己写了一个为控件添加阴影的库 —- <code>ShadowLayout</code>。接下来就 <code>ShadowLayout</code> 展开本文，本文主要分为以下两个部分：</p>
+<ol>
+<li>关于 <code>ShadowLayout</code> 的使用；</li>
+<li>关于 <code>ShadowLayout</code> 的原理。<a id="more"></a>
+</li>
+</ol>
+<h2 id="关于-ShadowLayout-的使用"><a href="#关于-ShadowLayout-的使用" class="headerlink" title="关于 ShadowLayout 的使用"></a>关于 ShadowLayout 的使用</h2><p>先来看一张使用 <code>ShadowLayout</code> 库实现的各种阴影的效果图，如下图所示：</p>
+<div align="center"><br>    <img src="/简单好用的阴影库-ShadowLayout/shadowlayout.png" width="324" height="647"><br></div>
+
+
+<p>如上图所示，通过使用 <code>ShadowLayout</code> 可以控制阴影的颜色、范围、显示边界（上下左右四个边界）、x 轴和 y 轴的偏移量。</p>
+<h3 id="添加依赖"><a href="#添加依赖" class="headerlink" title="添加依赖"></a>添加依赖</h3><p>Gradle:<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">compile <span class="string">'com.lijiankun24:shadowlayout:1.0.0'</span></div></pre></td></tr></table></figure></p>
+<p>Maven:<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;dependency&gt;</div><div class="line">  &lt;groupId&gt;com.lijiankun24&lt;/groupId&gt;</div><div class="line">  &lt;artifactId&gt;shadowlayout&lt;/artifactId&gt;</div><div class="line">  &lt;version&gt;1.0.0&lt;/version&gt;</div><div class="line">  &lt;type&gt;pom&lt;/type&gt;</div><div class="line">&lt;/dependency&gt;</div></pre></td></tr></table></figure></p>
+<h3 id="如何使用"><a href="#如何使用" class="headerlink" title="如何使用"></a>如何使用</h3><p>在 xml 中添加如下布局文件：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">com.lijiankun24.shadowlayout.ShadowLayout</span></span></div><div class="line">    <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></div><div class="line">    <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">    <span class="attr">android:layout_gravity</span>=<span class="string">"center_horizontal"</span></div><div class="line">    <span class="attr">android:layout_marginTop</span>=<span class="string">"30dp"</span></div><div class="line">    <span class="attr">app:shadowColor</span>=<span class="string">"#66000000"</span></div><div class="line">    <span class="attr">app:shadowDx</span>=<span class="string">"0dp"</span></div><div class="line">    <span class="attr">app:shadowDy</span>=<span class="string">"3dp"</span></div><div class="line">    <span class="attr">app:shadowRadius</span>=<span class="string">"10dp"</span></div><div class="line">    <span class="attr">app:shadowSide</span>=<span class="string">"all"</span>&gt;</div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">ImageView</span></span></div><div class="line">        <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></div><div class="line">        <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></div><div class="line">        <span class="attr">android:background</span>=<span class="string">"@android:color/white"</span></div><div class="line">        <span class="attr">android:contentDescription</span>=<span class="string">"@null"</span></div><div class="line">        <span class="attr">android:src</span>=<span class="string">"@mipmap/ic_launcher"</span>/&gt;</div><div class="line"><span class="tag">&lt;/<span class="name">com.lijiankun24.shadowlayout.ShadowLayout</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<p>上面 xml 布局文件实现的效果如下图所示：</p>
+<div align="center"><br>    <img src="/简单好用的阴影库-ShadowLayout/shadowlayout1.png" width="180" height="140"><br></div>
+
+<p>如上面 xml 中代码显示的那样，总共有 5 个自定义属性，其含义分别如下：</p>
+<ul>
+<li><code>app:shadowColor=&quot;#66000000&quot;</code> 控制阴影的颜色，<strong>注意：颜色必须带有透明度的值</strong></li>
+<li><code>app:shadowDx=&quot;0dp&quot;</code> 控制阴影 x 轴的偏移量</li>
+<li><code>app:shadowDy=&quot;3dp&quot;</code> 控制阴影 y 轴的偏移量</li>
+<li><code>app:shadowRadius=&quot;10dp&quot;</code> 控制阴影的范围</li>
+<li><code>app:shadowSide=&quot;all|left|right|top|bottom&quot;</code> 控制阴影显示的边界，共有五个值</li>
+</ul>
+<h2 id="关于-ShadowLayout-的原理"><a href="#关于-ShadowLayout-的原理" class="headerlink" title="关于 ShadowLayout 的原理"></a>关于 ShadowLayout 的原理</h2><p><code>ShadowLayout</code> 的原理其实非常简单，大概可以分为以下几步：</p>
+<ol>
+<li>通过自定义属性获取阴影的相关属性，包括：阴影颜色、阴影范围大小、阴影显示边界、阴影 x 轴和 y 轴的偏移量；</li>
+<li>在 <code>onLayout()</code> 方法中获取到阴影应该显示的范围，并设置此 <code>ShadowLayout</code> 的 <code>Padding</code> 值以给阴影的显示留出空间；</li>
+<li>在 <code>onDraw()</code> 方法中使用 <code>Canvas</code> 和 <code>Paint</code> 的方法绘制阴影。<blockquote>
+<p>绘制阴影最重要的两个方法：</p>
+<ul>
+<li><code>Paint.setShadowLayer(float radius, float dx, float dy, int shadowColor)</code> 设置阴影的大小、颜色、x 轴和 y 轴的偏移量</li>
+<li><code>canvas.drawRect(RectF rect, Paint paint)</code> 设置阴影显示的位置</li>
+</ul>
+</blockquote>
+</li>
+</ol>
+<p>在 <code>ShadowLayout</code> 库中只有一个文件 —- <code>ShadowLayout.java</code>，<code>ShadowLayout</code> 是 <code>RelativeLayout</code> 的子类，其源码如下所示（有较为详细的注释）：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * ShadowLayout.java</div><div class="line"> * &lt;p&gt;</div><div class="line"> * Created by lijiankun on 17/8/11.</div><div class="line"> */</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ShadowLayout</span> <span class="keyword">extends</span> <span class="title">RelativeLayout</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> ALL = <span class="number">0x1111</span>;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> LEFT = <span class="number">0x0001</span>;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TOP = <span class="number">0x0010</span>;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> RIGHT = <span class="number">0x0100</span>;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> BOTTOM = <span class="number">0x1000</span>;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> Paint mPaint = <span class="keyword">new</span> Paint(Paint.ANTI_ALIAS_FLAG);</div><div class="line"></div><div class="line">    <span class="keyword">private</span> RectF mRectF = <span class="keyword">new</span> RectF();</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 阴影的颜色</div><div class="line">     */</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> mShadowColor = Color.TRANSPARENT;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 阴影的大小范围</div><div class="line">     */</div><div class="line">    <span class="keyword">private</span> <span class="keyword">float</span> mShadowRadius = <span class="number">0</span>;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 阴影 x 轴的偏移量</div><div class="line">     */</div><div class="line">    <span class="keyword">private</span> <span class="keyword">float</span> mShadowDx = <span class="number">0</span>;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 阴影 y 轴的偏移量</div><div class="line">     */</div><div class="line">    <span class="keyword">private</span> <span class="keyword">float</span> mShadowDy = <span class="number">0</span>;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 阴影显示的边界</div><div class="line">     */</div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> mShadowSide = ALL;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ShadowLayout</span><span class="params">(Context context)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>(context, <span class="keyword">null</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ShadowLayout</span><span class="params">(Context context, AttributeSet attrs)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>(context, attrs, <span class="number">0</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ShadowLayout</span><span class="params">(Context context, AttributeSet attrs, <span class="keyword">int</span> defStyleAttr)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>(context, attrs, defStyleAttr);</div><div class="line">        init(attrs);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 获取绘制阴影的位置，并为 ShadowLayout 设置 Padding 以为显示阴影留出空间</div><div class="line">     */</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onLayout</span><span class="params">(<span class="keyword">boolean</span> changed, <span class="keyword">int</span> left, <span class="keyword">int</span> top, <span class="keyword">int</span> right, <span class="keyword">int</span> bottom)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onLayout(changed, left, top, right, bottom);</div><div class="line"></div><div class="line">        <span class="keyword">float</span> effect = mShadowRadius + dip2px(<span class="number">5</span>);</div><div class="line">        <span class="keyword">float</span> rectLeft = <span class="number">0</span>;</div><div class="line">        <span class="keyword">float</span> rectTop = <span class="number">0</span>;</div><div class="line">        <span class="keyword">float</span> rectRight = <span class="keyword">this</span>.getWidth();</div><div class="line">        <span class="keyword">float</span> rectBottom = <span class="keyword">this</span>.getHeight();</div><div class="line">        <span class="keyword">int</span> paddingLeft = <span class="number">0</span>;</div><div class="line">        <span class="keyword">int</span> paddingTop = <span class="number">0</span>;</div><div class="line">        <span class="keyword">int</span> paddingRight = <span class="number">0</span>;</div><div class="line">        <span class="keyword">int</span> paddingBottom = <span class="number">0</span>;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (((mShadowSide &amp; LEFT) == LEFT)) &#123;</div><div class="line">            rectLeft = effect;</div><div class="line">            paddingLeft = (<span class="keyword">int</span>) effect;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (((mShadowSide &amp; TOP) == TOP)) &#123;</div><div class="line">            rectTop = effect;</div><div class="line">            paddingTop = (<span class="keyword">int</span>) effect;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (((mShadowSide &amp; RIGHT) == RIGHT)) &#123;</div><div class="line">            rectRight = <span class="keyword">this</span>.getWidth() - effect;</div><div class="line">            paddingRight = (<span class="keyword">int</span>) effect;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (((mShadowSide &amp; BOTTOM) == BOTTOM)) &#123;</div><div class="line">            rectBottom = <span class="keyword">this</span>.getHeight() - effect;</div><div class="line">            paddingBottom = (<span class="keyword">int</span>) effect;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (mShadowDy != <span class="number">0.0f</span>) &#123;</div><div class="line">            rectBottom = rectBottom - mShadowDy;</div><div class="line">            paddingBottom = paddingBottom + (<span class="keyword">int</span>) mShadowDy;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (mShadowDx != <span class="number">0.0f</span>) &#123;</div><div class="line">            rectRight = rectRight - mShadowDx;</div><div class="line">            paddingRight = paddingRight + (<span class="keyword">int</span>) mShadowDx;</div><div class="line">        &#125;</div><div class="line">        mRectF.left = rectLeft;</div><div class="line">        mRectF.top = rectTop;</div><div class="line">        mRectF.right = rectRight;</div><div class="line">        mRectF.bottom = rectBottom;</div><div class="line">        <span class="keyword">this</span>.setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 真正绘制阴影的方法</div><div class="line">     */</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onDraw</span><span class="params">(Canvas canvas)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onDraw(canvas);</div><div class="line">        canvas.drawRect(mRectF, mPaint);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 读取设置的阴影的属性</div><div class="line">     *</div><div class="line">     * <span class="doctag">@param</span> attrs 从其中获取设置的值</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(AttributeSet attrs)</span> </span>&#123;</div><div class="line">        setLayerType(View.LAYER_TYPE_SOFTWARE, <span class="keyword">null</span>);  <span class="comment">// 关闭硬件加速</span></div><div class="line">        <span class="keyword">this</span>.setWillNotDraw(<span class="keyword">false</span>);                    <span class="comment">// 调用此方法后，才会执行 onDraw(Canvas) 方法</span></div><div class="line"></div><div class="line">        TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.ShadowLayout);</div><div class="line">        <span class="keyword">if</span> (typedArray != <span class="keyword">null</span>) &#123;</div><div class="line">            mShadowColor = typedArray.getColor(R.styleable.ShadowLayout_shadowColor,</div><div class="line">                    ContextCompat.getColor(getContext(), android.R.color.black));</div><div class="line">            mShadowRadius = typedArray.getDimension(R.styleable.ShadowLayout_shadowRadius, dip2px(<span class="number">0</span>));</div><div class="line">            mShadowDx = typedArray.getDimension(R.styleable.ShadowLayout_shadowDx, dip2px(<span class="number">0</span>));</div><div class="line">            mShadowDy = typedArray.getDimension(R.styleable.ShadowLayout_shadowDy, dip2px(<span class="number">0</span>));</div><div class="line">            mShadowSide = typedArray.getInt(R.styleable.ShadowLayout_shadowSide, ALL);</div><div class="line">            typedArray.recycle();</div><div class="line">        &#125;</div><div class="line">        mPaint.setAntiAlias(<span class="keyword">true</span>);</div><div class="line">        mPaint.setColor(Color.TRANSPARENT);</div><div class="line">        mPaint.setShadowLayer(mShadowRadius, mShadowDx, mShadowDy, mShadowColor);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * dip2px dp 值转 px 值</div><div class="line">     *</div><div class="line">     * <span class="doctag">@param</span> dpValue dp 值</div><div class="line">     * <span class="doctag">@return</span> px 值</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">float</span> <span class="title">dip2px</span><span class="params">(<span class="keyword">float</span> dpValue)</span> </span>&#123;</div><div class="line">        DisplayMetrics dm = getContext().getResources().getDisplayMetrics();</div><div class="line">        <span class="keyword">float</span> scale = dm.density;</div><div class="line">        <span class="keyword">return</span> (dpValue * scale + <span class="number">0.5F</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<hr>
+<p>至此，关于 <code>ShadowLayout</code> 库的使用方法和原理至此全部介绍完毕，库在 GitHub 上 <a href="https://github.com/lijiankun24/ShadowLayout" target="_blank" rel="external">ShadowLayout</a>，欢迎 star 和 fork，也欢迎通过下面二维码下载 APK 体验，如果有什么问题欢迎指出。我的工作邮箱：jiankunli24@gmail.com</p>
+<p><div align="center"><br>    <img src="/简单好用的阴影库-ShadowLayout/QR.png" width="270" height="258"></div></p>
+<h2 id=""><a href="#" class="headerlink" title=""></a></h2><p><strong>参考资料：</strong></p>
+<p><a href="http://yifeng.studio/2017/02/26/android-elevation-and-shadow/" target="_blank" rel="external">Android 视图高度和阴影的那点事儿</a> – <a href="http://yifeng.studio/" target="_blank" rel="external">亦枫</a></p>
+<p><a href="https://github.com/wangjiegulu/ShadowViewHelper" target="_blank" rel="external">ShadowViewHelper</a>  – <a href="http://www.cnblogs.com/tiantianbyconan/" target="_blank" rel="external">天天_byconan</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/UI/" rel="tag"># UI</a>
+          
+            <a href="/tags/Library/" rel="tag"># Library</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/Android-应用架构组件（Architecture-Components）实践/" rel="next" title="Android 应用架构组件（Architecture Components）实践">
+                <i class="fa fa-chevron-left"></i> Android 应用架构组件（Architecture Components）实践
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="lijiankun24" />
+          <p class="site-author-name" itemprop="name">lijiankun24</p>
+           
+              <p class="site-description motion-element" itemprop="description">守得云开见月明。</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/lijiankun24" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/lijiankun24" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.jianshu.com/u/1abe21b7ff5f" target="_blank" title="Jianshu">
+                  
+                    <i class="fa fa-fw fa-jianshu"></i>
+                  
+                  Jianshu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://gank.io/post/published" title="匠心写作" target="_blank">匠心写作</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/lmj623565791" title="Hongyang" target="_blank">Hongyang</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.liaohuqiu.net/cn/" title="Huqiu Liao" target="_blank">Huqiu Liao</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://drakeet.me/" title="drakeet" target="_blank">drakeet</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.jianshu.com/u/df40282480b4" title="小鄧子" target="_blank">小鄧子</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://yuweiguocn.github.io/" title="于卫国" target="_blank">于卫国</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#关于-ShadowLayout-的使用"><span class="nav-number">1.</span> <span class="nav-text">关于 ShadowLayout 的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#添加依赖"><span class="nav-number">1.1.</span> <span class="nav-text">添加依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何使用"><span class="nav-number">1.2.</span> <span class="nav-text">如何使用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于-ShadowLayout-的原理"><span class="nav-number">2.</span> <span class="nav-text">关于 ShadowLayout 的原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-number">3.</span> <span class="nav-text"></span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lijiankun24</span>
+  
+</div>
+
+
+<div>
+  <span id="busuanzi_container_site_pv">
+    Total views <span id="busuanzi_value_site_pv">   </span>
+  </span>
+
+  <span id="busuanzi_container_site_uv">
+    |   Total visitors <span id="busuanzi_value_site_uv"/>
+  </span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("tWG63sCRtLhi5NFeaXtWqtnv-gzGzoHsz", "lPLcNFpeOoNc6wr9PVX8XdbI");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+
+  
+
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+          bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+      } else {
+          bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+</body>
+</html>
