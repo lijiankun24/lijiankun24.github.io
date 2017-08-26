@@ -1,0 +1,1204 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Http,ReadingNotes," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="本文是《图解HTTP》读书笔记的第一篇，主要包括此书的前五章内容，简要记录一下。大概分为以下几部分：
+
+TCP/IP 基础
+HTTP 简介
+HTTP 报文
+HTTP 状态码
+与 HTTP 交互的 Web 服务器相关知识">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《图解HTTP》读书笔记（一）">
+<meta property="og:url" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（一）/index.html">
+<meta property="og:site_name" content="一些无处安放的代码和故事">
+<meta property="og:description" content="本文是《图解HTTP》读书笔记的第一篇，主要包括此书的前五章内容，简要记录一下。大概分为以下几部分：
+
+TCP/IP 基础
+HTTP 简介
+HTTP 报文
+HTTP 状态码
+与 HTTP 交互的 Web 服务器相关知识">
+<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（一）/TCPIP传输流.png">
+<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（一）/TCP三次握手.png">
+<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（一）/TCPIP通信过程.png">
+<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（一）/HTTP请求.png">
+<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（一）/HTTP响应报文.png">
+<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（一）/HTTPCookie.png">
+<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（一）/HTTPCookie1.png">
+<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（一）/HTTP报文结构1.png">
+<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（一）/HTTP报文结构2.png">
+<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（一）/form-data.png">
+<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（一）/byteranges.png">
+<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（一）/proxy.png">
+<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（一）/netgate.png">
+<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（一）/ssl.png">
+<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（一）/proxy_cache.png">
+<meta property="og:updated_time" content="2017-08-26T02:17:10.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="《图解HTTP》读书笔记（一）">
+<meta name="twitter:description" content="本文是《图解HTTP》读书笔记的第一篇，主要包括此书的前五章内容，简要记录一下。大概分为以下几部分：
+
+TCP/IP 基础
+HTTP 简介
+HTTP 报文
+HTTP 状态码
+与 HTTP 交互的 Web 服务器相关知识">
+<meta name="twitter:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（一）/TCPIP传输流.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.lijiankun24.com/《图解HTTP》读书笔记（一）/"/>
+
+
+
+
+
+  <title> 《图解HTTP》读书笔记（一） | 一些无处安放的代码和故事 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">一些无处安放的代码和故事</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://www.lijiankun24.com/《图解HTTP》读书笔记（一）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="lijiankun24">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一些无处安放的代码和故事">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                《图解HTTP》读书笔记（一）
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-21T21:13:53+08:00">
+                2017-08-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/《图解HTTP》读书笔记（一）/" class="leancloud_visitors" data-flag-title="《图解HTTP》读书笔记（一）">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Views </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文是《图解HTTP》读书笔记的第一篇，主要包括此书的前五章内容，简要记录一下。大概分为以下几部分：</p>
+<ol>
+<li><code>TCP/IP</code> 基础</li>
+<li><code>HTTP</code> 简介</li>
+<li><code>HTTP</code> 报文</li>
+<li><code>HTTP</code> 状态码</li>
+<li>与 <code>HTTP</code> 交互的 <code>Web</code> 服务器相关知识<a id="more"></a>
+</li>
+</ol>
+<h2 id="1-TCP-IP-基础"><a href="#1-TCP-IP-基础" class="headerlink" title="1. TCP/IP 基础"></a>1. TCP/IP 基础</h2><p>通常使用的网络（包括互联网）是在 <code>TCP/IP</code> 协议族的基础上运作的。而 <code>HTTP</code> 属于它的一个子集。</p>
+<h3 id="1-1-TCP-IP-协议族"><a href="#1-1-TCP-IP-协议族" class="headerlink" title="1.1 TCP/IP 协议族"></a>1.1 TCP/IP 协议族</h3><p>协议：不同的硬件设备、操作系统之间需要通信的话需要遵循相同的规则，这种规则统称为 <strong>协议（protocol）</strong>。</p>
+<p>计算机与网络设备之间要相互通信，双方就必须基于相同的方法。比如：如何探测到通信目标、由哪一边先发起通信、使用哪种语言进行通信、怎样结束通信等都需要遵循相同的协议。</p>
+<p>像这样把与互联网相关联的协议集合起来总称为 <code>TCP/IP</code> 协议族。</p>
+<h3 id="1-2-TCP-IP-的分层管理"><a href="#1-2-TCP-IP-的分层管理" class="headerlink" title="1.2 TCP/IP 的分层管理"></a>1.2 TCP/IP 的分层管理</h3><p><code>TCP/IP</code> 协议族里很重要的一点就是分层。<code>TCP/IP</code> 协议族分为 4 层，从上到下分别是：应用层、传输层、网络层和数据链路层。</p>
+<ol>
+<li>应用层：应用层决定了向用户提供服务时通信的活动。<code>FTP</code>、<code>DNS</code> 和 <code>HTTP</code> 都属于此层</li>
+<li>传输层：传输层对上层应用层，提供处于网络连接中的两台计算机之间的数据传输。<code>TCP(传输控制协议)</code> 和 <code>UDP(用户数据报协议)</code> 属于传输层</li>
+<li>网络层：网络层用来处理在网络上流动的数据包。数据包是网络传输的最小数据单位。该层规定了通过怎样的路径（所谓的传输线路）到达对方计算机，并把数据包传送给对方。</li>
+<li>链路层：用来处理连接网络的硬件部分，包括控制操作系统、硬件的设备驱动和光纤等。硬件上的范畴均在链路层的作用范围之内。</li>
+</ol>
+<h3 id="1-3-TCP-IP-通信传输流"><a href="#1-3-TCP-IP-通信传输流" class="headerlink" title="1.3 TCP/IP 通信传输流"></a>1.3 TCP/IP 通信传输流</h3><p>利用 <code>TCP/IP</code> 协议族进行网络通信时，会通过分层顺序与对方进行通信。发送端从应用层往下走，接收端则往应用层往上走。</p>
+<div align="center"><br>    <img src="/《图解HTTP》读书笔记（一）/TCPIP传输流.png" width="440" height="388"><br></div>
+
+<ol>
+<li>发送端的客户端在在应用层发送一个 HTTP 请求</li>
+<li>在传输层（TCP协议）把应用层处收到的数据（HTTP请求报文）进行分割，并在各个报文上打上标记序号及端口号转发给网络层</li>
+<li>在网络层（IP协议），增加作为通信目的地的 MAC 地址后转发给链路层</li>
+<li>接收端的服务器在链路层收到数据后，按顺序往上层发送，一直到应用层。当传输到应用层，才能算真正接收到由客户端发送过来的 HTTP 请求</li>
+</ol>
+<p>发送端在层与层之间传输数据时，每经过一层时必定会被打上一个该层所属的首部信息。反之，接收端在层与层传输数据时，每经过一层时会把对应的首部消去。</p>
+<p>这种把数据信息包装起来的做法称为 <strong>封装</strong>。</p>
+<h3 id="1-4-IP-协议"><a href="#1-4-IP-协议" class="headerlink" title="1.4 IP 协议"></a>1.4 IP 协议</h3><p><code>IP</code> 协议的作用是把各种数据包传送给对方。而要保证确实传送到对方那里，则需要满足各类条件。其中两个重要的条件是 <code>IP</code> 地址和 <code>MAC</code> 地址。</p>
+<blockquote>
+<p><code>IP</code> 地址指明了节点被分配到的地址，<code>MAC</code> 地址是指网卡所属的固定地址。<code>IP</code> 地址可以和 <code>MAC</code> 地址进行配对，<code>IP</code> 地址可变更，但是 <code>MAC</code> 地址基本不可变更。</p>
+</blockquote>
+<p><code>ARP</code> 协议是一种用以解析地址的协议，根据通信的 <code>IP</code> 地址就可以反查出对应的 <code>MAC</code> 地址。</p>
+<p>路由选择机制：在到达通信目标前的中转过程中，那些计算机和路由器等网络设备只能获悉很粗略的传输路线。</p>
+<h3 id="1-5-TCP-协议"><a href="#1-5-TCP-协议" class="headerlink" title="1.5 TCP 协议"></a>1.5 TCP 协议</h3><p><code>TCP</code> 协议属于传输层，提供可靠的字节流服务。<code>TCP</code> 协议将大块数据分割成以报文段为单位的数据包进行管理，而且 TCP 协议可以确认数据最终是否送达到对方。</p>
+<p>为了确认数据包可以准确无误的送达到对方，TCP 采用三次握手策略。</p>
+<div align="center"><br>    <img src="/《图解HTTP》读书笔记（一）/TCP三次握手.png" width="468" height="251"><br></div>
+
+<h3 id="1-6-DNS-域名解析"><a href="#1-6-DNS-域名解析" class="headerlink" title="1.6 DNS 域名解析"></a>1.6 DNS 域名解析</h3><p>DNS 提供域名到 IP 地址之间的解析服务。</p>
+<p>DNS 协议提供通过域名查找 IP 地址，或者逆向从 IP 地址反查域名的服务。</p>
+<h3 id="1-7-各种协议与-HTTP-协议的关系"><a href="#1-7-各种协议与-HTTP-协议的关系" class="headerlink" title="1.7 各种协议与 HTTP 协议的关系"></a>1.7 各种协议与 HTTP 协议的关系</h3><div align="center"><br>    <img src="/《图解HTTP》读书笔记（一）/TCPIP通信过程.png" width="470" height="666"><br></div>
+
+<h3 id="1-8-URI-和-URL"><a href="#1-8-URI-和-URL" class="headerlink" title="1.8 URI 和 URL"></a>1.8 URI 和 URL</h3><p>URL(Uniform Resource Locator)：统一资源定位符，正是使用 Web 浏览器访问 Web 页面时需要输入的网页地址。<br>URI(Uniform Resource Identifier)：统一资源标识符，就是由某个协议方案表示的资源的定位标识符。</p>
+<p>URI 用字符串标识某一互联网资源，而 URL 表示资源的地点（互联网上所处的位置），可见 URL 是 URI 的子集。</p>
+<h2 id="2-HTTP-简介"><a href="#2-HTTP-简介" class="headerlink" title="2 HTTP 简介"></a>2 HTTP 简介</h2><ul>
+<li>应用 HTTP 协议时，必定是一端担任客户端的角色，另一端担任服务器端的角色</li>
+<li>请求必定先由客户端发出，服务器端接收到请求之后再回复响应（服务器端在没有接收到请求之前是不会发送响应的）</li>
+</ul>
+<h3 id="2-1-请求报文"><a href="#2-1-请求报文" class="headerlink" title="2.1 请求报文"></a>2.1 请求报文</h3><div align="center"><br>    <img src="/《图解HTTP》读书笔记（一）/HTTP请求.png" width="533" height="308"><br></div>
+
+<p>如上图所示，请求报文是由请求方法、请求URI、协议版本、可选的请求首部字段和内容实体构成。</p>
+<h3 id="2-2-响应报文"><a href="#2-2-响应报文" class="headerlink" title="2.2 响应报文"></a>2.2 响应报文</h3><div align="center"><br>    <img src="/《图解HTTP》读书笔记（一）/HTTP响应报文.png" width="551" height="178"><br></div>
+
+<p>如上图所示，响应报文中由协议版本、状态码（表示请求成功或者失败的数字代码）、用以解释状态码的原因短语、可选的响应首部字段以及实体主体</p>
+<h3 id="2-3-HTTP-是不保存状态的协议"><a href="#2-3-HTTP-是不保存状态的协议" class="headerlink" title="2.3 HTTP 是不保存状态的协议"></a>2.3 HTTP 是不保存状态的协议</h3><p>HTTP 协议自身不具备保存之前发送过的请求或者响应的功能。</p>
+<p>HTTP 被设计的如此简单是为了保持协议的可伸缩性，以便更快地处理大量事务。</p>
+<p>HTTP/1.1 虽然是无状态协议，但是为了实现期望的保持状态的功能，于是引入了 Cookie 技术。</p>
+<h3 id="2-4-告知服务器意图的-HTTP-方法"><a href="#2-4-告知服务器意图的-HTTP-方法" class="headerlink" title="2.4 告知服务器意图的 HTTP 方法"></a>2.4 告知服务器意图的 HTTP 方法</h3><p>HTTP/1.1 中常用的方法有8种，<strong>HTTP方法区分大小写，注意要用大写字母</strong>，下面一一介绍：</p>
+<ol>
+<li>GET：获取资源。GET 方法用来请求访问已被 URI 识别的资源。指定的资源经服务器端解析后返回响应内容。如果请求的资源是文本，那就保持原样返回；如果是像 CGI 那样的程序，则返回经过执行后的输出结果。</li>
+<li>POST：传输实体主体。</li>
+<li><p>PUT：传输文件。PUT 方法用来传输文件，在请求报文的主体中包含文件内容，然后保存到请求 URI 指定的位置。</p>
+<blockquote>
+<p>鉴于 HTTP/1.1 的 PUT 方法自身不带验证机制，任何人都可以上传文件，存在安全性问题，因此一般的 Web 网站不使用此方法。</p>
+</blockquote>
+</li>
+<li><p>DELETE：删除文件。DELETE 方法是和 PUT 相反的方法，按照请求中指定的 URI，删除指定的资源。</p>
+<blockquote>
+<p>和 PUT 方法相同，DELETE 方法本身也是不带验证机制的方法，所以一般的 Web 网站不会使用 DELETE 方法。</p>
+</blockquote>
+</li>
+<li><p>HEAD：获得报文首部。HEAD 方法和 GET 方法一样，只是不返回报文主体内容。用于确认 URI 的有效性及资源更新的日期时间等。</p>
+</li>
+<li>OPTIONS：询问支持的方法。OPTIONS 方法用来查询针对请求 URI 指定的资源支持的方法。</li>
+<li>TRACE：追踪路径。很少用到的一个方法。</li>
+<li>CONNECT：要求用隧道协议连接代理。CONNECT 方法要求在于代理服务器通信时建立隧道，实现用隧道协议进行 TCP 通信。主要使用 SSL 和 TLS 协议把通信内容加密后经网络隧道传输。</li>
+</ol>
+<h3 id="2-5-持久连接节省通信量"><a href="#2-5-持久连接节省通信量" class="headerlink" title="2.5 持久连接节省通信量"></a>2.5 持久连接节省通信量</h3><p>持久连接：旨在建立1次 TCP 连接后进行多次请求和响应的交互。</p>
+<p>其特点是：只要任意一端没有明确提出断开连接，则保持 TCP 连接状态。持久连接的好处在于减少了 TCP 连接的重复建立和断开造成的额外开销，减轻了服务器端的负载。</p>
+<p>在 HTTP/1.1 中，所有的连接默认都是持久连接，但在 HTTP/1.0 中并未标准化。</p>
+<p>持久化连接使得多数请求以 <strong>管线化</strong> 方式发送成为可能。这样就可以做到同时并行发送多个请求，而不需要一个接一个地等待响应了。</p>
+<h3 id="2-6-使用-Cookie-的状态管理"><a href="#2-6-使用-Cookie-的状态管理" class="headerlink" title="2.6 使用 Cookie 的状态管理"></a>2.6 使用 Cookie 的状态管理</h3><p> HTTP 是无状态协议，它不对之前发生过的请求和响应的状态进行管理。</p>
+<p> Cookie 技术通过在请求和响应报文中写入了 Cookie 信息来控制客户端的状态。</p>
+<p> Cookie 会根据从服务器端发送的响应报文内的一个叫做 Set-Cookie 的首部字段信息，通知客户端保存 Cookie。当下次客户端再往该服务器发送请求时，客户端会自动在请求报文中加入 Cookie 值后发送出去。</p>
+<p> 服务器端发现客户端发送过来的 Cookie 后，会去检查究竟是从哪一个客户端发来的连接请求，然后对比服务器上的记录，最后得到之前的状态信息。</p>
+ <div align="center"><br>     <img src="/《图解HTTP》读书笔记（一）/HTTPCookie.png" width="582" height="595"><br> </div>
+
+<p> 关于 Cookie 的报文<br> <div align="center"><br>     <img src="/《图解HTTP》读书笔记（一）/HTTPCookie1.png" width="588" height="691"><br> </div></p>
+<h2 id="3-HTTP-报文"><a href="#3-HTTP-报文" class="headerlink" title="3 HTTP 报文"></a>3 HTTP 报文</h2><p>客户端发送的报文称为请求报文，服务器端响应的报文称为响应报文。</p>
+<p>HTTP 报文大致可以分为报文首部和报文主体。报文中不一定有报文主体。</p>
+<h3 id="3-1-HTTP-报文结构"><a href="#3-1-HTTP-报文结构" class="headerlink" title="3.1 HTTP 报文结构"></a>3.1 HTTP 报文结构</h3><div align="center"><br>    <img src="/《图解HTTP》读书笔记（一）/HTTP报文结构1.png" width="547" height="288"><br></div><br><div align="center"><br>    <img src="/《图解HTTP》读书笔记（一）/HTTP报文结构2.png" width="547" height="539"><br></div>
+
+<p>请求报文和响应报文首部内容由以下几部分组成。</p>
+<ul>
+<li>请求行：包含用于请求的方法、请求 URI 和 HTTP 版本</li>
+<li>状态行：包含表明响应结果的状态码、原因短语和 HTTP 版本</li>
+<li>首部字段：包含表示请求和响应的各种条件和属性的各类首部。一般有 4 种首部：通用首部、请求首部、响应首部和实体首部。</li>
+</ul>
+<h3 id="3-2-编码提升传输效率"><a href="#3-2-编码提升传输效率" class="headerlink" title="3.2 编码提升传输效率"></a>3.2 编码提升传输效率</h3><ol>
+<li><p>报文主体和实体主体的区别</p>
+<p>HTTP 报文的主体用于传输请求或响应的实体主体。通常，报文主体等于实体主体。只有当传输中进行编码操作时，实体主体的内容发生变化，才导致它和报文主体产生差异。</p>
+</li>
+<li><p>压缩传输的内容编码</p>
+<p>内容编码指明应用在实体内容上的编码格式，并保持实体信息原样压缩。内容编码后的实体由客户端接收并负责解码。</p>
+<blockquote>
+<p>常用的内容编码有以下几种：gzip(GNU zip)、compress(UNIX 系统的标准压缩)、deflate(zlib) 和 identity(不进行压缩)</p>
+</blockquote>
+</li>
+<li><p>分割发送的分块传输编码</p>
+<p>分块传输编码会将实体主体分为多个部分。使用分块传输编码的实体主体会由接收的客户端负责界面，恢复到编码前的实体主体。</p>
+</li>
+</ol>
+<h3 id="3-3-发送多种数据的多部分对象集合"><a href="#3-3-发送多种数据的多部分对象集合" class="headerlink" title="3.3 发送多种数据的多部分对象集合"></a>3.3 发送多种数据的多部分对象集合</h3><p>在 HTTP 协议中也采纳了多部分对象集合，发送的一份报文主体内可含有多类型实体。通常是在图片或文本文件等上传时使用。</p>
+<p>多部分对象集合包含的对象如下：</p>
+<ul>
+<li><p>multipart/form-data：在 Web 表单文件上传时使用</p>
+<div align="center"><br>  <img src="/《图解HTTP》读书笔记（一）/form-data.png" width="501" height="233"><br></div>
+</li>
+<li><p>multipart/byteranges：状态码206（Partial Content 部分内容）响应报文包含了多个范围的内容时使用</p>
+<div align="center"><br>  <img src="/《图解HTTP》读书笔记（一）/byteranges.png" width="523" height="585"><br></div>
+
+</li>
+</ul>
+<blockquote>
+<p>boundary 表示分隔符，用于划分多部分对象集合指明的各类实体。在 boundary 字符串指定的各个实体的起始行之前插入“–”标记（例如：–AaB03x、–THIS_STRING_SEPARATES），而在多部分对象集合对应的字符串的最后插入“–”标记（例如：–AaB03x–、–THIS_STRING_SEPARATES–）作为结束。</p>
+</blockquote>
+<p>多部分对象集合的每个部分类型中，都可以含有首部字段。</p>
+<h3 id="3-4-获取部分内容的范围请求"><a href="#3-4-获取部分内容的范围请求" class="headerlink" title="3.4 获取部分内容的范围请求"></a>3.4 获取部分内容的范围请求</h3><p>指定范围发送的请求叫做范围请求。如果一个资源有10000字节大小，如果使用范围请求，可以只请求5001-10000字节内的资源。</p>
+<p>执行范围请求时，会用到首部字段 <code>Range</code> 来指定资源的 byte 范围。</p>
+<ul>
+<li><p>5001-10000字节</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Range：bytes=5001-10000</div></pre></td></tr></table></figure>
+</li>
+<li><p>从 5001 字节之后的全部</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Range：bytes=5001-</div></pre></td></tr></table></figure>
+</li>
+<li><p>从一开始到 3000 字节和 5000-7000 字节的多范围请求</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Range：bytes=-3000，5000-7000</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>针对范围请，响应会返回状态码为 206 Partial Content 的响应报文。对于多重范围的范围请求，响应会在首部字段 <code>Content-Type</code> 标明 <code>multipart/byteranges</code> 后返回响应报文。</p>
+<p>如果服务器端无法响应范围请求，则会返回状态码 200 OK 和完整的实体内容</p>
+<h3 id="3-5-内容协商返回最合适的内容"><a href="#3-5-内容协商返回最合适的内容" class="headerlink" title="3.5 内容协商返回最合适的内容"></a>3.5 内容协商返回最合适的内容</h3><p>内容协商机制是指客户端和服务器端就响应的资源内容进行交涉，然后提供给客户端最为合适的资源。内容协商会以响应资源的语言、字符集、编码方式等作为判断的基准。</p>
+<p>包含在请求报文中的某些首部字段就是判断的基准，如下：</p>
+<ul>
+<li>Accept</li>
+<li>Accept-Charset</li>
+<li>Accept-Encoding</li>
+<li>Accept-Language</li>
+<li>Content-Language</li>
+</ul>
+<h2 id="4-HTTP-状态码"><a href="#4-HTTP-状态码" class="headerlink" title="4 HTTP 状态码"></a>4 HTTP 状态码</h2><p>状态码是当客户端向服务器端发送请求时，描述返回的请求结果。</p>
+<p>状态码如 <code>200 OK</code>，以 3 位数字和原因短语组成。</p>
+<p>数字中的第一位指定了响应类别，后两位无分类。响应类别有以下 5 种：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th style="text-align:center">类别</th>
+<th style="text-align:left">原因短语</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1xx</td>
+<td style="text-align:center">Informational(信息性状态码)</td>
+<td style="text-align:left">接收的请求正在处理</td>
+</tr>
+<tr>
+<td>2xx</td>
+<td style="text-align:center">Success(成功状态码)</td>
+<td style="text-align:left">请求正常处理完毕</td>
+</tr>
+<tr>
+<td>3xx</td>
+<td style="text-align:center">Redirection(重定向状态码)</td>
+<td style="text-align:left">需要进行附加操作以完成请求</td>
+</tr>
+<tr>
+<td>4xx</td>
+<td style="text-align:center">Client Error(客户端错误状态码)</td>
+<td style="text-align:left">服务器无法处理请求</td>
+</tr>
+<tr>
+<td>5xx</td>
+<td style="text-align:center">Server Error(服务器错误状态码)</td>
+<td style="text-align:left">服务器处理请求出错</td>
+</tr>
+</tbody>
+</table>
+<p>HTTP 状态码总共有 60 余种，但是经常使用的只有大概 14 种。</p>
+<h3 id="4-1-2XX-成功"><a href="#4-1-2XX-成功" class="headerlink" title="4.1 2XX 成功"></a>4.1 2XX 成功</h3><p>2XX 的响应结果表明请求被正常处理了。</p>
+<ul>
+<li>200 OK：表示客户端发来的请求在服务器端被正常处理了。</li>
+<li>204 NO CONTENT：该状态码代表服务器接收的请求已成功处理，但在返回的响应报文中不含实体的主体部分。</li>
+<li>206 Partial Content：该状态码表示客户端进行了范围请求，而服务器成功执行了这部分的 GET 请求。响应报文中包含由 Content-Range 指定范围的实体内容。</li>
+</ul>
+<h3 id="4-2-3XX-重定向"><a href="#4-2-3XX-重定向" class="headerlink" title="4.2 3XX 重定向"></a>4.2 3XX 重定向</h3><p>3XX 响应结果表明浏览器需要执行某些特殊的处理以正确处理请求。</p>
+<ul>
+<li>301 Moved Permanently：永久性重定向。该状态码表示请求的资源已被分配了新的 URI，以后应使用资源现在所指定的 URI。</li>
+<li><p>302 FOUND：临时性重定向。该状态码表示请求的资源已被分配了新的 URI，希望用户（本次）能使用新的 URI 访问。</p>
+<blockquote>
+<p>和 301 Moved Permanently 状态码相似，但 302 状态码代表的资源不是被永久移动，只是临时性质的。</p>
+</blockquote>
+</li>
+<li><p>303 See Other：该状态码表示由于请求对应的资源存在着另一个 URI，应使用 GET 方法定向获取请求的资源。</p>
+<blockquote>
+<p>303 状态码和 302 Found 状态码有着相同的功能，但是 303 状态码明确表示客户端应当采用 GET 方法获取资源，这点与 302 状态码有区别。</p>
+</blockquote>
+</li>
+<li><p>304 Not Modified：该状态码表示客户端发送的请求，服务器端允许请求访问资源，但因发生请求未满足条件的情况后，直接返回 304 NOT Modified（服务器端资源未改变，可直接使用客户端未过期的缓存）</p>
+<blockquote>
+<p>302 状态码虽然被划分在 3XX 类别中，但是和重定向没有关系。</p>
+</blockquote>
+</li>
+<li><p>307 Temporary Redirect：临时重定向。该状态码与 302 Found 有着相同的含义。</p>
+<blockquote>
+<p>尽管 302 标准禁止 POST 变换成 GET，但实际使用时大家并不遵守。307 会遵照浏览器标准，不会从 POST 变成 GET。</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="4-3-4XX-客户端错误"><a href="#4-3-4XX-客户端错误" class="headerlink" title="4.3 4XX 客户端错误"></a>4.3 4XX 客户端错误</h3><p>4XX 的响应结果表明客户端是发生错误的原因所在。</p>
+<ul>
+<li>400 Bad Request：该状态码表示请求报文中存在语法错误。当错误发生时，需修改请求的内容再次发送请求。</li>
+<li>401 Unauthorized：该状态码表示发送的请求需要有通过 HTTP 认证（BASIC认证、DIGEST认证）的认证信息。另外若之前已进行过 1 次请求，则表示用户认证失败。<blockquote>
+<p>返回含有 401 的响应必须包含一个适用于被请求资源的 WWW-Authenticate 首部用以质询用户信息。当浏览器初次接收到 401 响应，会弹出认证用的对话窗口。</p>
+</blockquote>
+</li>
+<li>403 Forbidden：该状态码表明对请求资源的访问被服务器拒绝了。</li>
+<li>404 Not Found：该状态码表明服务器上无法找到请求的资源。</li>
+</ul>
+<h3 id="4-4-5XX-服务器错误"><a href="#4-4-5XX-服务器错误" class="headerlink" title="4.4 5XX 服务器错误"></a>4.4 5XX 服务器错误</h3><p>5XX 的响应结果表明服务器本身发生错误。</p>
+<ul>
+<li>500 Internal Server Error：该状态码表明服务器端在执行请求时发生了错误。</li>
+<li>503 Service Unavailable：该状态码表明服务器暂时处于超负载或正在进行停机维护，现在无法处理请求。</li>
+</ul>
+<h2 id="5-与-HTTP-交互的-Web-服务器相关知识"><a href="#5-与-HTTP-交互的-Web-服务器相关知识" class="headerlink" title="5 与 HTTP 交互的 Web 服务器相关知识"></a>5 与 HTTP 交互的 Web 服务器相关知识</h2><p>一台 Web 服务器可搭建多个独立域名的 Web 网站，也可作为通信路径上的中转服务器提升传输效率。</p>
+<h3 id="5-1-用单台虚拟主机实现多个域名"><a href="#5-1-用单台虚拟主机实现多个域名" class="headerlink" title="5.1 用单台虚拟主机实现多个域名"></a>5.1 用单台虚拟主机实现多个域名</h3><p>HTTP/1.1 规范允许一台 HTTP 服务器搭建多个 Web 站点。即使在物理层面只有一台服务器，但只要利用虚拟主机的功能，则可以假想已具有多台服务器。</p>
+<p>在相同的 IP 地址下，由于虚拟主机可以寄存多个不同主机名和域名的 Web 网站，因此在发生 HTTP 请求时，必须在 Host 首部内完整指定主机或域名的 URI。</p>
+<h3 id="5-2-通信数据转发程序：代理、网关、隧道"><a href="#5-2-通信数据转发程序：代理、网关、隧道" class="headerlink" title="5.2 通信数据转发程序：代理、网关、隧道"></a>5.2 通信数据转发程序：代理、网关、隧道</h3><p>HTTP 通信时，除客户端和服务器以外，还有一些用于通信数据转发的应用程序，例如代理、网关和隧道。</p>
+<p>这些应用程序和服务器可以将请求转发给通信线路上的下一站服务器，并且能接收从那台服务器发送的响应再转发给客户端。</p>
+<ul>
+<li>代理：代理是一种有转发功能的应用程序，它扮演了位于服务器和客户端“中间人”的角色，接收由客户端发送的请求并转发给服务器，同时也接收服务器返回的响应并转发给客户端。</li>
+<li>网关：网关是网关是转发其他服务器通信数据的服务器，接收从客户端发送来的请求时，它就像自己拥有资源的服务器一样对请求进行处理。有时客户端可能都不会察觉，自己的通信目标是一个网关。</li>
+<li>隧道：隧道是在相隔甚远的客户端和服务器两者之间进行中转，并保持双方通信连接的应用程序。</li>
+</ul>
+<h3 id="5-3-代理"><a href="#5-3-代理" class="headerlink" title="5.3 代理"></a>5.3 代理</h3><p>代理服务器的基本行为就是接收客户端发送的请求后转发给其他服务器，从源服务器返回的响应经过代理服务器后再传给客户端。代理不改变请求 URI，会直接发送给前方持有资源的目标服务器，（持有资源的服务器称为源服务器）。</p>
+<div align="center"><br>    <img src="/《图解HTTP》读书笔记（一）/proxy.png" width="539" height="214"><br></div>
+
+<p>在 HTTP 通信过程中，可级联多台代理服务器。请求和响应的转发会经过数台类似锁链一样连接起来的代理服务器。转法时，需要附加 Via 首部字段以标记出经过的主机信息。</p>
+<p>使用代理服务器的理由有：利用缓存技术减少网络带宽的流量，组织内部针对特定网站的访问控制，以获取访问日志为主要目的，等等。</p>
+<p>代理有多种使用方法，按两种基准分类。一种是是否使用缓存，另一种是是否会修改报文。</p>
+<ul>
+<li>缓存代理：代理转发响应时，缓存代理会预先将资源的副本保存在代理服务器上。当代理再次接收到相同资源的请求时，就可以不从源服务器那里获取资源，而是将之前缓存的资源作为响应返回。</li>
+<li>透明代理：转发请求或响应时，不对报文做任何加工的代理类型被称为透明代理。反之，对报文内容进行加工的代理被称为非透明代理。</li>
+</ul>
+<h3 id="5-4-网关"><a href="#5-4-网关" class="headerlink" title="5.4 网关"></a>5.4 网关</h3><p>网关的工作机制和代理十分类似，而网关能使通信线路上的服务器提供非 HTTP 协议服务。</p>
+<div align="center"><br>    <img src="/《图解HTTP》读书笔记（一）/netgate.png" width="520" height="190"><br></div>
+
+<p>利用网关可以提高通信的安全性，因为可以在客户端与网关之间的通信线路上加密以确保连接的安全。</p>
+<h3 id="5-5-隧道"><a href="#5-5-隧道" class="headerlink" title="5.5 隧道"></a>5.5 隧道</h3><p>隧道可按要求建立起一条与其他服务器的通信线路，届时使用 SSL 等加密手段进行通信。隧道的目的是确保客户端能与服务器进行安全的通信。</p>
+<p>隧道本身不会去解析 HTTP 请求。也就是说，请求保持原样中转给之后的服务器。隧道会在通信双方断开连接时结束。</p>
+<div align="center"><br>    <img src="/《图解HTTP》读书笔记（一）/ssl.png" width="566" height="171"><br></div>
+
+<h3 id="5-6-保存资源的缓存"><a href="#5-6-保存资源的缓存" class="headerlink" title="5.6 保存资源的缓存"></a>5.6 保存资源的缓存</h3><p>缓存是指代理服务器或客户端本地磁盘内保存的资源副本。利用缓存可减少对源服务器的访问，因此也就节省了通信流量和通信时间。</p>
+<p>缓存服务器是代理服务器的一种，并归类在缓存代理类型中。当代理转发从服务器返回的响应时，代理服务器将会保存一份资源的副本在代理服务器上。</p>
+<h4 id="5-6-1-缓存的有效期限"><a href="#5-6-1-缓存的有效期限" class="headerlink" title="5.6.1 缓存的有效期限"></a>5.6.1 缓存的有效期限</h4><p>缓存服务器的优势在于利用缓存可避免多次从源服务器转发资源。因此客户端可就近从缓存服务器上获取资源，而源服务器也不必多次处理相同的请求了。</p>
+<p>缓存的有效期限：即便缓存服务器内有缓存，也不能保证每次都会返回对同资源的请求。因为这关系到被缓存资源的有效性问题。</p>
+<p>即使存在缓存，也会因为客户端的要求、缓存的有效期等因素，向源服务器确认资源的有效性。若判断缓存失效，缓存服务器会再次从源服务器上获取”新”资源。</p>
+<div align="center"><br>    <img src="/《图解HTTP》读书笔记（一）/proxy_cache.png" width="546" height="495"><br></div>
+
+<h4 id="5-6-2-客户端的缓存"><a href="#5-6-2-客户端的缓存" class="headerlink" title="5.6.2 客户端的缓存"></a>5.6.2 客户端的缓存</h4><p>缓存不仅可以存在于缓存服务器内，也可以存在客户端浏览器中。</p>
+<p>浏览器缓存如果有效，就不必再向服务器请求相同的资源了，可以直接从本地磁盘内读取。</p>
+<p>另外，和缓存服务器相同的一点是，当判定缓存过期后，会向源服务器确认资源的有效性。若判断浏览器缓存失效，浏览器会再次请求新资源。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Http/" rel="tag"># Http</a>
+          
+            <a href="/tags/ReadingNotes/" rel="tag"># ReadingNotes</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/简单好用的阴影库-ShadowLayout/" rel="next" title="简单好用的阴影库 ShadowLayout">
+                <i class="fa fa-chevron-left"></i> 简单好用的阴影库 ShadowLayout
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="lijiankun24" />
+          <p class="site-author-name" itemprop="name">lijiankun24</p>
+           
+              <p class="site-description motion-element" itemprop="description">守得云开见月明。</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">14</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/lijiankun24" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/lijiankun24" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.jianshu.com/u/1abe21b7ff5f" target="_blank" title="Jianshu">
+                  
+                    <i class="fa fa-fw fa-jianshu"></i>
+                  
+                  Jianshu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://gank.io/post/published" title="匠心写作" target="_blank">匠心写作</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/lmj623565791" title="Hongyang" target="_blank">Hongyang</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.liaohuqiu.net/cn/" title="Huqiu Liao" target="_blank">Huqiu Liao</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://drakeet.me/" title="drakeet" target="_blank">drakeet</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.jianshu.com/u/df40282480b4" title="小鄧子" target="_blank">小鄧子</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://yuweiguocn.github.io/" title="于卫国" target="_blank">于卫国</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-TCP-IP-基础"><span class="nav-number">1.</span> <span class="nav-text">1. TCP/IP 基础</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-TCP-IP-协议族"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 TCP/IP 协议族</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-TCP-IP-的分层管理"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 TCP/IP 的分层管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-TCP-IP-通信传输流"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 TCP/IP 通信传输流</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-IP-协议"><span class="nav-number">1.4.</span> <span class="nav-text">1.4 IP 协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-5-TCP-协议"><span class="nav-number">1.5.</span> <span class="nav-text">1.5 TCP 协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-6-DNS-域名解析"><span class="nav-number">1.6.</span> <span class="nav-text">1.6 DNS 域名解析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-7-各种协议与-HTTP-协议的关系"><span class="nav-number">1.7.</span> <span class="nav-text">1.7 各种协议与 HTTP 协议的关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-8-URI-和-URL"><span class="nav-number">1.8.</span> <span class="nav-text">1.8 URI 和 URL</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-HTTP-简介"><span class="nav-number">2.</span> <span class="nav-text">2 HTTP 简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-请求报文"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 请求报文</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-响应报文"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 响应报文</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-HTTP-是不保存状态的协议"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 HTTP 是不保存状态的协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-告知服务器意图的-HTTP-方法"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 告知服务器意图的 HTTP 方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-持久连接节省通信量"><span class="nav-number">2.5.</span> <span class="nav-text">2.5 持久连接节省通信量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-6-使用-Cookie-的状态管理"><span class="nav-number">2.6.</span> <span class="nav-text">2.6 使用 Cookie 的状态管理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-HTTP-报文"><span class="nav-number">3.</span> <span class="nav-text">3 HTTP 报文</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-HTTP-报文结构"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 HTTP 报文结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-编码提升传输效率"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 编码提升传输效率</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-发送多种数据的多部分对象集合"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 发送多种数据的多部分对象集合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-获取部分内容的范围请求"><span class="nav-number">3.4.</span> <span class="nav-text">3.4 获取部分内容的范围请求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-5-内容协商返回最合适的内容"><span class="nav-number">3.5.</span> <span class="nav-text">3.5 内容协商返回最合适的内容</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-HTTP-状态码"><span class="nav-number">4.</span> <span class="nav-text">4 HTTP 状态码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-2XX-成功"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 2XX 成功</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-3XX-重定向"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 3XX 重定向</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-4XX-客户端错误"><span class="nav-number">4.3.</span> <span class="nav-text">4.3 4XX 客户端错误</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-5XX-服务器错误"><span class="nav-number">4.4.</span> <span class="nav-text">4.4 5XX 服务器错误</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-与-HTTP-交互的-Web-服务器相关知识"><span class="nav-number">5.</span> <span class="nav-text">5 与 HTTP 交互的 Web 服务器相关知识</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-用单台虚拟主机实现多个域名"><span class="nav-number">5.1.</span> <span class="nav-text">5.1 用单台虚拟主机实现多个域名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-通信数据转发程序：代理、网关、隧道"><span class="nav-number">5.2.</span> <span class="nav-text">5.2 通信数据转发程序：代理、网关、隧道</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-3-代理"><span class="nav-number">5.3.</span> <span class="nav-text">5.3 代理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-4-网关"><span class="nav-number">5.4.</span> <span class="nav-text">5.4 网关</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-5-隧道"><span class="nav-number">5.5.</span> <span class="nav-text">5.5 隧道</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-6-保存资源的缓存"><span class="nav-number">5.6.</span> <span class="nav-text">5.6 保存资源的缓存</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#5-6-1-缓存的有效期限"><span class="nav-number">5.6.1.</span> <span class="nav-text">5.6.1 缓存的有效期限</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-6-2-客户端的缓存"><span class="nav-number">5.6.2.</span> <span class="nav-text">5.6.2 客户端的缓存</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lijiankun24</span>
+  
+</div>
+
+
+<div>
+  <span id="busuanzi_container_site_pv">
+    Total views <span id="busuanzi_value_site_pv">   </span>
+  </span>
+
+  <span id="busuanzi_container_site_uv">
+    |   Total visitors <span id="busuanzi_value_site_uv"/>
+  </span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("tWG63sCRtLhi5NFeaXtWqtnv-gzGzoHsz", "lPLcNFpeOoNc6wr9PVX8XdbI");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+
+  
+
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+          bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+      } else {
+          bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+</body>
+</html>
