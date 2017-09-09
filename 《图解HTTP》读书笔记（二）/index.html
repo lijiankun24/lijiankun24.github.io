@@ -107,9 +107,6 @@ HTTP/1.1 通用首部字段
 响应首部字段
 实体首部字段
 其他">
-<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（二）/http_construct.png">
-<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（二）/http_request.png">
-<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（二）/http_response.png">
 <meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（二）/cache-control.png">
 <meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（二）/cache-private.png">
 <meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（二）/no-cache.png">
@@ -152,7 +149,7 @@ HTTP/1.1 通用首部字段
 <meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（二）/cookie1.png">
 <meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（二）/cookie2.png">
 <meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（二）/dnt.png">
-<meta property="og:updated_time" content="2017-09-07T12:53:52.000Z">
+<meta property="og:updated_time" content="2017-09-09T03:00:14.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="《图解HTTP》读书笔记（二）">
 <meta name="twitter:description" content="本文是《图解HTTP》读书笔记的第二篇，主要包括此书的第六章内容，因为第六章的内容较多，而且比较重要，所以单独写为一篇文章。主要内容是 HTTP 的首部，包括以下六点内容：
@@ -163,7 +160,7 @@ HTTP/1.1 通用首部字段
 响应首部字段
 实体首部字段
 其他">
-<meta name="twitter:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（二）/http_construct.png">
+<meta name="twitter:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（二）/cache-control.png">
 
 
 
@@ -417,18 +414,12 @@ HTTP/1.1 通用首部字段
 <li>响应首部字段</li>
 <li>实体首部字段</li>
 <li>其他<a id="more"></a>
-13181840779</li>
+</li>
 </ol>
 <h2 id="1-HTTP-首部简介"><a href="#1-HTTP-首部简介" class="headerlink" title="1. HTTP 首部简介"></a>1. HTTP 首部简介</h2><p><code>HTTP</code> 协议的请求和响应报文中必定包含 <code>HTTP</code> 首部。首部内容为客户端和服务器分别处理请求和响应提供所需要的信息。</p>
 <p>在报文众多的字段当中，HTTP 首部字段包含的信息最为丰富。首部字段同时存在于请求和响应报文内，并涵盖 HTTP 报文相关的内容信息。</p>
-<div align="center"><br>    <img src="《图解HTTP》读书笔记（二）/http_construct.png" width="373" height="184"><br></div>
-
 <h3 id="1-1-HTTP-请求报文"><a href="#1-1-HTTP-请求报文" class="headerlink" title="1.1 HTTP 请求报文"></a>1.1 HTTP 请求报文</h3><p>在请求中，HTTP 报文由方法、URI、HTTP 版本、HTTP 首部字段等部分构成。</p>
-<div align="center"><br>    <img src="《图解HTTP》读书笔记（二）/http_request.png" width="483" height="214"><br></div>
-
 <h3 id="1-2-HTTP-响应报文"><a href="#1-2-HTTP-响应报文" class="headerlink" title="1.2 HTTP 响应报文"></a>1.2 HTTP 响应报文</h3><p>在响应中，HTTP 报文由 HTTP 版本、状态码（数字和原因短语）、HTTP 首部字段 3 部分组成。</p>
-<div align="center"><br>    <img src="《图解HTTP》读书笔记（二）/http_response.png" width="475" height="199"><br></div>
-
 <h3 id="1-3-HTTP-首部字段传递重要信息"><a href="#1-3-HTTP-首部字段传递重要信息" class="headerlink" title="1.3 HTTP 首部字段传递重要信息"></a>1.3 HTTP 首部字段传递重要信息</h3><p>HTTP 首部字段是构成 HTTP 报文的要素之一。在客户端与服务器之间以 HTTP 协议进行通信的过程中，无论是请求还是响应都会使用首部字段，它能起到传递额外重要信息的作用。</p>
 <p>使用首部字段是为了给浏览器和服务器提供报文主体大小、所使用的语言、认证信息等内容。</p>
 <h3 id="1-4-HTTP-首部字段结构"><a href="#1-4-HTTP-首部字段结构" class="headerlink" title="1.4 HTTP 首部字段结构"></a>1.4 HTTP 首部字段结构</h3><p>HTTP 首部字段是由首部字段名和字段值构成的，中间用冒号 “：” 分隔。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">首部字段名：字段值</div></pre></td></tr></table></figure></p>
