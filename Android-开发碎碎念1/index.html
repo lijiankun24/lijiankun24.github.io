@@ -1,0 +1,993 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="记录最近在 Android 开发时遇见的两个问题的解决办法：
+
+Android 应用启动页面全屏及消除白屏的问题
+Android 中存储空间的问题">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 开发碎碎念1">
+<meta property="og:url" content="http://www.lijiankun24.com/Android-开发碎碎念1/index.html">
+<meta property="og:site_name" content="一些无处安放的代码和故事">
+<meta property="og:description" content="记录最近在 Android 开发时遇见的两个问题的解决办法：
+
+Android 应用启动页面全屏及消除白屏的问题
+Android 中存储空间的问题">
+<meta property="og:image" content="http://www.lijiankun24.com/Android-开发碎碎念1/SplashActivity.png">
+<meta property="og:updated_time" content="2017-09-16T02:32:53.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android 开发碎碎念1">
+<meta name="twitter:description" content="记录最近在 Android 开发时遇见的两个问题的解决办法：
+
+Android 应用启动页面全屏及消除白屏的问题
+Android 中存储空间的问题">
+<meta name="twitter:image" content="http://www.lijiankun24.com/Android-开发碎碎念1/SplashActivity.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.lijiankun24.com/Android-开发碎碎念1/"/>
+
+
+
+
+
+  <title> Android 开发碎碎念1 | 一些无处安放的代码和故事 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">一些无处安放的代码和故事</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://www.lijiankun24.com/Android-开发碎碎念1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="lijiankun24">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一些无处安放的代码和故事">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Android 开发碎碎念1
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-09T20:24:12+08:00">
+                2017-09-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/Android-开发碎碎念1/" class="leancloud_visitors" data-flag-title="Android 开发碎碎念1">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Views </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>记录最近在 Android 开发时遇见的两个问题的解决办法：</p>
+<ol>
+<li>Android 应用启动页面全屏及消除白屏的问题</li>
+<li>Android 中存储空间的问题<a id="more"></a>
+</li>
+</ol>
+<h2 id="1-Android-应用启动页"><a href="#1-Android-应用启动页" class="headerlink" title="1. Android 应用启动页"></a>1. Android 应用启动页</h2><p>打开大多数应用都会进入到一个“欢迎页面”，在我们的应用中，把起名为 “SplashActivity”，类似下面页面这样。</p>
+<div align="center"><br>    <img src="/Android-开发碎碎念1/SplashActivity.png" width="360" height="640"><br></div>
+
+<p>在开发的过程中会遇见两个问题：</p>
+<ol>
+<li>怎样做到页面的全屏？</li>
+<li>打开应用的时候会有个白屏或者黑屏（依使用的不同主题而定）一闪而过（时间很短，但是肉眼可见），再进入到这个 <code>SplashActivity</code> 中，怎么消除白屏或黑屏？</li>
+</ol>
+<h3 id="1-1-全屏显示"><a href="#1-1-全屏显示" class="headerlink" title="1.1 全屏显示"></a>1.1 全屏显示</h3><p>在 <code>style.xml</code> 中声明一个 <code>启动页主题</code>，并且在 <code>AndroidManifest.xml</code> 中将 <code>SplashActivity</code> 的主题将 <code>启动页主题</code> 设置为 <code>SplashActivity</code> 的如下所示：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- Base application theme. --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">style</span> <span class="attr">name</span>=<span class="string">"AppTheme"</span> <span class="attr">parent</span>=<span class="string">"Theme.AppCompat.Light.NoActionBar"</span>&gt;</span><span class="xml"></span></div><div class="line">    <span class="comment">&lt;!-- Customize your theme here. --&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"colorPrimary"</span>&gt;</span>@color/colorPrimary<span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"colorPrimaryDark"</span>&gt;</span>@color/colorPrimaryDark<span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"colorAccent"</span>&gt;</span>@color/colorAccent<span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">style</span>&gt;</span></div><div class="line"></div><div class="line"><span class="comment">&lt;!-- 启动页主题 --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">style</span> <span class="attr">name</span>=<span class="string">"LaunchTheme"</span> <span class="attr">parent</span>=<span class="string">"AppTheme"</span>&gt;</span><span class="xml"></span></div><div class="line">    <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"android:windowNoTitle"</span>&gt;</span>true<span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"windowActionBar"</span>&gt;</span>false<span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"android:windowFullscreen"</span>&gt;</span>true<span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"android:windowContentOverlay"</span>&gt;</span>@null<span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"android:windowBackground"</span>&gt;</span>@drawable/bg_splash<span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"android:windowIsTranslucent"</span>&gt;</span>true<span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">style</span>&gt;</span></div></pre></td></tr></table></figure>
+<h4 id="1-1-1-隐藏状态栏和标题栏"><a href="#1-1-1-隐藏状态栏和标题栏" class="headerlink" title="1.1.1 隐藏状态栏和标题栏"></a>1.1.1 隐藏状态栏和标题栏</h4><p>下面三个属性设置可以隐藏 Activity 的状态栏和标题栏：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"android:windowNoTitle"</span>&gt;</span>true<span class="tag">&lt;/<span class="name">item</span>&gt;</span>  </div><div class="line"><span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"windowActionBar"</span>&gt;</span>false<span class="tag">&lt;/<span class="name">item</span>&gt;</span>  </div><div class="line"><span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"android:windowFullscreen"</span>&gt;</span>true<span class="tag">&lt;/<span class="name">item</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<h4 id="1-1-2-去除白屏-黑屏"><a href="#1-1-2-去除白屏-黑屏" class="headerlink" title="1.1.2 去除白屏/黑屏"></a>1.1.2 去除白屏/黑屏</h4><ol>
+<li><p>通过下面属性，将 <code>系统级窗口</code> 的背景设置为 <code>bg_splash.png</code> 图片，如果不设置则 <code>系统级窗口</code> 是白色/黑色，所以才会有应用打开时一闪而过的白屏/黑屏。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"android:windowBackground"</span>&gt;</span>@drawable/bg_splash<span class="tag">&lt;/<span class="name">item</span>&gt;</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>设置 <code>SplashActivity</code> 的整体背景为 <code>bg_splash.png</code> 图片。这个设置的是 <code>应用级窗口</code> 的背景。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">android:background="@drawable</span>/<span class="attr">bg_splash</span>"</span></div><div class="line">  <span class="attr">...</span>/&gt;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<blockquote>
+<p>通过上面两个设置，系统级窗口和应用级窗口的背景都是 <code>bg_splash.png</code> 图片，应用在打开时就不会出现 <code>白屏/黑屏</code> 的情况了。</p>
+</blockquote>
+<h4 id="1-1-3-虚拟按键遮挡背景的问题"><a href="#1-1-3-虚拟按键遮挡背景的问题" class="headerlink" title="1.1.3 虚拟按键遮挡背景的问题"></a>1.1.3 虚拟按键遮挡背景的问题</h4><p>在没有虚拟导航栏按键的手机上，上面的设置的背景即可完美的显示；但是在有虚拟导航栏按键的手机上，如果只是按照上面的代码设置背景，会出现虚拟导航栏遮挡 <code>系统级窗口</code> 背景图的问题。在 <code>启动页主题</code> 中添加如下设置，即可解决这个问题：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"android:windowIsTranslucent"</span>&gt;</span>true<span class="tag">&lt;/<span class="name">item</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<h2 id="2-Android-中的存储空间"><a href="#2-Android-中的存储空间" class="headerlink" title="2. Android 中的存储空间"></a>2. Android 中的存储空间</h2><p>Android 中的存储分为：内部存储和外部存储，下面分别介绍。</p>
+<h3 id="2-1-内部存储"><a href="#2-1-内部存储" class="headerlink" title="2.1 内部存储"></a>2.1 内部存储</h3><p>内部存储是在 <code>/data/</code> 目录下，该目录下的文件在下面两种情况可以查看：</p>
+<ul>
+<li>在 <code>root</code> 的手机上（手机获取 <code>root</code> 权限，可以使用市场上一些常用的 Root 应用）</li>
+<li>使用模拟器调试应用时，可以使用 <code>Android Device Monitor</code> 中提供的 <code>File Explorer</code> 工具查看。<br>除上面两种情况外，在没有 root 的手机上，普通用户没有办法查看该目录下的文件。</li>
+</ul>
+<p>该目录下有多个子目录，对于开发者比较重要的子目录有两个：</p>
+<h4 id="2-1-1-data-app"><a href="#2-1-1-data-app" class="headerlink" title="2.1.1 /data/app/"></a>2.1.1 /data/app/</h4><p>在该文件目录下存放着安装在此手机上的应用的 APK 文件，当调试应用的时候，在控制台输出的内容中出现 <code>uploading ……</code> 的一项，这就是将我们的 APK 文件上传到此目录下，之后才开始安装应用。</p>
+<h4 id="2-1-2-data-data"><a href="#2-1-2-data-data" class="headerlink" title="2.1.2 /data/data/"></a>2.1.2 /data/data/</h4><p>在该目录下，系统都会为已安装在手机上的应用自动创建一个与之对应的目录，该目录以应用的包名命名，如： <code>/data/data/com.lijiankun24.androidpractice/</code> 的目录，用于存储 <code>com.lijiankun24.androidpractice</code> 应用的私有数据。</p>
+<p>这个目录用于 App 中的 WebView 缓存页面信息，SharedPreferences 和 SQLiteDatabase 持久化应用相关数据等。</p>
+<p>当用户卸载此应用时，系统会自动删除 <code>/data/data/com.lijiankun24.androidpractice/</code> 文件及其中的内容。</p>
+<p>在该目录下对存储内容又进行了分类，如下所示：</p>
+<ol>
+<li><p><code>data/data/包名/files</code>：应用的普通数据，对于 <code>data/data/包名/files</code> 目录下的文件有如下操作的 API 供调用：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">context.getFilesDir();</div><div class="line">context.openFileInput(String name);</div><div class="line">context.openFileOutput(String name, <span class="keyword">int</span> mode);</div><div class="line">context.deleteFile(String name);       </div><div class="line">context.fileList();</div></pre></td></tr></table></figure>
+</li>
+<li><p><code>data/data/包名/cache</code>：存放应用的缓存信息，包括 <code>WebView</code> 的缓存数据</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">context.getCacheDir();</div></pre></td></tr></table></figure>
+</li>
+<li><p><code>data/data/包名/databases</code>：存放应用的数据库文件</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">context.getDataDir()</div><div class="line">context.getDatabasePath(String name)</div><div class="line">context.deleteDatabase(String name)</div></pre></td></tr></table></figure>
+</li>
+<li><p><code>data/data/包名/shared_prefs</code>：存放应用内的 <code>SharedPreferences</code> 数据</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">context.getSharedPreferences(name,mode)<span class="comment">//返回的是 SharedPreferences 对象</span></div><div class="line">context.deleteSharedPreferences(name)</div></pre></td></tr></table></figure>
+</li>
+<li><p><code>/data</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Environment.getDataDirectory();</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="2-2-外部存储"><a href="#2-2-外部存储" class="headerlink" title="2.2 外部存储"></a>2.2 外部存储</h3><p>Android 设备都支持外部存储，该存储可能是可移除的存储介质（例如 SD 卡）或内部（不可移除）存储。</p>
+<p>保存到外部存储中的文件是全局可读写的</p>
+<p>通过 USB 线将手机连接到计算机上时，在计算机上启用 USB 大容量存储可以传输文件。</p>
+<h4 id="2-2-1-外部存储状态和路径"><a href="#2-2-1-外部存储状态和路径" class="headerlink" title="2.2.1 外部存储状态和路径"></a>2.2.1 外部存储状态和路径</h4><p>在对外部存储操作的时候，首先需要获取对外部存储的读写权限，在 <code>AndroidManifest.xml</code> 要申明权限，如下所示：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.READ_EXTERNAL_STORAGE"</span>/&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.WRITE_EXTERNAL_STORAGE"</span>/&gt;</span></div></pre></td></tr></table></figure></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Environment.getExternalStorageState();       <span class="comment">// 获取外部存储的状态，得到的具体值请查看源码注释</span></div><div class="line">Environment.getExternalStorageDirectory();   <span class="comment">// 获取外部存储的文件，返回的路径是：/storage/emulated/0</span></div></pre></td></tr></table></figure>
+<h4 id="2-2-2-获取外部存储公众目录"><a href="#2-2-2-获取外部存储公众目录" class="headerlink" title="2.2.2 获取外部存储公众目录"></a>2.2.2 获取外部存储公众目录</h4><p>Android 系统在外部存储中提供了十个文件用于存储对应的文件，存储在这些文件中的文件，不会随着应用卸载而被删除。</p>
+<p>这些文件的获取方式如下所示：<br> <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Environment.getExternalStoragePublicDirectory(type);</div></pre></td></tr></table></figure></p>
+<ul>
+<li>DIRECTORY_MUSIC：/storage/emulated/0/Music</li>
+<li>DIRECTORY_PODCASTS：/storage/emulated/0/Podcasts</li>
+<li>DIRECTORY_RINGTONES：/storage/emulated/0/Ringtones</li>
+<li>DIRECTORY_ALARMS：/storage/emulated/0/Alarms</li>
+<li>DIRECTORY_NOTIFICATIONS：/storage/emulated/0/Notifications</li>
+<li>DIRECTORY_PICTURES：/storage/emulated/0/Pictures</li>
+<li>DIRECTORY_MOVIES：/storage/emulated/0/Movies</li>
+<li>DIRECTORY_DOWNLOADS：/storage/emulated/0/Downloads</li>
+<li>DIRECTORY_DCIM：/storage/emulated/0/Dcim</li>
+<li>DIRECTORY_DOCUMENTS：/storage/emulated/0/Documents</li>
+</ul>
+<h4 id="2-2-3-获取外部存储私有目录"><a href="#2-2-3-获取外部存储私有目录" class="headerlink" title="2.2.3 获取外部存储私有目录"></a>2.2.3 获取外部存储私有目录</h4><p>在外部存储中存在私有目录，其位置在 SD 卡的 /Android/data 目录下，会生成对应包名的文件夹用于存储该应用的外部存储的私有文件。</p>
+<p>在这些目录下的文件，会随着应用卸载而被删除。</p>
+<p>如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">context.getExternalCacheDir();      <span class="comment">// /storage/emulated/0/Android/data/应用包名/cache</span></div><div class="line">context.getExternalFilesDir(type);  <span class="comment">// /storage/emulated/0/Android/data/应用包名/files</span></div><div class="line">context.getObbDir();                <span class="comment">// /storage/emulated/0/Android/obb/应用包名</span></div></pre></td></tr></table></figure></p>
+<h4 id="2-2-4-通过反射获取外部存储"><a href="#2-2-4-通过反射获取外部存储" class="headerlink" title="2.2.4 通过反射获取外部存储"></a>2.2.4 通过反射获取外部存储</h4><p><code>Environment.getExternalStorageDirectory()</code> 有时候并不会给出我们想要的存储路径，比如：有的手机支持扩展多个 sdcard，如果想获取多个存储设备的信息，这个 API 就不能满足了。</p>
+<p>但是系统自带的文件管理器是怎么获取得存储设备信息的呢？在 Android SDK 中有个 <code>StorageManager</code> 类，其中有个方法是 <code>getVolumeList()</code>，源码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Returns list of all mountable volumes.</div><div class="line"> * <span class="doctag">@hide</span></div><div class="line"> */  </div><div class="line"><span class="keyword">public</span> StorageVolume[] getVolumeList() &#123;  </div><div class="line">    <span class="keyword">if</span> (mMountService == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">new</span> StorageVolume[<span class="number">0</span>];  </div><div class="line">    <span class="keyword">try</span> &#123;  </div><div class="line">        Parcelable[] list = mMountService.getVolumeList();  </div><div class="line">        <span class="keyword">if</span> (list == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">new</span> StorageVolume[<span class="number">0</span>];  </div><div class="line">        <span class="keyword">int</span> length = list.length;  </div><div class="line">        StorageVolume[] result = <span class="keyword">new</span> StorageVolume[length];  </div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; length; i++) &#123;  </div><div class="line">            result[i] = (StorageVolume)list[i];  </div><div class="line">        &#125;  </div><div class="line">        <span class="keyword">return</span> result;  </div><div class="line">    &#125; <span class="keyword">catch</span> (RemoteException e) &#123;  </div><div class="line">        Log.e(TAG, <span class="string">"Failed to get volume list"</span>, e);  </div><div class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;  </div><div class="line">    &#125;  </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><code>getVolumeList()</code> 方法是隐藏的，不能在应用代码中直接调用，所以只能通过反射来调用这个方法。<br>通过反射，得到 <code>StorageManager</code> 类和 <code>StorageVolume</code> 类，就可以得到手机的所有存储设备信息，封装代码如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div><div class="line">175</div><div class="line">176</div><div class="line">177</div><div class="line">178</div><div class="line">179</div><div class="line">180</div><div class="line">181</div><div class="line">182</div><div class="line">183</div><div class="line">184</div><div class="line">185</div><div class="line">186</div><div class="line">187</div><div class="line">188</div><div class="line">189</div><div class="line">190</div><div class="line">191</div><div class="line">192</div><div class="line">193</div><div class="line">194</div><div class="line">195</div><div class="line">196</div><div class="line">197</div><div class="line">198</div><div class="line">199</div><div class="line">200</div><div class="line">201</div><div class="line">202</div><div class="line">203</div><div class="line">204</div><div class="line">205</div><div class="line">206</div><div class="line">207</div><div class="line">208</div><div class="line">209</div><div class="line">210</div><div class="line">211</div><div class="line">212</div><div class="line">213</div><div class="line">214</div><div class="line">215</div><div class="line">216</div><div class="line">217</div><div class="line">218</div><div class="line">219</div><div class="line">220</div><div class="line">221</div><div class="line">222</div><div class="line">223</div><div class="line">224</div><div class="line">225</div><div class="line">226</div><div class="line">227</div><div class="line">228</div><div class="line">229</div><div class="line">230</div><div class="line">231</div><div class="line">232</div><div class="line">233</div><div class="line">234</div><div class="line">235</div><div class="line">236</div><div class="line">237</div><div class="line">238</div><div class="line">239</div><div class="line">240</div><div class="line">241</div><div class="line">242</div><div class="line">243</div><div class="line">244</div><div class="line">245</div><div class="line">246</div><div class="line">247</div><div class="line">248</div><div class="line">249</div><div class="line">250</div><div class="line">251</div><div class="line">252</div><div class="line">253</div><div class="line">254</div><div class="line">255</div><div class="line">256</div><div class="line">257</div><div class="line">258</div><div class="line">259</div><div class="line">260</div><div class="line">261</div><div class="line">262</div><div class="line">263</div><div class="line">264</div><div class="line">265</div><div class="line">266</div><div class="line">267</div><div class="line">268</div><div class="line">269</div><div class="line">270</div><div class="line">271</div><div class="line">272</div><div class="line">273</div><div class="line">274</div><div class="line">275</div><div class="line">276</div><div class="line">277</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// CustomStorageManager.java</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CustomStorageManager</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> CustomStorageManager INSTANCE = <span class="keyword">null</span>;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> Context mContext = <span class="keyword">null</span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="title">CustomStorageManager</span><span class="params">()</span> </span>&#123;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> CustomStorageManager <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (INSTANCE == <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">synchronized</span> (CustomStorageManager.class) &#123;</div><div class="line">                <span class="keyword">if</span> (INSTANCE == <span class="keyword">null</span>) &#123;</div><div class="line">                    INSTANCE = <span class="keyword">new</span> CustomStorageManager();</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> INSTANCE;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(Context context)</span> </span>&#123;</div><div class="line">        mContext = context.getApplicationContext();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> List&lt;MyStorageVolume&gt; <span class="title">getStorage</span><span class="params">()</span> </span>&#123;</div><div class="line">        List&lt;MyStorageVolume&gt; volumeList = <span class="keyword">new</span> ArrayList&lt;&gt;(<span class="number">3</span>);</div><div class="line">        StorageManager storageManager = (StorageManager) mContext.getSystemService(Context.STORAGE_SERVICE);</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            Class&lt;?&gt;[] paramClasses = &#123;&#125;;</div><div class="line">            Method method = StorageManager.class.getMethod(<span class="string">"getVolumeList"</span>, paramClasses);</div><div class="line">            Object[] params = &#123;&#125;;</div><div class="line">            Object[] invokes = (Object[]) method.invoke(storageManager, params);</div><div class="line">            <span class="keyword">if</span> (invokes != <span class="keyword">null</span>) &#123;</div><div class="line">                <span class="keyword">for</span> (Object object : invokes) &#123;</div><div class="line">                    volumeList.add(<span class="keyword">new</span> MyStorageVolume(object));</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">return</span> volumeList;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 获取Volume挂载状态, 例如Environment.MEDIA_MOUNTED</div><div class="line">     *</div><div class="line">     * <span class="doctag">@param</span> context 上下文</div><div class="line">     * <span class="doctag">@param</span> path    目录路径</div><div class="line">     * <span class="doctag">@return</span> 挂载状态</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">getVolumeState</span><span class="params">(Context context, String path)</span> </span>&#123;</div><div class="line">        <span class="comment">//mountPoint是挂载点名Storage'paths[1]:/mnt/extSdCard不是/mnt/extSdCard/</span></div><div class="line">        <span class="comment">//不同手机外接存储卡名字不一样。/mnt/sdcard</span></div><div class="line">        StorageManager mStorageManager = (StorageManager) context</div><div class="line">                .getSystemService(STORAGE_SERVICE);</div><div class="line">        String status = <span class="keyword">null</span>;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            Method mMethodGetPathsState = mStorageManager.getClass().</div><div class="line">                    getMethod(<span class="string">"getVolumeState"</span>, String.class);</div><div class="line">            status = (String) mMethodGetPathsState.invoke(mStorageManager, path);</div><div class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> status;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 获取目录可用空间大小</div><div class="line">     *</div><div class="line">     * <span class="doctag">@param</span> path 获取目录</div><div class="line">     * <span class="doctag">@return</span> 存储目录可用空间大小</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">long</span> <span class="title">getAvailableSize</span><span class="params">(String path)</span> </span>&#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            StatFs sf = <span class="keyword">new</span> StatFs(path);</div><div class="line">            <span class="keyword">long</span> blockSize = sf.getBlockSize();</div><div class="line">            <span class="keyword">long</span> availableCount = sf.getAvailableBlocks();</div><div class="line">            <span class="keyword">return</span> availableCount * blockSize;</div><div class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 获取目录总存储空间</div><div class="line">     *</div><div class="line">     * <span class="doctag">@param</span> path 存储目录</div><div class="line">     * <span class="doctag">@return</span> 总存储空间大小</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">long</span> <span class="title">getTotalSize</span><span class="params">(String path)</span> </span>&#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            StatFs sf = <span class="keyword">new</span> StatFs(path);</div><div class="line">            <span class="keyword">long</span> blockSize = sf.getBlockSize();</div><div class="line">            <span class="keyword">long</span> totalCount = sf.getBlockCount();</div><div class="line">            <span class="keyword">return</span> totalCount * blockSize;</div><div class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">getSizeStr</span><span class="params">(<span class="keyword">long</span> fileLength)</span> </span>&#123;</div><div class="line">        String strSize;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            <span class="keyword">if</span> (fileLength &gt;= <span class="number">1024</span> * <span class="number">1024</span> * <span class="number">1024</span>) &#123;</div><div class="line">                strSize = (<span class="keyword">float</span>) Math.round(<span class="number">10</span> * fileLength / (<span class="number">1024</span> * <span class="number">1024</span> * <span class="number">1024</span>)) / <span class="number">10</span> + <span class="string">" GB"</span>;</div><div class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (fileLength &gt;= <span class="number">1024</span> * <span class="number">1024</span>) &#123;</div><div class="line">                strSize = (<span class="keyword">float</span>) Math.round(<span class="number">10</span> * fileLength / (<span class="number">1024</span> * <span class="number">1024</span> * <span class="number">1.0</span>)) / <span class="number">10</span> + <span class="string">" MB"</span>;</div><div class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (fileLength &gt;= <span class="number">1024</span>) &#123;</div><div class="line">                strSize = (<span class="keyword">float</span>) Math.round(<span class="number">10</span> * fileLength / (<span class="number">1024</span>)) / <span class="number">10</span> + <span class="string">" KB"</span>;</div><div class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (fileLength &gt;= <span class="number">0</span>) &#123;</div><div class="line">                strSize = fileLength + <span class="string">" B"</span>;</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                strSize = <span class="string">"0 B"</span>;</div><div class="line">            &#125;</div><div class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">            strSize = <span class="string">"0 B"</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> strSize;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// MyStorageVolume.java</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyStorageVolume</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> mStorageId;</div><div class="line">    <span class="keyword">private</span> String mPath;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> mPrimary;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> mRemovable;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> mEmulated;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">long</span> mMtpReserveSpace;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> mAllowMassStorage;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">long</span> mMaxFileSize;</div><div class="line">    <span class="keyword">private</span> String mState;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyStorageVolume</span><span class="params">(Object reflectItem)</span> </span>&#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            Method fmStorageId = reflectItem.getClass().getDeclaredMethod(<span class="string">"getStorageId"</span>);</div><div class="line">            fmStorageId.setAccessible(<span class="keyword">true</span>);</div><div class="line">            mStorageId = (Integer) fmStorageId.invoke(reflectItem);</div><div class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            Method fmPath = reflectItem.getClass().getDeclaredMethod(<span class="string">"getPath"</span>);</div><div class="line">            fmPath.setAccessible(<span class="keyword">true</span>);</div><div class="line">            mPath = (String) fmPath.invoke(reflectItem);</div><div class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            Method fmPrimary = reflectItem.getClass().getDeclaredMethod(<span class="string">"isPrimary"</span>);</div><div class="line">            fmPrimary.setAccessible(<span class="keyword">true</span>);</div><div class="line">            mPrimary = (Boolean) fmPrimary.invoke(reflectItem);</div><div class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            Method fisRemovable = reflectItem.getClass().getDeclaredMethod(<span class="string">"isRemovable"</span>);</div><div class="line">            fisRemovable.setAccessible(<span class="keyword">true</span>);</div><div class="line">            mRemovable = (Boolean) fisRemovable.invoke(reflectItem);</div><div class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            Method fisEmulated = reflectItem.getClass().getDeclaredMethod(<span class="string">"isEmulated"</span>);</div><div class="line">            fisEmulated.setAccessible(<span class="keyword">true</span>);</div><div class="line">            mEmulated = (Boolean) fisEmulated.invoke(reflectItem);</div><div class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            Method fmMtpReserveSpace = reflectItem.getClass().getDeclaredMethod(<span class="string">"getMtpReserveSpace"</span>);</div><div class="line">            fmMtpReserveSpace.setAccessible(<span class="keyword">true</span>);</div><div class="line">            mMtpReserveSpace = (Long) fmMtpReserveSpace.invoke(reflectItem);</div><div class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            Method fAllowMassStorage = reflectItem.getClass().getDeclaredMethod(<span class="string">"allowMassStorage"</span>);</div><div class="line">            fAllowMassStorage.setAccessible(<span class="keyword">true</span>);</div><div class="line">            mAllowMassStorage = (Boolean) fAllowMassStorage.invoke(reflectItem);</div><div class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            Method fMaxFileSize = reflectItem.getClass().getDeclaredMethod(<span class="string">"getMaxFileSize"</span>);</div><div class="line">            fMaxFileSize.setAccessible(<span class="keyword">true</span>);</div><div class="line">            mMaxFileSize = (Long) fMaxFileSize.invoke(reflectItem);</div><div class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            Method fState = reflectItem.getClass().getDeclaredMethod(<span class="string">"getState"</span>);</div><div class="line">            fState.setAccessible(<span class="keyword">true</span>);</div><div class="line">            mState = (String) fState.invoke(reflectItem);</div><div class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 获取 Volume 挂载状态, 例如 Environment.MEDIA_MOUNTED</div><div class="line">     *</div><div class="line">     * <span class="doctag">@param</span> context 上下文</div><div class="line">     * <span class="doctag">@return</span> 获取 Volume 挂载状态</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getVolumeState</span><span class="params">(Context context)</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> CustomStorageManager.getVolumeState(context, mPath);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 获取当前存储设备是否是处于挂起状态</div><div class="line">     *</div><div class="line">     * <span class="doctag">@param</span> context 上下文</div><div class="line">     * <span class="doctag">@return</span> true 表示处于挂起，即可用；false 表示处于非挂起，即不可用</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isMounted</span><span class="params">(Context context)</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> getVolumeState(context).equals(Environment.MEDIA_MOUNTED);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 获取存储设备的唯一标识</div><div class="line">     *</div><div class="line">     * <span class="doctag">@return</span> 存储设备的唯一表示 Id</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getUniqueFlag</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="string">""</span> + mStorageId;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 获取目录可用空间大小</div><div class="line">     *</div><div class="line">     * <span class="doctag">@return</span> 获取当前空间可用大小</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">getAvailableSize</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> CustomStorageManager.getAvailableSize(mPath);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 获取目录总存储空间</div><div class="line">     *</div><div class="line">     * <span class="doctag">@return</span> 获取空间总可用大小</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">getTotalSize</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> CustomStorageManager.getTotalSize(mPath);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="string">"MyStorageVolume&#123;"</span> +</div><div class="line">                <span class="string">"\nmStorageId="</span> + mStorageId +</div><div class="line">                <span class="string">"\n, mPath='"</span> + mPath + <span class="string">'\''</span> +</div><div class="line">                <span class="string">"\n, mPrimary="</span> + mPrimary +</div><div class="line">                <span class="string">"\n, mRemovable="</span> + mRemovable +</div><div class="line">                <span class="string">"\n, mEmulated="</span> + mEmulated +</div><div class="line">                <span class="string">"\n, mMtpReserveSpace="</span> + mMtpReserveSpace +</div><div class="line">                <span class="string">"\n, mAllowMassStorage="</span> + mAllowMassStorage +</div><div class="line">                <span class="string">"\n, mMaxFileSize="</span> + mMaxFileSize +</div><div class="line">                <span class="string">"\n, mState='"</span> + mState + <span class="string">'\''</span> +</div><div class="line">                <span class="string">"\n, getTotalSize='"</span> + CustomStorageManager.getSizeStr(getTotalSize()) + <span class="string">'\''</span> +</div><div class="line">                <span class="string">"\n, getAvailableSize='"</span> + CustomStorageManager.getSizeStr(getAvailableSize()) + <span class="string">'\''</span> +</div><div class="line">                <span class="string">'&#125;'</span> + <span class="string">"\n"</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h4 id="2-2-5-注意"><a href="#2-2-5-注意" class="headerlink" title="2.2.5 注意"></a>2.2.5 注意</h4><p>由于外部存储出现不可用的状态，比如：当用户移除提供外部存储的 SD 卡时，所以在访问它之前，需要确认外部存储是否处于可用的状体，如果返回的状态是：<code>MEDIA_MOUNTED</code>，那么就可以操作外部存储。如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* Checks if external storage is available for read and write */</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isExternalStorageWritable</span><span class="params">()</span> </span>&#123;</div><div class="line">    String state = Environment.getExternalStorageState();</div><div class="line">    <span class="keyword">if</span> (Environment.MEDIA_MOUNTED.equals(state)) &#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/* Checks if external storage is available to at least read */</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isExternalStorageReadable</span><span class="params">()</span> </span>&#123;</div><div class="line">    String state = Environment.getExternalStorageState();</div><div class="line">    <span class="keyword">if</span> (Environment.MEDIA_MOUNTED.equals(state) ||</div><div class="line">        Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) &#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<hr>
+<p><strong>参考资料：</strong></p>
+<p><a href="http://blog.csdn.net/robert_cysy/article/details/72824513" target="_blank" rel="external">android AppCompat, splash启动白屏（黑屏）全屏，去掉状态栏，以及splash与虚拟按键遮挡</a> – <a href="http://blog.csdn.net/robert_cysy?viewmode=contents" target="_blank" rel="external">robert_cysy</a></p>
+<p><a href="http://www.jianshu.com/p/ad844547a43b" target="_blank" rel="external">Android中的内部存储与外部存储</a>  – <a href="http://www.jianshu.com/u/c0c3e3363196" target="_blank" rel="external">我家就在狗熊岭</a></p>
+<p><a href="http://www.jianshu.com/p/80e10b3dbba5" target="_blank" rel="external">Android 存储路径浅析</a> – <a href="http://www.jianshu.com/u/a9e7b91e6409" target="_blank" rel="external">墨眉无锋</a></p>
+<p><a href="http://blog.csdn.net/wangsf1112/article/details/51427007" target="_blank" rel="external">获取Android设备上的所有存储设备</a> – <a href="http://my.csdn.net/wangsf1112" target="_blank" rel="external">wangsf1112</a></p>
+<p><a href="http://blog.csdn.net/adayabetter/article/details/76514205" target="_blank" rel="external">Android 使用反射调用StorageManager中 Hide方法getVolumeList、getVolumeState</a> – <a href="http://my.csdn.net/adayabetter" target="_blank" rel="external">adayabetter</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/《图解HTTP》读书笔记（二）/" rel="next" title="《图解HTTP》读书笔记（二）">
+                <i class="fa fa-chevron-left"></i> 《图解HTTP》读书笔记（二）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="lijiankun24" />
+          <p class="site-author-name" itemprop="name">lijiankun24</p>
+           
+              <p class="site-description motion-element" itemprop="description">守得云开见月明。</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/lijiankun24" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/lijiankun24" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.jianshu.com/u/1abe21b7ff5f" target="_blank" title="Jianshu">
+                  
+                    <i class="fa fa-fw fa-jianshu"></i>
+                  
+                  Jianshu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://gank.io/post/published" title="匠心写作" target="_blank">匠心写作</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/lmj623565791" title="Hongyang" target="_blank">Hongyang</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.liaohuqiu.net/cn/" title="Huqiu Liao" target="_blank">Huqiu Liao</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://drakeet.me/" title="drakeet" target="_blank">drakeet</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.jianshu.com/u/df40282480b4" title="小鄧子" target="_blank">小鄧子</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://yuweiguocn.github.io/" title="于卫国" target="_blank">于卫国</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Android-应用启动页"><span class="nav-number">1.</span> <span class="nav-text">1. Android 应用启动页</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-全屏显示"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 全屏显示</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-1-隐藏状态栏和标题栏"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.1.1 隐藏状态栏和标题栏</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-2-去除白屏-黑屏"><span class="nav-number">1.1.2.</span> <span class="nav-text">1.1.2 去除白屏/黑屏</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-3-虚拟按键遮挡背景的问题"><span class="nav-number">1.1.3.</span> <span class="nav-text">1.1.3 虚拟按键遮挡背景的问题</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Android-中的存储空间"><span class="nav-number">2.</span> <span class="nav-text">2. Android 中的存储空间</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-内部存储"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 内部存储</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-1-data-app"><span class="nav-number">2.1.1.</span> <span class="nav-text">2.1.1 /data/app/</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-2-data-data"><span class="nav-number">2.1.2.</span> <span class="nav-text">2.1.2 /data/data/</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-外部存储"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 外部存储</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-1-外部存储状态和路径"><span class="nav-number">2.2.1.</span> <span class="nav-text">2.2.1 外部存储状态和路径</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-2-获取外部存储公众目录"><span class="nav-number">2.2.2.</span> <span class="nav-text">2.2.2 获取外部存储公众目录</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-3-获取外部存储私有目录"><span class="nav-number">2.2.3.</span> <span class="nav-text">2.2.3 获取外部存储私有目录</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-4-通过反射获取外部存储"><span class="nav-number">2.2.4.</span> <span class="nav-text">2.2.4 通过反射获取外部存储</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-5-注意"><span class="nav-number">2.2.5.</span> <span class="nav-text">2.2.5 注意</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lijiankun24</span>
+  
+</div>
+
+
+<div>
+  <span id="busuanzi_container_site_pv">
+    Total views <span id="busuanzi_value_site_pv">   </span>
+  </span>
+
+  <span id="busuanzi_container_site_uv">
+    |   Total visitors <span id="busuanzi_value_site_uv"/>
+  </span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("tWG63sCRtLhi5NFeaXtWqtnv-gzGzoHsz", "lPLcNFpeOoNc6wr9PVX8XdbI");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+
+  
+
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+          bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+      } else {
+          bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+</body>
+</html>
