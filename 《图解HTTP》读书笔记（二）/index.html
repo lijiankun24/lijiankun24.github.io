@@ -195,7 +195,7 @@ HTTP/1.1 通用首部字段
 
 
   <title> 《图解HTTP》读书笔记（二） | 一些无处安放的代码和故事 </title>
-</head>
+<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
 
@@ -422,10 +422,13 @@ HTTP/1.1 通用首部字段
 <h3 id="1-2-HTTP-响应报文"><a href="#1-2-HTTP-响应报文" class="headerlink" title="1.2 HTTP 响应报文"></a>1.2 HTTP 响应报文</h3><p>在响应中，HTTP 报文由 HTTP 版本、状态码（数字和原因短语）、HTTP 首部字段 3 部分组成。</p>
 <h3 id="1-3-HTTP-首部字段传递重要信息"><a href="#1-3-HTTP-首部字段传递重要信息" class="headerlink" title="1.3 HTTP 首部字段传递重要信息"></a>1.3 HTTP 首部字段传递重要信息</h3><p>HTTP 首部字段是构成 HTTP 报文的要素之一。在客户端与服务器之间以 HTTP 协议进行通信的过程中，无论是请求还是响应都会使用首部字段，它能起到传递额外重要信息的作用。</p>
 <p>使用首部字段是为了给浏览器和服务器提供报文主体大小、所使用的语言、认证信息等内容。</p>
-<h3 id="1-4-HTTP-首部字段结构"><a href="#1-4-HTTP-首部字段结构" class="headerlink" title="1.4 HTTP 首部字段结构"></a>1.4 HTTP 首部字段结构</h3><p>HTTP 首部字段是由首部字段名和字段值构成的，中间用冒号 “：” 分隔。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">首部字段名：字段值</div></pre></td></tr></table></figure></p>
-<p>例如在 HTTP 首部中以 <code>Content-Type</code> 这个字段来表示报文主体的对象类型。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Content-Type：text/html</div></pre></td></tr></table></figure></p>
-<p>字段名是：<code>Content-Type</code>，字段值是：<code>text/html</code>。<br>另外，字段值对应单个 HTTP 首部字段可以有多个值，如下所示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Keep-Alive：timeout=15，max=100</div></pre></td></tr></table></figure></p>
-<blockquote>
+<h3 id="1-4-HTTP-首部字段结构"><a href="#1-4-HTTP-首部字段结构" class="headerlink" title="1.4 HTTP 首部字段结构"></a>1.4 HTTP 首部字段结构</h3><p>HTTP 首部字段是由首部字段名和字段值构成的，中间用冒号 “：” 分隔。</p>
+<pre><code>首部字段名：字段值
+</code></pre><p>例如在 HTTP 首部中以 <code>Content-Type</code> 这个字段来表示报文主体的对象类型。</p>
+<pre><code>Content-Type：text/html
+</code></pre><p>字段名是：<code>Content-Type</code>，字段值是：<code>text/html</code>。<br>另外，字段值对应单个 HTTP 首部字段可以有多个值，如下所示：</p>
+<pre><code>Keep-Alive：timeout=15，max=100
+</code></pre><blockquote>
 <p>若 HTTP 首部字段重复了会如何？</p>
 <p>   当 HTTP 报文首部中出现了两个或两个以上具有相同首部字段名时会怎么样？这种情况在规范内尚未明确，根据浏览器内部处理逻辑的不同，结果可能并不一样。有些浏览器会优先处理第一次出现的首部字段，而有些则会优先处理最后出现的首部字段。</p>
 </blockquote>
@@ -633,10 +636,13 @@ HTTP/1.1 通用首部字段
 </li>
 </ol>
 <h3 id="2-3-Date"><a href="#2-3-Date" class="headerlink" title="2.3 Date"></a>2.3 Date</h3><p>首部字段 <code>Date</code> 表明创建 HTTP 报文的日期和时间。</p>
-<h3 id="2-4-Pragma"><a href="#2-4-Pragma" class="headerlink" title="2.4 Pragma"></a>2.4 Pragma</h3><p><code>Pragma</code> 是 HTTP/1.1 之前版本的历史遗留字段，仅作为与 HTTP/1.0 的向后兼容而定义。规范定义的形式唯一，如下所示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Pragme：no-cache</div></pre></td></tr></table></figure></p>
-<p>该首部字段属于通用首部字段，但只用在客户端发送的请求中。客户端会要求所有的中间服务器不返回缓存的资源。</p>
-<p>所有的中间服务器如果都能以 HTTP/1.1 为基准，那直接采用 <code>Cache-Control：no-cache</code> 指定缓存的处理方式是最为理想的。但要整体掌握全部中间服务器使用的 HTTP 协议版本却是不现实的。因此，发送的请求会同时含有下面两个首部字段。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Cache-Control：no-cache</div><div class="line">Pragma：no-cache</div></pre></td></tr></table></figure></p>
-<div align="center"><br>    <img src="/《图解HTTP》读书笔记（二）/pragma.png" width="402" height="173"><br></div>
+<h3 id="2-4-Pragma"><a href="#2-4-Pragma" class="headerlink" title="2.4 Pragma"></a>2.4 Pragma</h3><p><code>Pragma</code> 是 HTTP/1.1 之前版本的历史遗留字段，仅作为与 HTTP/1.0 的向后兼容而定义。规范定义的形式唯一，如下所示：</p>
+<pre><code>Pragme：no-cache
+</code></pre><p>该首部字段属于通用首部字段，但只用在客户端发送的请求中。客户端会要求所有的中间服务器不返回缓存的资源。</p>
+<p>所有的中间服务器如果都能以 HTTP/1.1 为基准，那直接采用 <code>Cache-Control：no-cache</code> 指定缓存的处理方式是最为理想的。但要整体掌握全部中间服务器使用的 HTTP 协议版本却是不现实的。因此，发送的请求会同时含有下面两个首部字段。</p>
+<pre><code>Cache-Control：no-cache
+Pragma：no-cache
+</code></pre><div align="center"><br>    <img src="/《图解HTTP》读书笔记（二）/pragma.png" width="402" height="173"><br></div>
 
 <h3 id="2-5-Trailer"><a href="#2-5-Trailer" class="headerlink" title="2.5 Trailer"></a>2.5 Trailer</h3><p>首部字段 <code>Trailer</code> 会事先说明在报文主体后记录了哪些首部字段。该首部字段可应用在 HTTP/1.1 版本分块传输编码时。</p>
 <div align="center"><br>    <img src="/《图解HTTP》读书笔记（二）/trailer.png" width="376" height="166"><br></div>
@@ -655,8 +661,9 @@ HTTP/1.1 通用首部字段
 <p>首部字段 <code>Via</code> 不仅作用于追踪报文的转发，还可避免请求回环的发生。所以必须在经过代理时附加该首部字段内容。</p>
 <p><code>Via</code> 首部是为了追踪传输路径，所以经常会和 <code>TRACE</code> 方法一起使用。比如，代理服务器接收到由 <code>TRACE</code> 方法发送过来的请求（其中：Max-Forwards：0）时，代理服务器就不能再转发该请求了。这种情况下，代理服务器会将自身的信息附加到 <code>Via</code> 首部后，返回该请求的响应。</p>
 <h3 id="2-9-Warning"><a href="#2-9-Warning" class="headerlink" title="2.9 Warning"></a>2.9 Warning</h3><p>HTTP/1.1 的 <code>Warning</code> 首部通常会告知用户一些与缓存相关的问题的警告。</p>
-<p><code>Warning</code> 首部的格式如下。最后的日期时间部分可省略。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Warning：[警告码][警告的主机：端口号]“[警告内容]”([日期时间])</div></pre></td></tr></table></figure></p>
-<p>HTTP/1.1 中定义了 7 种警告。警告码对应的警告内容仅推荐参考。另外，警告码具备扩展性。</p>
+<p><code>Warning</code> 首部的格式如下。最后的日期时间部分可省略。</p>
+<pre><code>Warning：[警告码][警告的主机：端口号]“[警告内容]”([日期时间])
+</code></pre><p>HTTP/1.1 中定义了 7 种警告。警告码对应的警告内容仅推荐参考。另外，警告码具备扩展性。</p>
 <h2 id="3-请求首部字段"><a href="#3-请求首部字段" class="headerlink" title="3. 请求首部字段"></a>3. 请求首部字段</h2><p>请求首部字段是从客户端往服务器端发送请求报文中所使用的字段，用于补充请求的附加信息、客户端信息、对响应内容相关的优先级等内容。</p>
 <h3 id="3-1-Accept"><a href="#3-1-Accept" class="headerlink" title="3.1 Accept"></a>3.1 Accept</h3><p><code>Accept</code> 首部字段可通知服务器，用户代理能够处理的媒体类型及媒体类型的相对优先级。可使用 <code>type/subtype</code> 这种形式，一次指定多种媒体类型。</p>
 <div align="center"><br>    <img src="/《图解HTTP》读书笔记（二）/accept.png" width="449" height="206"><br></div>
@@ -735,8 +742,8 @@ HTTP/1.1 通用首部字段
 
 <h3 id="3-15-Proxy-Authorization"><a href="#3-15-Proxy-Authorization" class="headerlink" title="3.15 Proxy-Authorization"></a>3.15 Proxy-Authorization</h3><p>接收到从代理服务器发来的认证质询时，客户端会发送包含首部字段 <code>Proxy-Authorization</code> 的请求，以告知服务器认证所需要的信息。</p>
 <p>这个行为是与客户端和服务器之间的 HTTP 访问认证相类似的，不同之处在于，认证行为发生在客户端和代理之间。客户端和服务器之间的认证，使用首部字段 <code>Authorization</code> 可起到相同作用。</p>
-<h3 id="3-16-Range"><a href="#3-16-Range" class="headerlink" title="3.16 Range"></a>3.16 Range</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Range：bytes=5001-10000</div></pre></td></tr></table></figure>
-<p>对于只需要获取部分资源的范围请求，包含首部字段 Range 即可告知服务器资源的指定范围。上面的示例表示请求获取从第 5001 字节至第10000字节的资源。</p>
+<h3 id="3-16-Range"><a href="#3-16-Range" class="headerlink" title="3.16 Range"></a>3.16 Range</h3><pre><code>Range：bytes=5001-10000
+</code></pre><p>对于只需要获取部分资源的范围请求，包含首部字段 Range 即可告知服务器资源的指定范围。上面的示例表示请求获取从第 5001 字节至第10000字节的资源。</p>
 <p>接收到附带 Range 首部字段请求的服务器，会在处理请求之后返回状态码 <code>206 Partial Content</code> 的响应。无法处理该范围请求时，则会返回状态码 <code>200 OK</code> 的响应及全部资源。</p>
 <h3 id="3-17-Referer"><a href="#3-17-Referer" class="headerlink" title="3.17 Referer"></a>3.17 Referer</h3><p>首部字段 <code>Referer</code> 会告知服务器请求的原始资源的 URI。<br>客户端一般都会发送 Referer 首部字段给服务器。但当直接在浏览器的地址栏输入 URI，或出于安全性的考虑时，也可以不发送该首部字段。</p>
 <div align="center"><br>    <img src="/《图解HTTP》读书笔记（二）/referer.png" width="458" height="257"><br></div>
@@ -780,8 +787,8 @@ HTTP/1.1 通用首部字段
 <p>字段值可以指定为具体的日期时间，也可以是创建响应后的秒数。</p>
 <div align="center"><br>    <img src="/《图解HTTP》读书笔记（二）/retry-after.png" width="408" height="144"><br></div>
 
-<h3 id="4-7-Server"><a href="#4-7-Server" class="headerlink" title="4.7 Server"></a>4.7 Server</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Server：Apache/2.2.6 (Unix) PHP/5.2.5</div></pre></td></tr></table></figure>
-<p>首部字段 <code>Server</code> 告知客户端当前服务器上安装的 HTTP 服务器应用程序的信息。不单单会标出服务器上的软件应用名称，还有可能包括版本号和安装时启用的可选项。</p>
+<h3 id="4-7-Server"><a href="#4-7-Server" class="headerlink" title="4.7 Server"></a>4.7 Server</h3><pre><code>  Server：Apache/2.2.6 (Unix) PHP/5.2.5
+</code></pre><p>首部字段 <code>Server</code> 告知客户端当前服务器上安装的 HTTP 服务器应用程序的信息。不单单会标出服务器上的软件应用名称，还有可能包括版本号和安装时启用的可选项。</p>
 <h3 id="4-8-Vary"><a href="#4-8-Vary" class="headerlink" title="4.8 Vary"></a>4.8 Vary</h3><div align="center"><br>    <img src="/《图解HTTP》读书笔记（二）/vary.png" width="454" height="442"><br></div>
 
 <p>首部字段 <code>Vary</code> 可对缓存进行控制。源服务器会向代理服务器传达关于本地缓存使用方法的命令。</p>
@@ -803,10 +810,10 @@ HTTP/1.1 通用首部字段
 <li>deflate</li>
 <li>identity</li>
 </ul>
-<h3 id="5-3-Content-Language"><a href="#5-3-Content-Language" class="headerlink" title="5.3 Content-Language"></a>5.3 Content-Language</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Content-Language：zh-CN</div></pre></td></tr></table></figure>
-<p>首部字段 <code>Content-Language</code> 会告知客户端，实体主体使用的自然语言（指中文或英文等语言）。</p>
-<h3 id="5-4-Content-Length"><a href="#5-4-Content-Length" class="headerlink" title="5.4 Content-Length"></a>5.4 Content-Length</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Content-Length：15000</div></pre></td></tr></table></figure>
-<p>首部字段 <code>Content-Length</code> 表明了实体主体部分的大小（单位是字节）。对实体主体进行内容编码传输时，不能再使用 <code>Content-Length</code> 首部字段。</p>
+<h3 id="5-3-Content-Language"><a href="#5-3-Content-Language" class="headerlink" title="5.3 Content-Language"></a>5.3 Content-Language</h3><pre><code>Content-Language：zh-CN
+</code></pre><p>首部字段 <code>Content-Language</code> 会告知客户端，实体主体使用的自然语言（指中文或英文等语言）。</p>
+<h3 id="5-4-Content-Length"><a href="#5-4-Content-Length" class="headerlink" title="5.4 Content-Length"></a>5.4 Content-Length</h3><pre><code>Content-Length：15000
+</code></pre><p>首部字段 <code>Content-Length</code> 表明了实体主体部分的大小（单位是字节）。对实体主体进行内容编码传输时，不能再使用 <code>Content-Length</code> 首部字段。</p>
 <h3 id="5-5-Content-Location"><a href="#5-5-Content-Location" class="headerlink" title="5.5 Content-Location"></a>5.5 Content-Location</h3><p>首部字段 <code>Content-Location</code> 给出与报文主体部分相对于的 URI。和首部字段 <code>Location</code> 不同，<code>Content-Location</code> 表示的是报文主体返回资源对应的 URI。</p>
 <h3 id="5-6-Content-MD5"><a href="#5-6-Content-MD5" class="headerlink" title="5.6 Content-MD5"></a>5.6 Content-MD5</h3><p>首部字段 <code>Content-MD5</code> 是一串由 MD5 算法生成的值，其目的在于检查报文主体在传输过程中是否保持完整，以及确认传输到达。</p>
 <div align="center"><br>    <img src="/《图解HTTP》读书笔记（二）/content-md5.png" width="489" height="335"><br></div>
@@ -828,8 +835,8 @@ HTTP/1.1 通用首部字段
 <p>调用 Cookie 时，由于可校验 Cookie 的有效期，以及发送方的域、路径、协议等信息，所以正规发布的 Cookie 内的数据不会因来自其他 Web 站点和攻击者的攻击而泄露。</p>
 <div align="center"><br>    <img src="/《图解HTTP》读书笔记（二）/cookie1.png" width="465" height="281"><br></div><br><div align="center"><br>    <img src="/《图解HTTP》读书笔记（二）/cookie2.png" width="465" height="259"><br></div>
 
-<h4 id="6-1-1-Set-Cookie"><a href="#6-1-1-Set-Cookie" class="headerlink" title="6.1.1 Set-Cookie"></a>6.1.1 Set-Cookie</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Set-Cookie：status=enable；expires=Tue，05 Jul 2011 07:26:31 GMT；path=/；domain=.hackr.jp;</div></pre></td></tr></table></figure>
-<p>当服务器准备开始管理客户端的状态时，会事先告知各种信息。下面的表格列举了 <code>Set-Cookie</code> 的字段值。</p>
+<h4 id="6-1-1-Set-Cookie"><a href="#6-1-1-Set-Cookie" class="headerlink" title="6.1.1 Set-Cookie"></a>6.1.1 Set-Cookie</h4><pre><code>Set-Cookie：status=enable；expires=Tue，05 Jul 2011 07:26:31 GMT；path=/；domain=.hackr.jp;
+</code></pre><p>当服务器准备开始管理客户端的状态时，会事先告知各种信息。下面的表格列举了 <code>Set-Cookie</code> 的字段值。</p>
 <table>
 <thead>
 <tr>
@@ -879,18 +886,18 @@ HTTP/1.1 通用首部字段
 </li>
 <li><p>secure 属性<br>Cookie 的 secure 属性用于限制 Web 页面仅在 HTTPS 安全连接时，才可以发送 Cookie。</p>
 <p>发送 Cookie 时，指定 secure 属性的方法如下所示：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Set-Cookie：name-value；secure</div></pre></td></tr></table></figure>
-<p>以上例子仅当在 <code>https://www.example.com/</code>(HTTPS) 安全连接的情况下才会进行 Cookie 的回收。也就是说，即使域名相同，<a href="http://www.example.com/(HTTP" target="_blank" rel="external">http://www.example.com/(HTTP</a>) 也不会发生 Cookie 回收行为。</p>
+<pre><code>Set-Cookie：name-value；secure
+</code></pre><p>以上例子仅当在 <code>https://www.example.com/</code>(HTTPS) 安全连接的情况下才会进行 Cookie 的回收。也就是说，即使域名相同，<a href="http://www.example.com/(HTTP" target="_blank" rel="external">http://www.example.com/(HTTP</a>) 也不会发生 Cookie 回收行为。</p>
 <p>当省略 secure 属性时，不论 HTTP 还是 HTTPS，都会对 Cookie 进行回收。</p>
 </li>
 <li><p>HttpOnly 属性<br>Cookie 的 HttpOnly 属性是 Cookie 的扩展功能，它使 JavaScript 脚本无法获取 Cookie。其主要目的为防止跨站脚本攻击（Cross-site scripting，XSS）对 Cookie 的信息窃取。</p>
 <p>发送指定 HttpOnly 属性的 Cookie 的方法如下所示。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Set-Cookie：name-value；HttpOnly</div></pre></td></tr></table></figure>
-<p>通过上述设置，通常从 Web 页面内还可以对 Cookie 进行读取操作。但使用 JavaScript 的 document.cookie 就无法读取附加 HttpOnly 属性后的 Cookie 的内容了。因此，也就无法在 XSS 中利用 JavaScript 劫持 Cookie 了。</p>
+<pre><code>Set-Cookie：name-value；HttpOnly
+</code></pre><p>通过上述设置，通常从 Web 页面内还可以对 Cookie 进行读取操作。但使用 JavaScript 的 document.cookie 就无法读取附加 HttpOnly 属性后的 Cookie 的内容了。因此，也就无法在 XSS 中利用 JavaScript 劫持 Cookie 了。</p>
 </li>
 </ul>
-<h4 id="6-1-2-Cookie"><a href="#6-1-2-Cookie" class="headerlink" title="6.1.2 Cookie"></a>6.1.2 Cookie</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Cookie：status=enable</div></pre></td></tr></table></figure>
-<p>首部字段 Cookie 会告知服务器，当客户端想获得 HTTP 状态管理支持时，就会在请求中包含从服务器接收到的 Cookie。接收到多个 Cookie 时，同样可以以多个 Cookie 的形式发送。</p>
+<h4 id="6-1-2-Cookie"><a href="#6-1-2-Cookie" class="headerlink" title="6.1.2 Cookie"></a>6.1.2 Cookie</h4><pre><code>Cookie：status=enable
+</code></pre><p>首部字段 Cookie 会告知服务器，当客户端想获得 HTTP 状态管理支持时，就会在请求中包含从服务器接收到的 Cookie。接收到多个 Cookie 时，同样可以以多个 Cookie 的形式发送。</p>
 <h3 id="6-2-其他首部字段"><a href="#6-2-其他首部字段" class="headerlink" title="6.2 其他首部字段"></a>6.2 其他首部字段</h3><p>HTTP 首部字段是可以自行扩展的。所以在 Web 服务器和浏览器的应用上，会出现各种非标准的首部字段。以下是一些常用的首部字段：</p>
 <ul>
 <li>X-Frame-Options</li>
@@ -898,15 +905,15 @@ HTTP/1.1 通用首部字段
 <li>DNT</li>
 <li>P3P</li>
 </ul>
-<h4 id="6-2-1-X-Frame-Options"><a href="#6-2-1-X-Frame-Options" class="headerlink" title="6.2.1 X-Frame-Options"></a>6.2.1 X-Frame-Options</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">X-Frame-Options：DENY</div></pre></td></tr></table></figure>
-<p>首部字段 <code>X-Frame-Options</code> 属于 HTTP 响应首部，用于控制网站内容在其他 Web 网站的 Frame 标签内的显示问题。其主要目的是为了防止点击劫持（clickjacking）攻击。</p>
+<h4 id="6-2-1-X-Frame-Options"><a href="#6-2-1-X-Frame-Options" class="headerlink" title="6.2.1 X-Frame-Options"></a>6.2.1 X-Frame-Options</h4><pre><code>X-Frame-Options：DENY
+</code></pre><p>首部字段 <code>X-Frame-Options</code> 属于 HTTP 响应首部，用于控制网站内容在其他 Web 网站的 Frame 标签内的显示问题。其主要目的是为了防止点击劫持（clickjacking）攻击。</p>
 <p>首部字段 <code>X-Frame-Options</code> 有以下两个可指定的字段值。</p>
 <ul>
 <li>DENY：拒绝</li>
 <li>SAMEORIGIN：仅同源域名下的页面匹配时许可。（比如：当指定 <a href="http://hackr.jp/sample.html" target="_blank" rel="external">http://hackr.jp/sample.html</a> 页面为 SAMEORIGIN 时，那么 hackr.jp 上所有页面的 frame 都被允许可加载该页面，而 example.com 等其他域名的页面就不行了）</li>
 </ul>
-<h4 id="6-2-2-X-XSS-Protection"><a href="#6-2-2-X-XSS-Protection" class="headerlink" title="6.2.2 X-XSS-Protection"></a>6.2.2 X-XSS-Protection</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">X-XSS-Protection：1</div></pre></td></tr></table></figure>
-<p>首部字段 <code>X-XSS-Protection</code> 属于 HTTP 响应首部，它是针对跨站脚本攻击（XSS)的一种对策，用于控制浏览器 XSS 防护机制的开关。</p>
+<h4 id="6-2-2-X-XSS-Protection"><a href="#6-2-2-X-XSS-Protection" class="headerlink" title="6.2.2 X-XSS-Protection"></a>6.2.2 X-XSS-Protection</h4><pre><code>X-XSS-Protection：1
+</code></pre><p>首部字段 <code>X-XSS-Protection</code> 属于 HTTP 响应首部，它是针对跨站脚本攻击（XSS)的一种对策，用于控制浏览器 XSS 防护机制的开关。</p>
 <p>首部字段 <code>X-XSS-Protection</code> 可指定的字段值如下。</p>
 <ul>
 <li>0：将 XSS 过滤设置成无效状态</li>
@@ -1051,7 +1058,7 @@ HTTP/1.1 通用首部字段
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">17</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>

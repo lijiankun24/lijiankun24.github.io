@@ -165,7 +165,7 @@ HTTP 状态码
 
 
   <title> 《图解HTTP》读书笔记（一） | 一些无处安放的代码和故事 </title>
-</head>
+<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
 
@@ -509,15 +509,12 @@ HTTP 状态码
 <h3 id="3-4-获取部分内容的范围请求"><a href="#3-4-获取部分内容的范围请求" class="headerlink" title="3.4 获取部分内容的范围请求"></a>3.4 获取部分内容的范围请求</h3><p>指定范围发送的请求叫做范围请求。如果一个资源有10000字节大小，如果使用范围请求，可以只请求5001-10000字节内的资源。</p>
 <p>执行范围请求时，会用到首部字段 <code>Range</code> 来指定资源的 byte 范围。</p>
 <ul>
-<li><p>5001-10000字节</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Range：bytes=5001-10000</div></pre></td></tr></table></figure>
-</li>
-<li><p>从 5001 字节之后的全部</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Range：bytes=5001-</div></pre></td></tr></table></figure>
-</li>
-<li><p>从一开始到 3000 字节和 5000-7000 字节的多范围请求</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Range：bytes=-3000，5000-7000</div></pre></td></tr></table></figure>
-</li>
+<li>5001-10000字节<pre><code>  Range：bytes=5001-10000
+</code></pre></li>
+<li>从 5001 字节之后的全部<pre><code>  Range：bytes=5001-
+</code></pre></li>
+<li>从一开始到 3000 字节和 5000-7000 字节的多范围请求<pre><code>  Range：bytes=-3000，5000-7000
+</code></pre></li>
 </ul>
 <p>针对范围请，响应会返回状态码为 206 Partial Content 的响应报文。对于多重范围的范围请求，响应会在首部字段 <code>Content-Type</code> 标明 <code>multipart/byteranges</code> 后返回响应报文。</p>
 <p>如果服务器端无法响应范围请求，则会返回状态码 200 OK 和完整的实体内容</p>
@@ -781,7 +778,7 @@ HTTP 状态码
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">17</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>

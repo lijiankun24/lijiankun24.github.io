@@ -1,0 +1,1284 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Http,ReadingNotes," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="前面两篇文章中关于 HTTP 相关知识基本上介绍的差不多了，这篇文章是对 HTTP 协议的补充，主要介绍以下三点内容：
+
+确保 Web 安全的 HTTPS
+确认访问用户身份的认证
+基于 HTTP 的功能追加协议">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《图解HTTP》读书笔记（三）">
+<meta property="og:url" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（三）/index.html">
+<meta property="og:site_name" content="一些无处安放的代码和故事">
+<meta property="og:description" content="前面两篇文章中关于 HTTP 相关知识基本上介绍的差不多了，这篇文章是对 HTTP 协议的补充，主要介绍以下三点内容：
+
+确保 Web 安全的 HTTPS
+确认访问用户身份的认证
+基于 HTTP 的功能追加协议">
+<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（三）/http-defect.png">
+<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（三）/http_encrypt.png">
+<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（三）/http_encrypt1.png">
+<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（三）/http_request_all.png">
+<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（三）/http_request.png">
+<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（三）/http_revise.png">
+<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（三）/http_revise1.png">
+<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（三）/http_revise1.png">
+<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（三）/https1.png">
+<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（三）/https2.png">
+<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（三）/https3.png">
+<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（三）/https4.png">
+<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（三）/https5.png">
+<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（三）/https6.png">
+<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（三）/https7.png">
+<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（三）/https8.png">
+<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（三）/https9.png">
+<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（三）/basic.png">
+<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（三）/digest.png">
+<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（三）/digest1.png">
+<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（三）/cookie_session.png">
+<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（三）/http_weakness.png">
+<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（三）/http_ajax.png">
+<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（三）/http_comet.png">
+<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（三）/spdy.png">
+<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（三）/websocket.png">
+<meta property="og:updated_time" content="2017-09-19T02:50:49.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="《图解HTTP》读书笔记（三）">
+<meta name="twitter:description" content="前面两篇文章中关于 HTTP 相关知识基本上介绍的差不多了，这篇文章是对 HTTP 协议的补充，主要介绍以下三点内容：
+
+确保 Web 安全的 HTTPS
+确认访问用户身份的认证
+基于 HTTP 的功能追加协议">
+<meta name="twitter:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（三）/http-defect.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.lijiankun24.com/《图解HTTP》读书笔记（三）/"/>
+
+
+
+
+
+  <title> 《图解HTTP》读书笔记（三） | 一些无处安放的代码和故事 </title>
+<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">一些无处安放的代码和故事</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://www.lijiankun24.com/《图解HTTP》读书笔记（三）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="lijiankun24">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一些无处安放的代码和故事">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                《图解HTTP》读书笔记（三）
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-16T10:37:03+08:00">
+                2017-09-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/《图解HTTP》读书笔记（三）/" class="leancloud_visitors" data-flag-title="《图解HTTP》读书笔记（三）">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Views </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>前面两篇文章中关于 HTTP 相关知识基本上介绍的差不多了，这篇文章是对 HTTP 协议的补充，主要介绍以下三点内容：</p>
+<ol>
+<li>确保 Web 安全的 HTTPS</li>
+<li>确认访问用户身份的认证</li>
+<li>基于 HTTP 的功能追加协议<a id="more"></a>
+</li>
+</ol>
+<h2 id="1-确保-Web-安全的-HTTPS"><a href="#1-确保-Web-安全的-HTTPS" class="headerlink" title="1.确保 Web 安全的 HTTPS"></a>1.确保 Web 安全的 HTTPS</h2><h3 id="1-1-HTTP-的缺点"><a href="#1-1-HTTP-的缺点" class="headerlink" title="1.1 HTTP 的缺点"></a>1.1 HTTP 的缺点</h3><p>HTTP 的不足主要有以下几点：</p>
+<ul>
+<li>通信使用明文（不加密），内容可能会被窃听</li>
+<li>不验证通信方的身份，因此有可能遭遇伪装</li>
+<li>无法证明报文的完整性，所以有可能已遭篡改</li>
+</ul>
+<p>这些问题不仅在 HTTP 上出现，其他未加密的协议中也会存在这类问题。</p>
+<h4 id="1-1-1-通信使用明文可能会被窃听"><a href="#1-1-1-通信使用明文可能会被窃听" class="headerlink" title="1.1.1 通信使用明文可能会被窃听"></a>1.1.1 通信使用明文可能会被窃听</h4><p>由于 HTTP 本身不具备加密的功能，所以也无法做到对通信整体（使用 HTTP 协议通信的请求和响应的内容）进行加密。即，HTTP 报文使用明文（指未经加密的报文）方式发送。</p>
+<ol>
+<li><p>TCP/IP 是可能被窃听的网络</p>
+<p>因为按 TCP/IP 协议族的工作机制，通信内容在所有的通信线路上都有可能遭遇到窥视，所以说通信不加密是一个缺点。</p>
+<p>即使已经过加密处理的通信，也会被窥视到通信内容，这点和未加密的通信是相同的。只是说如果通信经过加密，就有可能让人无法破解报文信息的含义，但加密处理后的报文信息本身还是会被看到的。</p>
+<p>窃听相同段上的通信并非难事。只需要收集在互联网上流动的数据包（帧）就行了。对于收集来的数据包的解析工作，可交给那些抓包或嗅探器工具。</p>
+<div align="center"><br>   <img src="/《图解HTTP》读书笔记（三）/http-defect.png" width="459" height="282"><br></div>
+</li>
+<li><p>加密处理防止被窃听</p>
+<ul>
+<li><p>通信的加密</p>
+<p>一种方式是将通信加密。HTTP 协议中没有加密机制，但可以通过和 SSL（Secure Socket Layer，安全套接层）或 TLS（Transport Layer Security，安全传输层协议）的组合使用，加密 HTTP 的通信内容。</p>
+<div align="center"><br> <img src="/《图解HTTP》读书笔记（三）/http_encrypt.png" width="327" height="231"><br></div>
+
+<p>用 SSL 建立安全通信线路之后，就可以在这条线路上进行 HTTP 通信了。与 SSL 组合使用的 HTTP 被称为 HTTPS （HTTP Secure，超文本传输安全协议）或 HTTP over SSL。</p>
+</li>
+<li><p>内容的加密<br>还有一种将参与通信的内容本身加密的方式。由于 HTTP 协议中没有加密机制，那么就对 HTTP 协议传输的内容本身加密。即把 HTTP 报文里所含的内容进行加密处理。</p>
+<div align="center"><br> <img src="/《图解HTTP》读书笔记（三）/http_encrypt1.png" width="314" height="189"><br></div>
+
+<p>诚然，为了做到有效的内容加密，前提是要求客户端和服务器同时具备加密和解密机制。主要应用在 Web 服务中。有一点必须引起注意，由于该方式不同于 SSL 或 TLS 将整个通信线路加密处理，所以内容仍有被篡改的风险。</p>
+</li>
+</ul>
+</li>
+</ol>
+<h4 id="1-1-2-不验证通信方的身份就可能遭遇篡改"><a href="#1-1-2-不验证通信方的身份就可能遭遇篡改" class="headerlink" title="1.1.2 不验证通信方的身份就可能遭遇篡改"></a>1.1.2 不验证通信方的身份就可能遭遇篡改</h4><p>HTTP 协议中的请求和响应不会对通信方进行确认。也就是说存在”服务器是否就是发送请求中 URI 真正指定的主机，返回的响应是否真的返回到实际提出请求的客户端”等类似问题。</p>
+<ul>
+<li><p>任何人都可发起请求</p>
+<p>在 HTTP 协议通信时，由于不存在确认通信方的处理步骤，任何人都可以发起请求。另外，服务器只要接收到请求，不管对方是谁都会返回一个响应（但也仅限于发送端的 IP 地址和端口号没有被 Web 服务器设定限制访问的前提下）。</p>
+</li>
+</ul>
+<div align="center"><br>    <img src="/《图解HTTP》读书笔记（三）/http_request_all.png" width="354" height="206"><br></div>
+
+<p>  HTTP 协议的实现本身非常简单，不论是谁发送过来的请求都会返回响应，因此不确认通信方，会存在以下各种隐患：</p>
+<ol>
+<li>无法确定请求发送至目标的 Web 服务器是否是按真实意图返回响应的那台服务器。有可能是已伪装的 Web 服务器。</li>
+<li>无法确定响应返回到的客户端是否是按真实意图接收响应的那个客户端。有可能是已伪装的客户端。</li>
+<li>无法确定正在通信的对方是否具备访问权限。因为某些 Web 服务器上保存着重要的信息，只想发给特定用户通信的权限。</li>
+<li>无法判定请求是来自何方、出自谁手。</li>
+<li>即使是无意义的请求也会照单全收。无法阻止海量请求下的 DoS 攻击。</li>
+</ol>
+<ul>
+<li><p>查明对手的证书</p>
+<p>虽然使用 HTTP 协议无法确定通信方，但如果使用 SSL 则可以。SSL 不仅提供加密处理，而且还使用一种被称为证书的手段，可用于确定方。</p>
+<p>证书由值得信任的第三方机构颁发，用以证明服务器和客户端是实际存在的。</p>
+</li>
+</ul>
+<div align="center"><br>    <img src="/《图解HTTP》读书笔记（三）/http_request.png" width="455" height="227"><br></div>
+
+<p>  通过使用证书，以证明通信方就是意料中的服务器。这对使用者个人来讲，也减少了个人信息泄露的危险性。另外，客户端持有证书即可完成个人身份的确认，也可用于对 Web 网站的认证环节。</p>
+<h4 id="1-1-3-无法证明报文完整性，可能已遭篡改"><a href="#1-1-3-无法证明报文完整性，可能已遭篡改" class="headerlink" title="1.1.3 无法证明报文完整性，可能已遭篡改"></a>1.1.3 无法证明报文完整性，可能已遭篡改</h4><p>所谓完整性是指信息的准确度。若无法证明其完整性，通常也就意味着无法判断信息是否准确。</p>
+<ul>
+<li><p>接收到的内容可能有误<br>由于 HTTP 协议无法证明通信的报文的完整性，因此，没有任何办法确认，发出的请求/响应和接收到的请求/响应是前后相同的。</p>
+<div align="center"><br>  <img src="/《图解HTTP》读书笔记（三）/http_revise.png" width="431" height="121"><br>  </div>
+
+<p>像这样，请求或响应在传输途中，遭攻击者拦截并篡改内容的攻击称为中间人攻击。</p>
+</li>
+</ul>
+<div align="center"><br>    <img src="/《图解HTTP》读书笔记（三）/http_revise1.png" width="372" height="298"><br></div>
+
+<ul>
+<li><p>如何防止篡改</p>
+<p>虽然有使用 HTTP 协议确认报文完整性的方法，但事实上并不便捷、可靠。其中常用的是 MD5 和 SHA-1 等散列值校验的方法，以及用来确认文件的数字签名方法。</p>
+<p>提供文件下载服务的 Web 网站也会提供相应的以 PGP（Pretty Good Privacy，完美隐私）创建的数字签名及 MD5 算法生成的散列值。PGP 是用来证明创建文件的数字签名，MD5 是由单向函数生成的散列值。不论使用哪一种方法，都需要操纵客户端的用户本人亲自检查验证下载的文件是否就是原来服务器上的文件。浏览器无法自动帮用户检查。</p>
+<p>可惜的是，这些办法也依然无法百分之百保证确认结果正确。因为 PGP 和 MD5 本身被改写的话，用户是没有办法意识到的。</p>
+<p>为了有效防止这些弊端，有必要使用 HTTPS。SSL 提供认证和加密处理及摘要功能。仅靠 HTTP 确保完整性是非常困难的，因此通过和其他协议组合使用来实现这个目标。</p>
+</li>
+</ul>
+<h3 id="1-2-HTTP-加密-认证-完整性保护-HTTPS"><a href="#1-2-HTTP-加密-认证-完整性保护-HTTPS" class="headerlink" title="1.2 HTTP + 加密 + 认证 + 完整性保护 = HTTPS"></a>1.2 HTTP + 加密 + 认证 + 完整性保护 = HTTPS</h3><h4 id="1-2-1-HTTP-加上加密处理和认证及完整性保护后即是-HTTPS"><a href="#1-2-1-HTTP-加上加密处理和认证及完整性保护后即是-HTTPS" class="headerlink" title="1.2.1 HTTP 加上加密处理和认证及完整性保护后即是 HTTPS"></a>1.2.1 HTTP 加上加密处理和认证及完整性保护后即是 HTTPS</h4><p>如果在 HTTP 协议通信过程中使用未经加密的明文，比如在 Web 页面中输入信用卡号，如果这条通信线路遭到窃听，那么信用卡号就暴露了。</p>
+<p>另外，对于 HTTP 来说，服务器也好，客户端也好，都是没有办法确认通信方的。因为很有可能并不是和原来预想的通信方在实际通信。并且还需要考虑到接收到的报文在通信途中已经遭到篡改这一可能性。</p>
+<p>为了统一解决上述这些问题，需要在 HTTP 上再加入加密处理和认证等机制。我们把添加了加密及认证机制的 HTTP 称为 HTTPS（HTTP Secure）。</p>
+<div align="center"><br>    <img src="/《图解HTTP》读书笔记（三）/http_revise1.png" width="455" height="266"><br></div>
+
+<h4 id="1-2-2-HTTPS-是身披-SSL-外壳的-HTTP"><a href="#1-2-2-HTTPS-是身披-SSL-外壳的-HTTP" class="headerlink" title="1.2.2 HTTPS 是身披 SSL 外壳的 HTTP"></a>1.2.2 HTTPS 是身披 SSL 外壳的 HTTP</h4><p>HTTPS 并非是应用层的一种新协议。只是 HTTP 通信接口部分用 SSL（Secure Socket Layer）和TLS（Transport Layer Security）协议代替而已。</p>
+<p>通常，HTTP 直接和 TCP 通信。当使用 SSL 时，则演变成先和 SSL 通信，再由 SSL 和 TCP 通信了。简言之，所谓 HTTPS，其实就是身披 SSL 外壳的 HTTP。</p>
+<div align="center"><br>    <img src="/《图解HTTP》读书笔记（三）/https1.png" width="360" height="173"><br></div>
+
+<p>在采用 SSL 后，HTTP 就拥有了 HTTPS 的加密、证书和完整性保护这些功能。</p>
+<p>SSL 是独立于 HTTP 的协议，所以不光是 HTTP 协议，其他运行在应用层的 SMTP 和 Telnet 等协议均可配合 SSL 协议使用。可以说 SSL 是当今世界上应用最为广泛的网络安全技术。</p>
+<h4 id="1-2-3-相互交换密钥的公开密钥加密技术"><a href="#1-2-3-相互交换密钥的公开密钥加密技术" class="headerlink" title="1.2.3 相互交换密钥的公开密钥加密技术"></a>1.2.3 相互交换密钥的公开密钥加密技术</h4><p>SSL 采用一种叫做公开密钥加密的加密处理方式。</p>
+<p>近代的加密方法中的加密算法是公开的，而密钥确实保密的。通过这种方式得以保持加密方法的安全性。</p>
+<p>加密和解密都会用到密钥。没有密钥就无法对密码解密，反过来说，任何人只要持有密钥就能解密了。如果密钥被攻击者获得，那加密也就失去了意义。</p>
+<ul>
+<li><p>共享密钥加密的困境<br>加密和解密同用一个密钥的方式叫做共享密钥加密，也被称为对称密钥加密。</p>
+<div align="center"><br>  <img src="/《图解HTTP》读书笔记（三）/https2.png" width="396" height="264"><br></div>
+
+<p>以共享密钥方式加密时必须将密钥也给对方。可究竟怎样才能安全的转交？在互联网上转发密钥时，如果通信被监听那么密钥就可会落入攻击者之手，同时也就失去了加密的意义。另外还得设法安全地保管接收到的密钥。</p>
+</li>
+</ul>
+<div align="center"><br>    <img src="/《图解HTTP》读书笔记（三）/https3.png" width="434" height="283"><br></div>
+
+<ul>
+<li><p>使用两把密钥的公开密钥加密</p>
+<p>公开密钥加密方式很好地解决了共享密钥加密的困难。</p>
+<p>公开密钥加密使用一对非对称的密钥。一把叫做私有密钥，另一把叫做公开密钥。私有密钥不能让其他任何人知道，而公有密钥则可以随意发布，任何人都可以获得。</p>
+<p>使用公开密钥加密方式，发送密文的一方使用对方的公开密钥进行加密处理，对方收到被加密的信息后，再使用自己的私有密钥进行解密。利用这种方式，不需要发送用来解密的私有密钥，也不必担心密钥被攻击者窃听而盗走。</p>
+<p>另外，要想根据密文和公开密钥，恢复到信息原文是异常困难的，因为解密过程就是在对离散对数进行求值，这并非轻而易举就能办到。</p>
+</li>
+</ul>
+<div align="center"><br>    <img src="/《图解HTTP》读书笔记（三）/https4.png" width="442" height="355"><br></div>
+
+<ul>
+<li><p>HTTPS 采用混合加密机制<br>HTTPS 采用共享密钥加密和公开密钥加密两者并用的混合加密机制。若密钥能够实现安全交换，那么有可能会考虑仅使用公开密钥加密来通信。但是公开密钥加密和共享密钥加密相比，其处理速度要慢。</p>
+<p>所以应充分利用两者各自的优势，将多种方法组合起来用于通信。在交换密钥环节使用公开密钥加密方式，之后的建立通信交换报文阶段则使用共享密钥加密方式。</p>
+</li>
+</ul>
+<div align="center"><br>    <img src="/《图解HTTP》读书笔记（三）/https5.png" width="419" height="374"><br></div>
+
+<h4 id="1-2-4-证明公开密钥正确性的证书"><a href="#1-2-4-证明公开密钥正确性的证书" class="headerlink" title="1.2.4 证明公开密钥正确性的证书"></a>1.2.4 证明公开密钥正确性的证书</h4><p>在公开密钥加密方式中也存在一些问题，那就是无法证明公开密钥本身就是货真价实的公开密钥。</p>
+<p>为了解决上述问题，可以使用由数字证书认证机构（CA，Certificate Authority）和其他相关颁发的公开密钥证书。</p>
+<p>数字证书认证机构处于客户端和服务器双方都可信赖的第三方机构的立场上。数字证书认证机构的流程是：首先，服务器的运营人员向数字证书认证机构提供公开密钥的申请。数字证书认证机构在判明提出申请者的身份之后，会对已申请的公开密钥做数字签名，然后分配这个已签名的公开密钥，并将该公开密钥放入公钥证书后绑定在一起。</p>
+<p>服务器会将这份由数字证书认证机构颁发的公钥证书发送给客户端，以进行公开密钥加密方式通信。公钥证书也可叫做数字证书或直接称为证书。</p>
+<p>接到证书的客户端可使用数字证书认证机构的公开密钥，对那张证书上的数字签名进行验证，一旦验证通过，客户端便可明确两件事：一，认证服务器的公开密钥的是真实有效的数字证书认证机构。二，服务器的公开密钥是值得信赖的。</p>
+<div align="center"><br>    <img src="/《图解HTTP》读书笔记（三）/https6.png" width="436" height="647"><br></div>
+
+<ul>
+<li><p>可证明组织真实性的 EV SSL 证书<br>证书的一个作用是用来证明作为通信一方的服务器是否规范，另外一个作用是可确认对方服务器背后运营的企业是否真实存在。拥有该特性的证书是 EV SSL 证书。</p>
+<p>EV SSL 证书是基于国际标准的认证指导方针颁发的证书。其严格规定了对运营组织是否真实的确认方针，因此，通过认证的 Web 网站能够获得更高的认可度。</p>
+</li>
+<li><p>用以确认客户端的客户端证书</p>
+<p>HTTPS 中还可以使用客户端证书。以客户端证书进行客户端认证，证明服务器正在通信的对方始终是预料之内的客户端，其作用跟服务器证书如出一辙。</p>
+</li>
+<li><p>认证机构信誉第一<br>SSL 机制中介入认证机构之所以可行，是因为建立在其信用绝对可靠这一大前提下的。</p>
+</li>
+<li><p>由自认证机构颁发的证书称为自签名证书<br>如果使用 OpenSSL 这套开源程序，每个人都可以构建一套属于自己的认证机构，从而给自己颁发服务器证书。但该服务器证书在互联网上不可作为证书使用，似乎没什么帮助的。</p>
+<p>独立机构的认证机构叫做自认证机构，由自认证机构颁发的“无用”证书也被戏称为自签名证书。</p>
+</li>
+</ul>
+<h4 id="1-2-5-HTTPS-的安全通信机制"><a href="#1-2-5-HTTPS-的安全通信机制" class="headerlink" title="1.2.5 HTTPS 的安全通信机制"></a>1.2.5 HTTPS 的安全通信机制</h4><p>为了更好的理解 HTTPS，我们来观察一下 HTTPS 的通信步骤。</p>
+<div align="center"><br>    <img src="/《图解HTTP》读书笔记（三）/https7.png" width="498" height="599"><br></div>
+
+<ul>
+<li>步骤1：客户端通过发送 Client Hello 报文开始 SSL 通信。报文中包含客户端支持的 SSL 的指定版本、加密组件（Cipher Suite）列表（所使用的加密算法及密钥长度等）。</li>
+<li>步骤2：服务器可进行 SSL 通信时，会以 Server Hello 报文作为应答。和客户端一样，在报文中包含 SSL 版本以及加密组件。服务器的加密组件内容是从接收到的客户端加密组件内筛选出来的。</li>
+<li>步骤3：之后服务器发送 Certificate 报文。报文中包含公开密钥证书。</li>
+<li>步骤4：最后服务器发送 Server Hello Done 报文通知客户端，最初阶段的 SSL 握手协商部分结束。</li>
+<li>步骤5：SSL 第一次握手结束之后，客户端以 Client Key Exchange 报文作为回应。报文中包含通信加密中使用的一种被称为 Pre-master secret 的随机密码串。该报文已用步骤 3 中的公开密钥进行加密。</li>
+<li>步骤6：接着客户端继续发送 Change Cipher Spec 报文。该报文会提示服务器，在此报文之后的通信会采用 Pre-master secret密钥加密。</li>
+<li>步骤7：客户端发送 Finished 报文。该报文包含连接至今全部报文的整体校验值。这次握手协商是否能够成功，要以服务器是否能够正确解密该报文作为判定标准。</li>
+<li>步骤8：服务器同样发送 Change Cipher Spec 报文。</li>
+<li>步骤9：服务器同样发送 Finished 报文。</li>
+<li>步骤10：服务器和客户端的 Finished 报文交换完毕之后，SSL 连接就算建立完毕。当然，通信会受到 SSL 的保护。从此处开始进行应用层协议的通信，即发送 HTTP 请求。</li>
+<li>步骤11：应用协议通信，即发送 HTTP 响应。</li>
+<li>步骤12：最后由客户端断开连接。断开连接时，发送 close_notify 报文。</li>
+</ul>
+<p>在以上流程中，应用层发送数据时会附加一种叫做 MAC（Message Authentication Code）的报文摘要。MAC 能够查知报文是否遭到篡改，从而保护报文的完整性。</p>
+<p>下面是对整个流程的图解。图中说明了从仅适用服务器端的公开密钥证书（服务器证书）建立 HTTPS 通信的整个过程。</p>
+<div align="center"><br>    <img src="/《图解HTTP》读书笔记（三）/https8.png" width="471" height="297"><br></div>
+
+<ul>
+<li>SSL 速度慢吗<br>HTTPS 也存在一些问题，那就是当使用 SSL 时，它的处理速度会变慢。</li>
+</ul>
+<div align="center"><br>    <img src="/《图解HTTP》读书笔记（三）/https9.png" width="433" height="262"><br></div>
+
+<p>  SSL 的慢是分两种。一种是指通信慢。另一种是指由于大量消耗 CPU 及内存等资源，导致处理速度变慢。</p>
+<p>  和使用 HTTP 相比，网络负载可能会变慢 2 到 100 倍。除去和 TCP 连接、发送 HTTP 请求/响应外，还必须进行 SSL 通信，因此整体上处理通信量不可避免会增加。</p>
+<p>  另一点是 SSL 必须进行加密处理。在服务器和客户端都需要进行加密和解密的运算处理。因此从结果上讲，比起 HTTP 会更多地消耗服务器和客户端的硬件资源，导致负载增强。</p>
+<p>  针对速度变慢这一问题，并没有根本性的解决方案，我们会使用 SSL 加速器这种（专用服务器）硬件来改善该问题。该硬件为 SSL 通信专用硬件，相对软件来讲，能够提高数倍 SSL 的计算速度。仅在 SSL 处理时发挥 SSL 加速器的功效，以分担负载。</p>
+<blockquote>
+<p>为什么不一直使用 HTTPS</p>
+<pre><code>1. 因为与纯文本通信相比，加密通信会消耗更多的 CPU 及内存资源。如果每次通信都加密，会消耗相当多的资源，平摊到一台计算机上时，能够处理的请求数量也必然减少。
+</code></pre><p> 因此，如果是非敏感信息则使用 HTTP 通信，只有在包含个人信息等敏感数据时，才利用 HTTPS 加密通信。</p>
+<pre><code>2. 除此之外，想要节约购买证书的开销也是原因之一。
+</code></pre></blockquote>
+<h2 id="2-确认访问用户身份的认证"><a href="#2-确认访问用户身份的认证" class="headerlink" title="2. 确认访问用户身份的认证"></a>2. 确认访问用户身份的认证</h2><h3 id="2-1-何为认证"><a href="#2-1-何为认证" class="headerlink" title="2.1 何为认证"></a>2.1 何为认证</h3><p>计算机本身无法判断坐在显示器前的使用者的身份，为了确认是谁在访问服务器，需要核对“登录者本人才知道的信息”、“登录者本人才会有的信息”。核对的信息通常是指以下这些：</p>
+<ul>
+<li>密码：只有本人才会知道的字符串信息。</li>
+<li>动态令牌：仅限本人持有的设备内显示的一次性密码。</li>
+<li>数字证书：仅限本人（终端）持有的信息。</li>
+<li>生物认证：指纹和虹膜等本人的生理信息</li>
+<li>IC 卡等：仅限本人持有的信息。</li>
+</ul>
+<p>HTTP 使用的认证方式<br>HTTP/1.1 使用的认证方式如下所示：</p>
+<ul>
+<li>BASIC认证（基本认证）</li>
+<li>DIGEST认证（摘要认证）</li>
+<li>SSL 客户端认证</li>
+<li>FormBase 认证（基于表单认证）</li>
+</ul>
+<h3 id="2-2-BASIC-认证"><a href="#2-2-BASIC-认证" class="headerlink" title="2.2 BASIC 认证"></a>2.2 BASIC 认证</h3><p>BASIC 认证（基本认证）是从 HTTP/1.0 就定义的认证方式。即便是现在仍有一部分的网站会使用这种认证方式。是 Web 服务器与通信客户端之间进行的认证方式。</p>
+<ul>
+<li><p>BASIC 认证的认证步骤</p>
+<div align="center"><br>  <img src="/《图解HTTP》读书笔记（三）/basic.png" width="472" height="349"><br></div>
+
+<p>步骤1：当请求的资源需要 BASIC 认证时，服务器会随状态码 401 Authorization Required，返回带 WWW-Authenticate 首部字段的响应。该字段内包含认证的方式（BASIC）及 Request-URI 安全域字符串（realm）。</p>
+<p>步骤2：接收到状态码 401 的客户端为了通过 BASIC 认证，需要将用户 ID 及密码发送给服务器。发送的字符串内容是由用户 ID 和密码构成，两者中间以冒号（：）连接后，再经过 Base64 编码处理。将编码后的字符串写入首部字段 Authorization 后，发送请求。</p>
+<p>步骤3：接收到包含首部字段 Authorization 请求的服务器，会对认证信息的正确性进行验证。如验证通过，则返回一条包含 Request-URI 资源的响应。</p>
+</li>
+</ul>
+<p>BASIC 认证虽然采用 Base64 编码方式，但这不是加密处理。不需要任何附加信息即可对其解密。换言之，由于明文解码后就是用户 ID 和密码，在 HTTP 等非加密通信的线路上进行 BASIC 认证的过程中，如果被人窃听，被盗的可能性极高。</p>
+<p>另外，除此之外想再进行一次 BASIC 认证时，一般的浏览器却无法实现认证注销操作，这也是问题之一。</p>
+<p>BASIC 认证使用上不够灵活，且达不到多数 Web 网站期望的安全性等级，因此它并不常用。</p>
+<h3 id="2-3-DIGEST-认证"><a href="#2-3-DIGEST-认证" class="headerlink" title="2.3 DIGEST 认证"></a>2.3 DIGEST 认证</h3><p>为弥补 BASIC 认证存在的弱点，从 HTTP/1.1 起就有了 DIGEST 认证。DIGEST 认证同样使用质询/响应的方式（challenge/response），但不会像 BASIC 认证那样直接发送明文密码。</p>
+<p>所谓质询响应方式是指，一开始一方会先发送认证要求给另一方，接着使用从另一方那接收到的咨询码计算生成响应码。最后将响应码返回给对方进行认证的方式。</p>
+<div align="center"><br>    <img src="/《图解HTTP》读书笔记（三）/digest.png" width="457" height="150"><br></div>
+
+<p>因为发送给对方的只是响应摘要及由知讯码产生的计算结果，所以比起 BASIC 认证，密码泄露的可能性就降低了。</p>
+<ul>
+<li><p>DIGEST 认证的认证步骤</p>
+<div align="center"><br>  <img src="/《图解HTTP》读书笔记（三）/digest1.png" width="480" height="376"><br></div>
+
+<p>步骤1：请求需认证的资源时，服务器会随着状态码 401 Authorication Required，返回带  WWW-Authenticate 首部字段的响应。该字段内包含质问响应方式认证所需要的临时咨询码（随机数，nonce）。</p>
+<p>首部字段 WWW-Authenticate 内必须包含 realm 和 nonce 这两个字段的信息。客户端就是依靠向服务器回送这两个值进行认证的。</p>
+<p>nonce 是一种每次随返回的 401 响应生成的任意随机字符串。该字符串通常推荐由 Base64 编码的十六进制数的组成形式，但实际内容依赖服务器的具体实现</p>
+<p>步骤2：接收到401 状态码的客户端，返回的响应中包含 DIGEST 认证必须的首部字段 Authorization 信息。首部字段 Authorization 内必须包含 username、realm、nonce、uri 和 response 的字段信息，其中，realm 和 nonce 就是之前从服务器接收到的响应中的字段。</p>
+<p>步骤3：接收到包含首部字段 Authorization 请求的服务器，会确认认证信息的正确性。认证通过后则会返回包含 Request-URI 资源的响应。</p>
+<p>并且这时会在首部字段 Authorization-Info 写入一些认证成功的相关信息。</p>
+</li>
+</ul>
+<h3 id="2-4-SSL-客户端认证"><a href="#2-4-SSL-客户端认证" class="headerlink" title="2.4 SSL 客户端认证"></a>2.4 SSL 客户端认证</h3><p>SSL 客户端认证是借由 HTTPS 的客户端证书完成认证的方式。凭借客户端证书认证，服务器可确认访问是否来自登录的客户端。</p>
+<h4 id="2-4-1-SSL-客户端认证的认证步骤"><a href="#2-4-1-SSL-客户端认证的认证步骤" class="headerlink" title="2.4.1 SSL 客户端认证的认证步骤"></a>2.4.1 SSL 客户端认证的认证步骤</h4><p>为达到 SSL 客户端认证的目的，需要事先将客户端证书分发给客户端，且客户端必须安装此证书。</p>
+<p>步骤1：接收到需要认证资源的请求，服务器会发送 Certificate Request 报文，要求客户端提供客户端证书。</p>
+<p>步骤2：用户选择将发送的客户端证书后，客户端会把客户端证书信息以 Client Certificate 报文方式发送给服务器。</p>
+<p>步骤3：服务器验证客户端证书验证通过后方可领取证书内客户端的公开密钥，然后开始 HTTPS 加密通信。</p>
+<h4 id="2-4-2-SSL-客户端认证采用双因素认证"><a href="#2-4-2-SSL-客户端认证采用双因素认证" class="headerlink" title="2.4.2 SSL 客户端认证采用双因素认证"></a>2.4.2 SSL 客户端认证采用双因素认证</h4><p>在多数情况下，SSL 客户端认证不会仅依靠证书完成认证，一般会和基于表单认证组合形成一种双因素认证来使用。所谓双因素认证就是指，认证过程中不仅需要密码这一个因素，还需要申请认证者提供其他持有信息，从而作为另一个因素，与其组合使用的认证方式。</p>
+<p>换言之，第一个认证因素的 SSL 客户端证书用来认证客户端计算机，另一个认证因素的密码则用来确定这是用户本人的行为。</p>
+<h4 id="2-4-3-SSL-客户端认证必要的费用"><a href="#2-4-3-SSL-客户端认证必要的费用" class="headerlink" title="2.4.3 SSL 客户端认证必要的费用"></a>2.4.3 SSL 客户端认证必要的费用</h4><p>使用 SSL 客户端认证需要用到客户端证书，而客户端证书需要支付一定费用才能使用。</p>
+<h3 id="2-5-基于表单认证"><a href="#2-5-基于表单认证" class="headerlink" title="2.5 基于表单认证"></a>2.5 基于表单认证</h3><p>基于表单的认证方法并不是在 HTTP 协议中定义的。客户端会向服务器上的 Web 应用程序发送登录信息，按登录信息的验证结果认证。</p>
+<p>多数情况下，输入已事先登录的用户 ID 和密码等登录信息后，发送给 Web 应用程序，基于认证结果来决定认证是否成功。</p>
+<h4 id="2-5-1-Session-管理及-Cookie-应用"><a href="#2-5-1-Session-管理及-Cookie-应用" class="headerlink" title="2.5.1 Session 管理及 Cookie 应用"></a>2.5.1 Session 管理及 Cookie 应用</h4><p>基于表单认证的标准规范尚未有定论，一般会使用 Cookie 来管理 Session（会话）。</p>
+<p>基于表单认证本身是通过服务器端的 Web 应用，将客户端发送过来的用户 ID 和密码与之前登录过的信息做匹配来进行认证的。</p>
+<p>但鉴于 HTTP 是无状态协议，之前已认证成功的用户状态无法通过协议层面保存下来。即，无法实现状态管理，因此即使该用户下一次继续访问，也无法区分他与其他的用户。于是我们会使用 Cookie 来管理 Session，以弥补 HTTP 协议中不存在的状态管理功能。</p>
+<div align="center"><br>    <img src="/《图解HTTP》读书笔记（三）/cookie_session.png" width="463" height="229"><br></div>
+
+<p>步骤1：客户端会把用户 ID 和密码等登录信息放入报文的实体部分，通常是以 POST 方法把请求发送给服务器。而这时，会使用 HTTPS 通信来进行 HTML 表单画面的显示和用户输入数据的发送。</p>
+<p>步骤2：服务器会发放用以识别用户的 Session ID。通过验证从客户端发送过来的登录信息进行身份认证，然后把用户的认证状态和 Session ID 绑定后记录在服务器端。</p>
+<p>向客户端返回响应时，会在首部字段 Set-Cookie 内写入 Session ID。另外，为减轻跨站脚本攻击（XSS）造成的损失，建议事先在 Cookie 内加上 httponly 属性。</p>
+<p>步骤3：客户端接收到从服务器端发来的 Session ID 后，会将其作为 Cookie 保存在本地。下次向服务器发送请求时，浏览器会自动发送 Cookie，所以 Session ID 也随之发送到服务器。服务器端可通过验证接收到的 Session ID 识别用户和其认证状态。</p>
+<h2 id="3-基于-HTTP-的功能追加协议"><a href="#3-基于-HTTP-的功能追加协议" class="headerlink" title="3. 基于 HTTP 的功能追加协议"></a>3. 基于 HTTP 的功能追加协议</h2><h3 id="3-1-基于-HTTP-的协议"><a href="#3-1-基于-HTTP-的协议" class="headerlink" title="3.1 基于 HTTP 的协议"></a>3.1 基于 HTTP 的协议</h3><p>HTTP 功能上的不足可通过创建一套全新的协议来弥补。可是目前基于 HTTP 的 Web 浏览器的使用环境已遍布全球，因此无法完全抛弃 HTTP。有一些新协议的规则是基于 HTTP 的，并在此基础上添加了新的功能。</p>
+<h3 id="3-2-消除-HTTP-瓶颈的-SPDY"><a href="#3-2-消除-HTTP-瓶颈的-SPDY" class="headerlink" title="3.2 消除 HTTP 瓶颈的 SPDY"></a>3.2 消除 HTTP 瓶颈的 SPDY</h3><p>Google 在 2010 年发布了 SPDY，其开发目标旨在解决 HTTP 的性能瓶颈，缩短 Web 页面的加载时间（50%）。</p>
+<h4 id="3-2-1-HTTP-的瓶颈"><a href="#3-2-1-HTTP-的瓶颈" class="headerlink" title="3.2.1 HTTP 的瓶颈"></a>3.2.1 HTTP 的瓶颈</h4><p>HTTP 存在以下缺点和不足：</p>
+<ul>
+<li>一条连接上只可发送一个请求</li>
+<li>请求只能从客户端开始，客户端不可以接收除响应以外的指令</li>
+<li>请求/响应首部未经压缩就发送，首部信息越多延迟越大</li>
+<li>发送冗长的首部，每次互相发送相同的首部造成的浪费较多</li>
+<li>可任意选择数据压缩格式，非强制压缩发送</li>
+</ul>
+<div align="center"><br>    <img src="/《图解HTTP》读书笔记（三）/http_weakness.png" width="475" height="361"><br></div>
+
+<ol>
+<li><p>Ajax 的解决办法</p>
+<p>Ajax 是一种有效利用 JavaScript 和 DOM 的操作，以达到局部 Web 页面替换加载的异步通信手段。和以前的同步通信相比，由于它只更新一部分页面，响应中传输的数据量会因此而减少。</p>
+<p>而利用 Ajax 实时地从服务器获取内容，有可能会导致大量请求产生。</p>
+<div align="center"><br> <img src="/《图解HTTP》读书笔记（三）/http_ajax.png" width="470" height="354"><br></div>
+</li>
+<li><p>Comet 的解决办法<br>一旦服务器有内容更新了，Comet 不会让请求等待，而是直接给客户端返回响应。这是一种通过延时应答，模拟实现服务器向客户端推送的功能。</p>
+<p>内容上虽然可以做到实时更新，但为了保留响应，一次连接的持续时间也变长了。期间，为了维持连接会消耗更多的资源。</p>
+</li>
+</ol>
+<div align="center"><br>    <img src="/《图解HTTP》读书笔记（三）/http_comet.png" width="460" height="341"><br></div>
+
+<h4 id="3-2-2-SPDY-的设计与功能"><a href="#3-2-2-SPDY-的设计与功能" class="headerlink" title="3.2.2 SPDY 的设计与功能"></a>3.2.2 SPDY 的设计与功能</h4><p>SPDY 没有完全改写 HTTP 协议，而是在 TCP/IP 的应用层与运输层之间通过新加会话层的形式运作。同时，考虑到安全性问题，SPDY 规定通信中使用 SSL。</p>
+<p>SPDY 以会话层的形式加入，控制对数据的流动，但还是采用 HTTP 建立通信连接。因此，可照常使用 HTTP 的 GET 和 POST 等方法，Cookie 以及 HTTP 报文等。</p>
+<div align="center"><br>    <img src="/《图解HTTP》读书笔记（三）/spdy.png" width="210" height="252"><br></div>
+
+<p>使用 SPDY 后，HTTP 协议额外获得以下功能。</p>
+<ul>
+<li>多路复用流：通过单一的 TCP 连接，可以无限制处理多个 HTTP 请求。所有请求的处理都在一条 TCP 连接上完成，因此 TCP 的处理效率得到提高。</li>
+<li>赋予请求优先级：SPDY 不仅可以无限制地并发处理请求，还可以给请求逐个分配优先级顺序。这样主要是为了在发送多个请求时，解决因带宽低而导致响应变慢的问题。</li>
+<li>压缩 HTTP 首部：压缩 HTTP 请求和响应的首部。这样一来，通信产生的数据包数量和发送的字节数就更少了</li>
+<li>推送功能：支持服务器主动向客户端推送数据的功能。这样，服务器可直接发送数据，而不必等待客户端的请求。</li>
+<li>服务器提示功能：服务器可以主动提示客户端请求所需的资源。</li>
+</ul>
+<h4 id="3-2-3-SPDY-消除-Web-瓶颈了吗"><a href="#3-2-3-SPDY-消除-Web-瓶颈了吗" class="headerlink" title="3.2.3 SPDY 消除 Web 瓶颈了吗"></a>3.2.3 SPDY 消除 Web 瓶颈了吗</h4><p>因为 SPDY 基本上只是将多个域名（IP 地址）的通信多路复用，所以当一个 Web 网站上使用多个域名下的资源，改善效果就会收到限制。</p>
+<h3 id="3-3-使用浏览器进行全双工通信的-WebSocket"><a href="#3-3-使用浏览器进行全双工通信的-WebSocket" class="headerlink" title="3.3 使用浏览器进行全双工通信的 WebSocket"></a>3.3 使用浏览器进行全双工通信的 WebSocket</h3><p>WebSocket 是为解决 HTTP 协议所面临的困难的一种新的协议及 API。</p>
+<h4 id="3-3-1-WebSocket-的设计与功能"><a href="#3-3-1-WebSocket-的设计与功能" class="headerlink" title="3.3.1 WebSocket 的设计与功能"></a>3.3.1 WebSocket 的设计与功能</h4><p>WebSocket，即 Web 浏览器与 Web 服务器之间全双工通信标准。仍在开发中的 WebSocket 技术主要是为了解决 Ajax 和 Comet 里 XMLHttpRequest 附带的缺陷所引起的问题。</p>
+<h4 id="3-3-2-WebSocket-协议"><a href="#3-3-2-WebSocket-协议" class="headerlink" title="3.3.2 WebSocket 协议"></a>3.3.2 WebSocket 协议</h4><p>一旦 Web 服务器与客户端之间建立起 WebSocket 协议的通信连接，之后所有的通信都依靠这个专用协议进行。通信过程中可相互发送 JSON、XML、HTML 或图片等任意格式的数据。</p>
+<p>由于是建立在 HTTP 基础上的协议，因此连接的发起方仍是客户端，而一旦确立 WebSocket 通信连接，不论服务器还是客户端，任意一方都可直接向对方发送报文。</p>
+<p>下面我们列举一下 WebSocket 协议的主要特点：</p>
+<ul>
+<li>推送功能：支持由服务器向客户端推送数据的推送功能</li>
+<li>减少通信量：只要建立起 WebSocket 连接，就希望一直保持连接状态。和 HTTP 相比，不但每次连接时的总开销减少，而且由于 WebSocket 的首部信息很小，通信量也相应较少了。</li>
+</ul>
+<p>为了实现 WebSocket 通信，在 HTTP 连接建立之后，需要完成一次 “握手” 的步骤。</p>
+<ol>
+<li><p>握手·请求<br>为了实现 WebSocket 通信，需要用到 HTTP 的 <code>Upgrade</code> 首部字段，告知服务器通信协议发送改变，已达到握手的目的。</p>
+<pre><code>“GET /chat HTTP/1.1
+Host: server.example.com
+Upgrade: websocket
+Connection: Upgrade
+Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==
+Origin: http://example.com
+Sec-WebSocket-Protocol: chat, superchat
+Sec-WebSocket-Version: 13”
+</code></pre><p><code>Sec-WebSocket-Protocol</code> 字段内记录着握手过程中必不可少的键值，<code>Sec-WebSocket-Protocol</code> 字段内记录使用的子协议。</p>
+<p>子协议按 <code>WebSocket</code> 协议标准在连接分开使用时，定义那些连接的名称。</p>
+</li>
+<li><p>握手·响应<br>对于之前的请求，返回状态码 <code>101 Switching Protocols</code> 的响应。</p>
+<pre><code>“HTTP/1.1 101 Switching Protocols
+Upgrade: websocket
+Connection: Upgrade
+Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=
+Sec-WebSocket-Protocol: chat”
+</code></pre><p><code>Sec-WebSocket-Accept</code> 的字段值是由握手请求中的 <code>Sec-WebSocket-Accept</code> 的字段值生成的。</p>
+</li>
+</ol>
+<p>成功握手确立 <code>WebSocket</code> 连接之后，通信时不再使用 HTTP 的数据帧，而采用 WebSocket 独立的数据帧。</p>
+<div align="center"><br>    <img src="/《图解HTTP》读书笔记（三）/websocket.png" width="462" height="343"><br></div>
+
+<h3 id="3-4-期盼已久的-HTTP-2-0"><a href="#3-4-期盼已久的-HTTP-2-0" class="headerlink" title="3.4 期盼已久的 HTTP/2.0"></a>3.4 期盼已久的 HTTP/2.0</h3><p>HTTP/2.0 在 2014 年 11 月实现标准化。</p>
+<ul>
+<li>HTTP/2.0 的特点<br>HTTP/2.0 的目标是改善用户在使用 Web 时的速断体验。</li>
+</ul>
+<p>HTTP/2.0 围绕着主要的 7 项技术进行讨论。</p>
+<table>
+<thead>
+<tr>
+<th>压缩</th>
+<th style="text-align:center">SPDY、Friendly</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>多路复用</td>
+<td style="text-align:center">SPDY</td>
+</tr>
+<tr>
+<td>TLS 义务化</td>
+<td style="text-align:center">Speed + Mobility</td>
+</tr>
+<tr>
+<td>协商</td>
+<td style="text-align:center">Speed + Mobility</td>
+</tr>
+<tr>
+<td>客户端拉拽</td>
+<td style="text-align:center">Speed + Mobility</td>
+</tr>
+<tr>
+<td>流量控制</td>
+<td style="text-align:center">SPDY</td>
+</tr>
+<tr>
+<td>WebSocket</td>
+<td style="text-align:center">Speed + Mobility</td>
+</tr>
+</tbody>
+</table>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Http/" rel="tag"># Http</a>
+          
+            <a href="/tags/ReadingNotes/" rel="tag"># ReadingNotes</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/Android-开发碎碎念1/" rel="next" title="Android 开发碎碎念1">
+                <i class="fa fa-chevron-left"></i> Android 开发碎碎念1
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="lijiankun24" />
+          <p class="site-author-name" itemprop="name">lijiankun24</p>
+           
+              <p class="site-description motion-element" itemprop="description">守得云开见月明。</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/lijiankun24" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/lijiankun24" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.jianshu.com/u/1abe21b7ff5f" target="_blank" title="Jianshu">
+                  
+                    <i class="fa fa-fw fa-jianshu"></i>
+                  
+                  Jianshu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://gank.io/post/published" title="匠心写作" target="_blank">匠心写作</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/lmj623565791" title="Hongyang" target="_blank">Hongyang</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.liaohuqiu.net/cn/" title="Huqiu Liao" target="_blank">Huqiu Liao</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://drakeet.me/" title="drakeet" target="_blank">drakeet</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.jianshu.com/u/df40282480b4" title="小鄧子" target="_blank">小鄧子</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://yuweiguocn.github.io/" title="于卫国" target="_blank">于卫国</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-确保-Web-安全的-HTTPS"><span class="nav-number">1.</span> <span class="nav-text">1.确保 Web 安全的 HTTPS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-HTTP-的缺点"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 HTTP 的缺点</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-1-通信使用明文可能会被窃听"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.1.1 通信使用明文可能会被窃听</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-2-不验证通信方的身份就可能遭遇篡改"><span class="nav-number">1.1.2.</span> <span class="nav-text">1.1.2 不验证通信方的身份就可能遭遇篡改</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-3-无法证明报文完整性，可能已遭篡改"><span class="nav-number">1.1.3.</span> <span class="nav-text">1.1.3 无法证明报文完整性，可能已遭篡改</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-HTTP-加密-认证-完整性保护-HTTPS"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 HTTP + 加密 + 认证 + 完整性保护 = HTTPS</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-1-HTTP-加上加密处理和认证及完整性保护后即是-HTTPS"><span class="nav-number">1.2.1.</span> <span class="nav-text">1.2.1 HTTP 加上加密处理和认证及完整性保护后即是 HTTPS</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-2-HTTPS-是身披-SSL-外壳的-HTTP"><span class="nav-number">1.2.2.</span> <span class="nav-text">1.2.2 HTTPS 是身披 SSL 外壳的 HTTP</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-3-相互交换密钥的公开密钥加密技术"><span class="nav-number">1.2.3.</span> <span class="nav-text">1.2.3 相互交换密钥的公开密钥加密技术</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-4-证明公开密钥正确性的证书"><span class="nav-number">1.2.4.</span> <span class="nav-text">1.2.4 证明公开密钥正确性的证书</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-5-HTTPS-的安全通信机制"><span class="nav-number">1.2.5.</span> <span class="nav-text">1.2.5 HTTPS 的安全通信机制</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-确认访问用户身份的认证"><span class="nav-number">2.</span> <span class="nav-text">2. 确认访问用户身份的认证</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-何为认证"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 何为认证</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-BASIC-认证"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 BASIC 认证</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-DIGEST-认证"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 DIGEST 认证</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-SSL-客户端认证"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 SSL 客户端认证</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-1-SSL-客户端认证的认证步骤"><span class="nav-number">2.4.1.</span> <span class="nav-text">2.4.1 SSL 客户端认证的认证步骤</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-2-SSL-客户端认证采用双因素认证"><span class="nav-number">2.4.2.</span> <span class="nav-text">2.4.2 SSL 客户端认证采用双因素认证</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-3-SSL-客户端认证必要的费用"><span class="nav-number">2.4.3.</span> <span class="nav-text">2.4.3 SSL 客户端认证必要的费用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-基于表单认证"><span class="nav-number">2.5.</span> <span class="nav-text">2.5 基于表单认证</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-5-1-Session-管理及-Cookie-应用"><span class="nav-number">2.5.1.</span> <span class="nav-text">2.5.1 Session 管理及 Cookie 应用</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-基于-HTTP-的功能追加协议"><span class="nav-number">3.</span> <span class="nav-text">3. 基于 HTTP 的功能追加协议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-基于-HTTP-的协议"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 基于 HTTP 的协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-消除-HTTP-瓶颈的-SPDY"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 消除 HTTP 瓶颈的 SPDY</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-1-HTTP-的瓶颈"><span class="nav-number">3.2.1.</span> <span class="nav-text">3.2.1 HTTP 的瓶颈</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-2-SPDY-的设计与功能"><span class="nav-number">3.2.2.</span> <span class="nav-text">3.2.2 SPDY 的设计与功能</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-3-SPDY-消除-Web-瓶颈了吗"><span class="nav-number">3.2.3.</span> <span class="nav-text">3.2.3 SPDY 消除 Web 瓶颈了吗</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-使用浏览器进行全双工通信的-WebSocket"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 使用浏览器进行全双工通信的 WebSocket</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-1-WebSocket-的设计与功能"><span class="nav-number">3.3.1.</span> <span class="nav-text">3.3.1 WebSocket 的设计与功能</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-2-WebSocket-协议"><span class="nav-number">3.3.2.</span> <span class="nav-text">3.3.2 WebSocket 协议</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-期盼已久的-HTTP-2-0"><span class="nav-number">3.4.</span> <span class="nav-text">3.4 期盼已久的 HTTP/2.0</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lijiankun24</span>
+  
+</div>
+
+
+<div>
+  <span id="busuanzi_container_site_pv">
+    Total views <span id="busuanzi_value_site_pv">   </span>
+  </span>
+
+  <span id="busuanzi_container_site_uv">
+    |   Total visitors <span id="busuanzi_value_site_uv"/>
+  </span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("tWG63sCRtLhi5NFeaXtWqtnv-gzGzoHsz", "lPLcNFpeOoNc6wr9PVX8XdbI");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+
+  
+
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+          bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+      } else {
+          bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+</body>
+</html>
