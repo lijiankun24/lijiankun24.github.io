@@ -358,238 +358,20 @@
 </ol>
 <a id="more"></a>
 <h2 id="自定义-Request"><a href="#自定义-Request" class="headerlink" title="自定义 Request"></a>自定义 Request</h2><p>在项目的开发中，相信大多数的网络请求接口返回的数据都是 <code>Json</code> 格式的，接收到该 <code>Json</code> 对象以后，还要解析 <code>Json</code> 格式的结果并生成对应的 Model 类对象才能做进一步的操作。如果能稍微封装一下，使返回的结果就是想要的 Model 类对象，这样是不就很方便了呢？下面以 <code>http://gank.io/api/data/Android/10/1</code>(该接口出自<code>http://gank.io/api</code>) 为例，自定义 <code>Request</code>，实现上述需求。</p>
-<h3 id="添加-Gson"><a href="#添加-Gson" class="headerlink" title="添加 Gson"></a>添加 Gson</h3><p>为了方便进行 Json 结果的解析，使用 Google 官方的 Json 解析库 — Gson，添加以下依赖：</p>
-<pre class=" language-groovy"><code class="language-groovy">compile <span class="token string">'com.google.code.gson:gson:2.8.0'</span>
-</code></pre>
-<h3 id="抽象类-Request"><a href="#抽象类-Request" class="headerlink" title="抽象类 Request"></a>抽象类 Request</h3><p>通过<a href="http://lijiankun24.com/Volley源码解析及对Volley的扩展2/" target="_blank" rel="external">上篇博客</a>知道如果想要实现自定义的 <code>Request</code>，需要实现以下两个方法：</p>
-<pre class=" language-Java"><code class="language-Java">/**
- * 子类必须实现此方法，用于解析网络请求的响应，并返回合适的类型对象。这个方法会在一个
- * 工作线程中被调用(即不会在 UI 线程中调用此方法)，如果此方法返回 null，则结果并不会被发送。
- *
- * @param response 来自于网络请求的响应
- * @return 解析的结果，如果发生错误则返回 null
- */
-abstract protected Response<T> parseNetworkResponse(NetworkResponse response);
-
-/**
- * 子类必须实现这个方法，把解析的结果发送给监听器。其中 T 类型的参数 response 要保证
- * 不可以为 null，如果解析失败，则解析的结果不会通过此方法发送。
- *
- * @param response 通过 {@link #parseNetworkResponse(NetworkResponse)} 方法解析的结果
- */
-abstract protected void deliverResponse(T response);
-</code></pre>
-<p>看一下 Volley 中默认的 <code>Request</code> 实现类 <code>StringReqeust</code> 的源码如下所示：</p>
-<pre class=" language-Java"><code class="language-Java">public class StringRequest extends Request<String> {
-    private final Listener<String> mListener;
-
-    /**
-     * 构造方法，创建一个 SringRequest 类的请求对象
-     *
-     * @param method         请求方法，参见 {@link Method}
-     * @param url            请求的 url 地址
-     * @param listener       接收请求结果的监听器
-     * @param errorListener  异常监听器，如果忽略异常可传入 null
-     */
-    public StringRequest(int method, String url, Listener<String> listener,
-            ErrorListener errorListener) {
-        super(method, url, errorListener);
-        mListener = listener;
-    }
-
-    /**
-     * 重载的构造方法，调用 {@ling StringRequest(int, String, Listener<String>, ErrorListener)} 构造方法实现
-     */
-    public StringRequest(String url, Listener<String> listener, ErrorListener errorListener) {
-        this(Method.GET, url, listener, errorListener);
-    }
-
-    /**
-     * 通过构造方法中传入的 mListener 接口，回调接收到的请求响应结果
-     */
-    @Override
-    protected void deliverResponse(String response) {
-        mListener.onResponse(response);
-    }
-
-    /**
-     * 解析传入的网络请求响应 NetworkResponse 对象，并生成具体的结果
-     */
-    @Override
-    protected Response<String> parseNetworkResponse(NetworkResponse response) {
-        String parsed;
-        try {
-            parsed = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
-        } catch (UnsupportedEncodingException e) {
-            parsed = new String(response.data);
-        }
-        return Response.success(parsed, HttpHeaderParser.parseCacheHeaders(response));
-    }
-}
-</code></pre>
-<h3 id="定义-Model-对象"><a href="#定义-Model-对象" class="headerlink" title="定义 Model 对象"></a>定义 Model 对象</h3><p>因为 <code>http://gank.io/api/data/Android/10/1</code> 返回的数据格式如下：</p>
-<pre class=" language-Json"><code class="language-Json">{
-   "error": false,
-   "results":
-   [
-       {
-          "_id": "593f2091421aa92c769a8c6a",
-          "createdAt": "2017-06-13T07:15:29.423Z",
-          "desc": "Android之自定义View：侧滑删除",
-          "publishedAt": "2017-06-15T13:55:57.947Z",
-          "source": "web",
-          "type": "Android",
-          "url": "https://mp.weixin.qq.com/s?__biz=MzIwMzYwMTk1NA==&mid=2247484934&idx=1&sn=f2a40261efe8ebee45804e9df93c1cce&chksm=96cda74ba1ba2e5dbbac15a9e57b5329176d1fe43478e5c63f7bc502a6ca50e4dfa6c0a9041e#rd",
-          "used": true,
-          "who": "陈宇明"
-      },
-      ......
-  ]
-}
-</code></pre>
-<p>所以定义对应的 Model 类，如下所示：</p>
-<pre class=" language-Java"><code class="language-Java">public class AndroidModel {
-
-    public final boolean error;
-
-    public final List<Android> results;
-
-    public AndroidModel(boolean error, List<Android> results) {
-        this.error = error;
-        this.results = results;
-    }
-}
-</code></pre>
-<pre class=" language-Java"><code class="language-Java">public class Android {
-    public final String _id;
-
-    public final String createdAt;
-
-    public final String desc;
-
-    public final String publishedAt;
-
-    public final String source;
-
-    public final String type;
-
-    public final String url;
-
-    public final boolean used;
-
-    public final String who;
-
-    public Android(String _id, String createdAt, String desc,
-                   String publishedAt, String source, String type,
-                   String url, boolean used, String who) {
-        this._id = _id;
-        this.createdAt = createdAt;
-        this.desc = desc;
-        this.publishedAt = publishedAt;
-        this.source = source;
-        this.type = type;
-        this.url = url;
-        this.used = used;
-        this.who = who;
-    }
-}
-</code></pre>
-<h3 id="自定义GsonRequest"><a href="#自定义GsonRequest" class="headerlink" title="自定义GsonRequest"></a>自定义GsonRequest</h3><p>话不多说，直接上代码：</p>
-<pre class=" language-Java"><code class="language-Java">
-public class GsonRequest<T> extends Request<T> {
-
-    private Gson mGson = new Gson();
-
-    private Response.Listener<T> mListener = null;
-
-    private Class<T> mClass = null;
-
-    public GsonRequest(String url, Response.Listener<T> listener, Response.ErrorListener errorListener, Class<T> aClass) {
-        this(Method.GET, url, listener, errorListener, aClass);
-    }
-
-    public GsonRequest(int method, String url, Response.Listener<T> listener, Response.ErrorListener errorListener, Class<T> aClass) {
-        super(method, url, errorListener);
-        mListener = listener;
-        mClass = aClass;
-    }
-
-    @Override
-    protected Response<T> parseNetworkResponse(NetworkResponse response) {
-        try {
-            String res = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
-            return Response.success(mGson.fromJson(res, mClass), HttpHeaderParser.parseCacheHeaders(response));
-        } catch (UnsupportedEncodingException e) {
-            return Response.error(new ParseError(e));
-        }
-    }
-
-    @Override
-    protected void deliverResponse(T response) {
-        if (mListener != null) {
-            mListener.onResponse(response);
-        }
-    }
-
-}
-</code></pre>
+<h3 id="添加-Gson"><a href="#添加-Gson" class="headerlink" title="添加 Gson"></a>添加 Gson</h3><p>为了方便进行 Json 结果的解析，使用 Google 官方的 Json 解析库 — Gson，添加以下依赖：<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">compile <span class="string">'com.google.code.gson:gson:2.8.0'</span></div></pre></td></tr></table></figure></p>
+<h3 id="抽象类-Request"><a href="#抽象类-Request" class="headerlink" title="抽象类 Request"></a>抽象类 Request</h3><p>通过<a href="http://lijiankun24.com/Volley源码解析及对Volley的扩展2/" target="_blank" rel="external">上篇博客</a>知道如果想要实现自定义的 <code>Request</code>，需要实现以下两个方法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 子类必须实现此方法，用于解析网络请求的响应，并返回合适的类型对象。这个方法会在一个</div><div class="line"> * 工作线程中被调用(即不会在 UI 线程中调用此方法)，如果此方法返回 null，则结果并不会被发送。</div><div class="line"> *</div><div class="line"> * <span class="doctag">@param</span> response 来自于网络请求的响应</div><div class="line"> * <span class="doctag">@return</span> 解析的结果，如果发生错误则返回 null</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">abstract</span> <span class="keyword">protected</span> Response&lt;T&gt; <span class="title">parseNetworkResponse</span><span class="params">(NetworkResponse response)</span></span>;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 子类必须实现这个方法，把解析的结果发送给监听器。其中 T 类型的参数 response 要保证</div><div class="line"> * 不可以为 null，如果解析失败，则解析的结果不会通过此方法发送。</div><div class="line"> *</div><div class="line"> * <span class="doctag">@param</span> response 通过 &#123;<span class="doctag">@link</span> #parseNetworkResponse(NetworkResponse)&#125; 方法解析的结果</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">abstract</span> <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">deliverResponse</span><span class="params">(T response)</span></span>;</div></pre></td></tr></table></figure></p>
+<p>看一下 Volley 中默认的 <code>Request</code> 实现类 <code>StringReqeust</code> 的源码如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StringRequest</span> <span class="keyword">extends</span> <span class="title">Request</span>&lt;<span class="title">String</span>&gt; </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Listener&lt;String&gt; mListener;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 构造方法，创建一个 SringRequest 类的请求对象</div><div class="line">     *</div><div class="line">     * <span class="doctag">@param</span> method         请求方法，参见 &#123;<span class="doctag">@link</span> Method&#125;</div><div class="line">     * <span class="doctag">@param</span> url            请求的 url 地址</div><div class="line">     * <span class="doctag">@param</span> listener       接收请求结果的监听器</div><div class="line">     * <span class="doctag">@param</span> errorListener  异常监听器，如果忽略异常可传入 null</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">StringRequest</span><span class="params">(<span class="keyword">int</span> method, String url, Listener&lt;String&gt; listener,</span></span></div><div class="line">            ErrorListener errorListener) &#123;</div><div class="line">        <span class="keyword">super</span>(method, url, errorListener);</div><div class="line">        mListener = listener;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 重载的构造方法，调用 &#123;<span class="doctag">@ling</span> StringRequest(int, String, Listener&lt;String&gt;, ErrorListener)&#125; 构造方法实现</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">StringRequest</span><span class="params">(String url, Listener&lt;String&gt; listener, ErrorListener errorListener)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>(Method.GET, url, listener, errorListener);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 通过构造方法中传入的 mListener 接口，回调接收到的请求响应结果</div><div class="line">     */</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">deliverResponse</span><span class="params">(String response)</span> </span>&#123;</div><div class="line">        mListener.onResponse(response);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 解析传入的网络请求响应 NetworkResponse 对象，并生成具体的结果</div><div class="line">     */</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> Response&lt;String&gt; <span class="title">parseNetworkResponse</span><span class="params">(NetworkResponse response)</span> </span>&#123;</div><div class="line">        String parsed;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            parsed = <span class="keyword">new</span> String(response.data, HttpHeaderParser.parseCharset(response.headers));</div><div class="line">        &#125; <span class="keyword">catch</span> (UnsupportedEncodingException e) &#123;</div><div class="line">            parsed = <span class="keyword">new</span> String(response.data);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> Response.success(parsed, HttpHeaderParser.parseCacheHeaders(response));</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="定义-Model-对象"><a href="#定义-Model-对象" class="headerlink" title="定义 Model 对象"></a>定义 Model 对象</h3><p>因为 <code>http://gank.io/api/data/Android/10/1</code> 返回的数据格式如下：<br><figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">   <span class="attr">"error"</span>: <span class="literal">false</span>,</div><div class="line">   <span class="attr">"results"</span>:</div><div class="line">   [</div><div class="line">       &#123;</div><div class="line">          <span class="attr">"_id"</span>: <span class="string">"593f2091421aa92c769a8c6a"</span>,</div><div class="line">          <span class="attr">"createdAt"</span>: <span class="string">"2017-06-13T07:15:29.423Z"</span>,</div><div class="line">          <span class="attr">"desc"</span>: <span class="string">"Android之自定义View：侧滑删除"</span>,</div><div class="line">          <span class="attr">"publishedAt"</span>: <span class="string">"2017-06-15T13:55:57.947Z"</span>,</div><div class="line">          <span class="attr">"source"</span>: <span class="string">"web"</span>,</div><div class="line">          <span class="attr">"type"</span>: <span class="string">"Android"</span>,</div><div class="line">          <span class="attr">"url"</span>: <span class="string">"https://mp.weixin.qq.com/s?__biz=MzIwMzYwMTk1NA==&amp;mid=2247484934&amp;idx=1&amp;sn=f2a40261efe8ebee45804e9df93c1cce&amp;chksm=96cda74ba1ba2e5dbbac15a9e57b5329176d1fe43478e5c63f7bc502a6ca50e4dfa6c0a9041e#rd"</span>,</div><div class="line">          <span class="attr">"used"</span>: <span class="literal">true</span>,</div><div class="line">          <span class="attr">"who"</span>: <span class="string">"陈宇明"</span></div><div class="line">      &#125;,</div><div class="line">      ......</div><div class="line">  ]</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>所以定义对应的 Model 类，如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AndroidModel</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">boolean</span> error;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> List&lt;Android&gt; results;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">AndroidModel</span><span class="params">(<span class="keyword">boolean</span> error, List&lt;Android&gt; results)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.error = error;</div><div class="line">        <span class="keyword">this</span>.results = results;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Android</span> </span>&#123;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> String _id;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> String createdAt;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> String desc;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> String publishedAt;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> String source;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> String type;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> String url;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">boolean</span> used;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">final</span> String who;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Android</span><span class="params">(String _id, String createdAt, String desc,</span></span></div><div class="line">                   String publishedAt, String source, String type,</div><div class="line">                   String url, <span class="keyword">boolean</span> used, String who) &#123;</div><div class="line">        <span class="keyword">this</span>._id = _id;</div><div class="line">        <span class="keyword">this</span>.createdAt = createdAt;</div><div class="line">        <span class="keyword">this</span>.desc = desc;</div><div class="line">        <span class="keyword">this</span>.publishedAt = publishedAt;</div><div class="line">        <span class="keyword">this</span>.source = source;</div><div class="line">        <span class="keyword">this</span>.type = type;</div><div class="line">        <span class="keyword">this</span>.url = url;</div><div class="line">        <span class="keyword">this</span>.used = used;</div><div class="line">        <span class="keyword">this</span>.who = who;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="自定义GsonRequest"><a href="#自定义GsonRequest" class="headerlink" title="自定义GsonRequest"></a>自定义GsonRequest</h3><p>话不多说，直接上代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GsonRequest</span>&lt;<span class="title">T</span>&gt; <span class="keyword">extends</span> <span class="title">Request</span>&lt;<span class="title">T</span>&gt; </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> Gson mGson = <span class="keyword">new</span> Gson();</div><div class="line"></div><div class="line">    <span class="keyword">private</span> Response.Listener&lt;T&gt; mListener = <span class="keyword">null</span>;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> Class&lt;T&gt; mClass = <span class="keyword">null</span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">GsonRequest</span><span class="params">(String url, Response.Listener&lt;T&gt; listener, Response.ErrorListener errorListener, Class&lt;T&gt; aClass)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>(Method.GET, url, listener, errorListener, aClass);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">GsonRequest</span><span class="params">(<span class="keyword">int</span> method, String url, Response.Listener&lt;T&gt; listener, Response.ErrorListener errorListener, Class&lt;T&gt; aClass)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>(method, url, errorListener);</div><div class="line">        mListener = listener;</div><div class="line">        mClass = aClass;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> Response&lt;T&gt; <span class="title">parseNetworkResponse</span><span class="params">(NetworkResponse response)</span> </span>&#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            String res = <span class="keyword">new</span> String(response.data, HttpHeaderParser.parseCharset(response.headers));</div><div class="line">            <span class="keyword">return</span> Response.success(mGson.fromJson(res, mClass), HttpHeaderParser.parseCacheHeaders(response));</div><div class="line">        &#125; <span class="keyword">catch</span> (UnsupportedEncodingException e) &#123;</div><div class="line">            <span class="keyword">return</span> Response.error(<span class="keyword">new</span> ParseError(e));</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">deliverResponse</span><span class="params">(T response)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (mListener != <span class="keyword">null</span>) &#123;</div><div class="line">            mListener.onResponse(response);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <ol>
 <li>使用泛型将需要得到的数据类型传入 <code>GsonRequest</code> 对象中，构造方法中的 <code>Class&lt;T&gt; aClass</code> 是使用 <code>Gson</code> 解析数据时需要使用的</li>
 <li>通过 <code>Response.Listener&lt;T&gt;</code> 对象 <code>mListener</code> 回调接收到的响应结果</li>
 </ol>
-<h3 id="如何使用"><a href="#如何使用" class="headerlink" title="如何使用"></a>如何使用</h3><p>定义好 <code>GsonRequest</code> 之后，就可以尝试使用一下了，使用的方式如下所示：</p>
-<pre class=" language-Java"><code class="language-Java">    GsonRequest<AndroidModel> request = new GsonRequest<AndroidModel>(mUrl,
-        new Response.Listener<AndroidModel>() {
-            @Override
-            public void onResponse(AndroidModel response) {
-                L.i("onResponse " + response.error);
-            }
-        },
-        new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                L.i("onErrorResponse " + error);
-            }
-        }, AndroidModel.class);
-
-    RequestQueue queue = Volley.newRequestQueue(MainActivity.this.getApplicationContext());
-    queue.add(request);
-</code></pre>
+<h3 id="如何使用"><a href="#如何使用" class="headerlink" title="如何使用"></a>如何使用</h3><p>定义好 <code>GsonRequest</code> 之后，就可以尝试使用一下了，使用的方式如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">GsonRequest&lt;AndroidModel&gt; request = <span class="keyword">new</span> GsonRequest&lt;AndroidModel&gt;(mUrl,</div><div class="line">    <span class="keyword">new</span> Response.Listener&lt;AndroidModel&gt;() &#123;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResponse</span><span class="params">(AndroidModel response)</span> </span>&#123;</div><div class="line">            L.i(<span class="string">"onResponse "</span> + response.error);</div><div class="line">        &#125;</div><div class="line">    &#125;,</div><div class="line">    <span class="keyword">new</span> Response.ErrorListener() &#123;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onErrorResponse</span><span class="params">(VolleyError error)</span> </span>&#123;</div><div class="line">            L.i(<span class="string">"onErrorResponse "</span> + error);</div><div class="line">        &#125;</div><div class="line">    &#125;, AndroidModel.class);</div><div class="line"></div><div class="line">RequestQueue queue = Volley.newRequestQueue(MainActivity.<span class="keyword">this</span>.getApplicationContext());</div><div class="line">queue.add(request);</div></pre></td></tr></table></figure></p>
 <p>具体的用法和默认的 <code>***Request</code> 的用法基本一样，只不过需要需要向 <code>GsonRequest</code> 中传入具体的 Model 类的 Class 类型。这样一看，使用 <code>GsonRequest</code> 进行网络请求是不是方便了很多，就不需要在自己进行 Json 数据解析，可以直接得到需要类的对象。</p>
-<h2 id="使用-OKHttp3-自定义-OkHttpStack"><a href="#使用-OKHttp3-自定义-OkHttpStack" class="headerlink" title="使用 OKHttp3 自定义 OkHttpStack"></a>使用 OKHttp3 自定义 OkHttpStack</h2><p>在第二篇博客分析 <code>Volley</code> 类的源码的时候，使用 <code>Volley</code> 的静态方法创建 <code>RequestQueue</code> 对象的时候，源码如下：</p>
-<pre class=" language-Java"><code class="language-Java">    public static RequestQueue newRequestQueue(Context context) {
-        return newRequestQueue(context, null);
-    }
-
-    public static RequestQueue newRequestQueue(Context context, HttpStack stack) {
-        File cacheDir = new File(context.getCacheDir(), DEFAULT_CACHE_DIR);
-
-        String userAgent = "volley/0";
-        try {
-            String packageName = context.getPackageName();
-            PackageInfo info = context.getPackageManager().getPackageInfo(packageName, 0);
-            userAgent = packageName + "/" + info.versionCode;
-        } catch (NameNotFoundException e) {
-        }
-
-        if (stack == null) {
-            if (Build.VERSION.SDK_INT >= 9) {
-                stack = new HurlStack();
-            } else {
-                // Prior to Gingerbread, HttpUrlConnection was unreliable.
-                // See: http://android-developers.blogspot.com/2011/09/androids-http-clients.html
-                stack = new HttpClientStack(AndroidHttpClient.newInstance(userAgent));
-            }
-        }
-
-        Network network = new BasicNetwork(stack);
-
-        RequestQueue queue = new RequestQueue(new DiskBasedCache(cacheDir), network);
-        queue.start();
-
-        return queue;
-    }
-</code></pre>
+<h2 id="使用-OKHttp3-自定义-OkHttpStack"><a href="#使用-OKHttp3-自定义-OkHttpStack" class="headerlink" title="使用 OKHttp3 自定义 OkHttpStack"></a>使用 OKHttp3 自定义 OkHttpStack</h2><p>在第二篇博客分析 <code>Volley</code> 类的源码的时候，使用 <code>Volley</code> 的静态方法创建 <code>RequestQueue</code> 对象的时候，源码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> RequestQueue <span class="title">newRequestQueue</span><span class="params">(Context context)</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> newRequestQueue(context, <span class="keyword">null</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> RequestQueue <span class="title">newRequestQueue</span><span class="params">(Context context, HttpStack stack)</span> </span>&#123;</div><div class="line">    File cacheDir = <span class="keyword">new</span> File(context.getCacheDir(), DEFAULT_CACHE_DIR);</div><div class="line"></div><div class="line">    String userAgent = <span class="string">"volley/0"</span>;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        String packageName = context.getPackageName();</div><div class="line">        PackageInfo info = context.getPackageManager().getPackageInfo(packageName, <span class="number">0</span>);</div><div class="line">        userAgent = packageName + <span class="string">"/"</span> + info.versionCode;</div><div class="line">    &#125; <span class="keyword">catch</span> (NameNotFoundException e) &#123;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (stack == <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="keyword">if</span> (Build.VERSION.SDK_INT &gt;= <span class="number">9</span>) &#123;</div><div class="line">            stack = <span class="keyword">new</span> HurlStack();</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="comment">// Prior to Gingerbread, HttpUrlConnection was unreliable.</span></div><div class="line">            <span class="comment">// See: http://android-developers.blogspot.com/2011/09/androids-http-clients.html</span></div><div class="line">            stack = <span class="keyword">new</span> HttpClientStack(AndroidHttpClient.newInstance(userAgent));</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    Network network = <span class="keyword">new</span> BasicNetwork(stack);</div><div class="line"></div><div class="line">    RequestQueue queue = <span class="keyword">new</span> RequestQueue(<span class="keyword">new</span> DiskBasedCache(cacheDir), network);</div><div class="line">    queue.start();</div><div class="line"></div><div class="line">    <span class="keyword">return</span> queue;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p>一般我们使用一个参数的方法 <code>newRequestQueue(Context)</code> 即可创建 <code>RequestQueue</code> 对象，在此方法内部又是使用了 <code>newRequestQueue(Context, HttpStack)</code> 方法构建 <code>RequestQueue</code> 对象的，第二个参数 <code>HttpStack</code> 传入的是 <code>null</code>，分析 <code>newRequestQueue(Context, HttpStack)</code> 方法的源码可见，如果传入的 <code>HttpStack</code> 对象为 <code>null</code>，则创建一个 <code>HttpStack</code> 的对象，在 Android SDK 9(不包括9)之前使用 <code>HttpClientStack</code>；在 Android SDK 9(包括9)之后使用 <code>HurlStack</code></p>
 <p>这两个类都实现了 <code>HttpStack</code> 接口，用于执行具体的网络请求。<code>HurlStack</code> 内部是使用 <code>HttpURLConnection</code> 类实现的，<code>HttpClientStack</code> 内部是使用 <code>HttpClient</code> 实现的。这两个类的区别如下所示：</p>
 <blockquote>
@@ -597,291 +379,39 @@ public class GsonRequest<T> extends Request<T> {
 </blockquote>
 <p>由此可见，我们完全可以自定义一个实现了 <code>HttpStack</code> 接口的类，使用两个参数的方法 <code>newRequestQueue(Context, HttpStack)</code> 创建一个 <code>RequestQueue</code> 对象。</p>
 <p>现在 OkHttp3 使用的很广泛，而且优点很多，我就不多说了，那我们可以使用 OkHttp3 定义一个实现了 <code>HttpStack</code> 接口的类。照猫画虎，先分析一下 <code>HurlStack</code> 和 <code>HttpClientStack</code> 的源码。</p>
-<h3 id="HurlStack-源码解析"><a href="#HurlStack-源码解析" class="headerlink" title="HurlStack 源码解析"></a>HurlStack 源码解析</h3><p><code>HttpStack</code> 接口只有一个方法 <code>performRequest(Request&lt;?&gt;, Map&lt;String, String&gt;)</code>，所以我们重点分析 <code>HurlStack</code> 中的 <code>performRequest(Request&lt;?&gt;, Map&lt;String, String&gt;)</code> 方法，源码如下：</p>
-<pre class=" language-Java"><code class="language-Java">    @Override
-    public HttpResponse performRequest(Request<?> request, Map<String, String> additionalHeaders)
-            throws IOException, AuthFailureError {
-        // 请求的 url
-        String url = request.getUrl();
-        // 添加请求头
-        HashMap<String, String> map = new HashMap<String, String>();
-        map.putAll(request.getHeaders());
-        map.putAll(additionalHeaders);
-        // 若 mUrlRewriter 对象不为空，则通过 `mUrlRewriter.rewriteUrl(url)` 重新改写 url
-        if (mUrlRewriter != null) {
-            String rewritten = mUrlRewriter.rewriteUrl(url);
-            if (rewritten == null) {
-                throw new IOException("URL blocked by rewriter: " + url);
-            }
-            url = rewritten;
-        }
-        // 生成 URL 对象
-        URL parsedUrl = new URL(url);
-        // 生成 HttpURLConnection 对象 connection
-        HttpURLConnection connection = openConnection(parsedUrl, request);
-        // 向 connection 中添加请求头
-        for (String headerName : map.keySet()) {
-            connection.addRequestProperty(headerName, map.get(headerName));
-        }
-        // 根据不同的请求方法向 connection 对象中添加请求的参数
-        setConnectionParametersForRequest(connection, request);
-        // Initialize HttpResponse with data from the HttpURLConnection.
-        // 通过 connection 请求服务器，得到响应，并初始化 HttpResponse 对象
-        ProtocolVersion protocolVersion = new ProtocolVersion("HTTP", 1, 1);
-        int responseCode = connection.getResponseCode();
-        if (responseCode == -1) {
-            // -1 is returned by getResponseCode() if the response code could not be retrieved.
-            // Signal to the caller that something was wrong with the connection.
-            throw new IOException("Could not retrieve response code from HttpUrlConnection.");
-        }
-        StatusLine responseStatus = new BasicStatusLine(protocolVersion,
-                connection.getResponseCode(), connection.getResponseMessage());
-        BasicHttpResponse response = new BasicHttpResponse(responseStatus);
-        if (hasResponseBody(request.getMethod(), responseStatus.getStatusCode())) {
-            response.setEntity(entityFromConnection(connection));
-        }
-        for (Entry<String, List<String>> header : connection.getHeaderFields().entrySet()) {
-            if (header.getKey() != null) {
-                Header h = new BasicHeader(header.getKey(), header.getValue().get(0));
-                response.addHeader(h);
-            }
-        }
-        return response;
-    }
-</code></pre>
+<h3 id="HurlStack-源码解析"><a href="#HurlStack-源码解析" class="headerlink" title="HurlStack 源码解析"></a>HurlStack 源码解析</h3><p><code>HttpStack</code> 接口只有一个方法 <code>performRequest(Request&lt;?&gt;, Map&lt;String, String&gt;)</code>，所以我们重点分析 <code>HurlStack</code> 中的 <code>performRequest(Request&lt;?&gt;, Map&lt;String, String&gt;)</code> 方法，源码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> HttpResponse <span class="title">performRequest</span><span class="params">(Request&lt;?&gt; request, Map&lt;String, String&gt; additionalHeaders)</span></span></div><div class="line">        <span class="keyword">throws</span> IOException, AuthFailureError &#123;</div><div class="line">    <span class="comment">// 请求的 url</span></div><div class="line">    String url = request.getUrl();</div><div class="line">    <span class="comment">// 添加请求头</span></div><div class="line">    HashMap&lt;String, String&gt; map = <span class="keyword">new</span> HashMap&lt;String, String&gt;();</div><div class="line">    map.putAll(request.getHeaders());</div><div class="line">    map.putAll(additionalHeaders);</div><div class="line">    <span class="comment">// 若 mUrlRewriter 对象不为空，则通过 `mUrlRewriter.rewriteUrl(url)` 重新改写 url</span></div><div class="line">    <span class="keyword">if</span> (mUrlRewriter != <span class="keyword">null</span>) &#123;</div><div class="line">        String rewritten = mUrlRewriter.rewriteUrl(url);</div><div class="line">        <span class="keyword">if</span> (rewritten == <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IOException(<span class="string">"URL blocked by rewriter: "</span> + url);</div><div class="line">        &#125;</div><div class="line">        url = rewritten;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 生成 URL 对象</span></div><div class="line">    URL parsedUrl = <span class="keyword">new</span> URL(url);</div><div class="line">    <span class="comment">// 生成 HttpURLConnection 对象 connection</span></div><div class="line">    HttpURLConnection connection = openConnection(parsedUrl, request);</div><div class="line">    <span class="comment">// 向 connection 中添加请求头</span></div><div class="line">    <span class="keyword">for</span> (String headerName : map.keySet()) &#123;</div><div class="line">        connection.addRequestProperty(headerName, map.get(headerName));</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 根据不同的请求方法向 connection 对象中添加请求的参数</span></div><div class="line">    setConnectionParametersForRequest(connection, request);</div><div class="line">    <span class="comment">// Initialize HttpResponse with data from the HttpURLConnection.</span></div><div class="line">    <span class="comment">// 通过 connection 请求服务器，得到响应，并初始化 HttpResponse 对象</span></div><div class="line">    ProtocolVersion protocolVersion = <span class="keyword">new</span> ProtocolVersion(<span class="string">"HTTP"</span>, <span class="number">1</span>, <span class="number">1</span>);</div><div class="line">    <span class="keyword">int</span> responseCode = connection.getResponseCode();</div><div class="line">    <span class="keyword">if</span> (responseCode == -<span class="number">1</span>) &#123;</div><div class="line">        <span class="comment">// -1 is returned by getResponseCode() if the response code could not be retrieved.</span></div><div class="line">        <span class="comment">// Signal to the caller that something was wrong with the connection.</span></div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IOException(<span class="string">"Could not retrieve response code from HttpUrlConnection."</span>);</div><div class="line">    &#125;</div><div class="line">    StatusLine responseStatus = <span class="keyword">new</span> BasicStatusLine(protocolVersion,</div><div class="line">            connection.getResponseCode(), connection.getResponseMessage());</div><div class="line">    BasicHttpResponse response = <span class="keyword">new</span> BasicHttpResponse(responseStatus);</div><div class="line">    <span class="keyword">if</span> (hasResponseBody(request.getMethod(), responseStatus.getStatusCode())) &#123;</div><div class="line">        response.setEntity(entityFromConnection(connection));</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">for</span> (Entry&lt;String, List&lt;String&gt;&gt; header : connection.getHeaderFields().entrySet()) &#123;</div><div class="line">        <span class="keyword">if</span> (header.getKey() != <span class="keyword">null</span>) &#123;</div><div class="line">            Header h = <span class="keyword">new</span> BasicHeader(header.getKey(), header.getValue().get(<span class="number">0</span>));</div><div class="line">            response.addHeader(h);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> response;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p>对上面的源码分析如下：</p>
 <ol>
 <li>首先得到 <code>String</code> 类型的 <code>url</code></li>
 <li>创建 <code>Map&lt;String, String&gt;</code> 类型的对象 <code>map</code>，并向其添加请求头。请求头来自两部分，一部分来自 <code>request.getHeaders()</code>; 另一部分来自从该方法传入的 <code>additionalHeaders</code></li>
-<li>若 <code>UrlRewriter</code> 接口类型的的 <code>mUrlRewriter</code> 对象不为空，则通过 <code>UrlRewriter.rewriteUrl(String)</code> 重写 <code>url</code> 对象，并得到重写后的 <code>url</code>。<code>UrlRewriter</code> 源码如下：<pre class=" language-Java"><code class="language-Java"> /**
-  * An interface for transforming URLs before use.
-  */
- public interface UrlRewriter {
-     /**
-      * Returns a URL to use instead of the provided one, or null to indicate
-      * this URL should not be used at all.
-      */
-     public String rewriteUrl(String originalUrl);
- }
-</code></pre>
+<li><p>若 <code>UrlRewriter</code> 接口类型的的 <code>mUrlRewriter</code> 对象不为空，则通过 <code>UrlRewriter.rewriteUrl(String)</code> 重写 <code>url</code> 对象，并得到重写后的 <code>url</code>。<code>UrlRewriter</code> 源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * An interface for transforming URLs before use.</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">UrlRewriter</span> </span>&#123;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * Returns a URL to use instead of the provided one, or null to indicate</div><div class="line">     * this URL should not be used at all.</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">rewriteUrl</span><span class="params">(String originalUrl)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 </li>
 <li><p>接着通过 <code>openConnection(URL, Request&lt;?&gt;)</code> 方法新建一个 <code>HttpURLConnection</code> 对象，该方法主要是打开一个连接，设置超时响应时间；如果 <code>SSLSocketFactory</code> 类型的对象 <code>mSslSocketFactory</code> 不为空，则设置 <code>HTTPS</code>；设置是否使用缓存等。</p>
-<pre class=" language-Java"><code class="language-Java"> /**
-  * Opens an {@link HttpURLConnection} with parameters.
-  * @param url
-  * @return an open connection
-  * @throws IOException
-  */
- private HttpURLConnection openConnection(URL url, Request<?> request) throws IOException {
-     HttpURLConnection connection = createConnection(url);
-
-     int timeoutMs = request.getTimeoutMs();
-     connection.setConnectTimeout(timeoutMs);
-     connection.setReadTimeout(timeoutMs);
-     connection.setUseCaches(false);
-     connection.setDoInput(true);
-
-     // use caller-provided custom SslSocketFactory, if any, for HTTPS
-     if ("https".equals(url.getProtocol()) && mSslSocketFactory != null) {
-         ((HttpsURLConnection)connection).setSSLSocketFactory(mSslSocketFactory);
-     }
-
-     return connection;
- }
-
- /**
-  * Create an {@link HttpURLConnection} for the specified {@code url}.
-  */
- protected HttpURLConnection createConnection(URL url) throws IOException {
-     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-     // Workaround for the M release HttpURLConnection not observing the
-     // HttpURLConnection.setFollowRedirects() property.
-     // https://code.google.com/p/android/issues/detail?id=194495
-     connection.setInstanceFollowRedirects(HttpURLConnection.getFollowRedirects());
-
-     return connection;
- }
-</code></pre>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Opens an &#123;<span class="doctag">@link</span> HttpURLConnection&#125; with parameters.</div><div class="line"> * <span class="doctag">@param</span> url</div><div class="line"> * <span class="doctag">@return</span> an open connection</div><div class="line"> * <span class="doctag">@throws</span> IOException</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">private</span> HttpURLConnection <span class="title">openConnection</span><span class="params">(URL url, Request&lt;?&gt; request)</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">    HttpURLConnection connection = createConnection(url);</div><div class="line"></div><div class="line">    <span class="keyword">int</span> timeoutMs = request.getTimeoutMs();</div><div class="line">    connection.setConnectTimeout(timeoutMs);</div><div class="line">    connection.setReadTimeout(timeoutMs);</div><div class="line">    connection.setUseCaches(<span class="keyword">false</span>);</div><div class="line">    connection.setDoInput(<span class="keyword">true</span>);</div><div class="line"></div><div class="line">    <span class="comment">// use caller-provided custom SslSocketFactory, if any, for HTTPS</span></div><div class="line">    <span class="keyword">if</span> (<span class="string">"https"</span>.equals(url.getProtocol()) &amp;&amp; mSslSocketFactory != <span class="keyword">null</span>) &#123;</div><div class="line">        ((HttpsURLConnection)connection).setSSLSocketFactory(mSslSocketFactory);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> connection;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * Create an &#123;<span class="doctag">@link</span> HttpURLConnection&#125; for the specified &#123;<span class="doctag">@code</span> url&#125;.</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">protected</span> HttpURLConnection <span class="title">createConnection</span><span class="params">(URL url)</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">    HttpURLConnection connection = (HttpURLConnection) url.openConnection();</div><div class="line"></div><div class="line">    <span class="comment">// Workaround for the M release HttpURLConnection not observing the</span></div><div class="line">    <span class="comment">// HttpURLConnection.setFollowRedirects() property.</span></div><div class="line">    <span class="comment">// https://code.google.com/p/android/issues/detail?id=194495</span></div><div class="line">    connection.setInstanceFollowRedirects(HttpURLConnection.getFollowRedirects());</div><div class="line"></div><div class="line">    <span class="keyword">return</span> connection;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 </li>
-<li>然后通过一个循环，向 <code>HttpURLConnection</code> 类的连接对象 <code>connection</code> 设置请求头</li>
+<li><p>然后通过一个循环，向 <code>HttpURLConnection</code> 类的连接对象 <code>connection</code> 设置请求头</p>
+</li>
 <li><p>使用 <code>setConnectionParametersForRequest(HttpURLConnection, Request&lt;?&gt;)</code> 方法设置请求方法和请求体，如下所示：</p>
-<pre class=" language-Java"><code class="language-Java">@SuppressWarnings("deprecation")
-/* package */ static void setConnectionParametersForRequest(HttpURLConnection connection,
-     Request<?> request) throws IOException, AuthFailureError {
- switch (request.getMethod()) {
-     case Method.DEPRECATED_GET_OR_POST:
-         // This is the deprecated way that needs to be handled for backwards compatibility.
-         // If the request's post body is null, then the assumption is that the request is
-         // GET.  Otherwise, it is assumed that the request is a POST.
-         byte[] postBody = request.getPostBody();
-         if (postBody != null) {
-             // Prepare output. There is no need to set Content-Length explicitly,
-             // since this is handled by HttpURLConnection using the size of the prepared
-             // output stream.
-             connection.setDoOutput(true);
-             connection.setRequestMethod("POST");
-             connection.addRequestProperty(HEADER_CONTENT_TYPE,
-                     request.getPostBodyContentType());
-             DataOutputStream out = new DataOutputStream(connection.getOutputStream());
-             out.write(postBody);
-             out.close();
-         }
-         break;
-     case Method.GET:
-         // Not necessary to set the request method because connection defaults to GET but
-         // being explicit here.
-         connection.setRequestMethod("GET");
-         break;
-     case Method.DELETE:
-         connection.setRequestMethod("DELETE");
-         break;
-     case Method.POST:
-         connection.setRequestMethod("POST");
-         addBodyIfExists(connection, request);
-         break;
-     case Method.PUT:
-         connection.setRequestMethod("PUT");
-         addBodyIfExists(connection, request);
-         break;
-     case Method.HEAD:
-         connection.setRequestMethod("HEAD");
-         break;
-     case Method.OPTIONS:
-         connection.setRequestMethod("OPTIONS");
-         break;
-     case Method.TRACE:
-         connection.setRequestMethod("TRACE");
-         break;
-     case Method.PATCH:
-         connection.setRequestMethod("PATCH");
-         addBodyIfExists(connection, request);
-         break;
-     default:
-         throw new IllegalStateException("Unknown method type.");
- }
-}
-</code></pre>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@SuppressWarnings</span>(<span class="string">"deprecation"</span>)</div><div class="line"><span class="comment">/* package */</span> <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setConnectionParametersForRequest</span><span class="params">(HttpURLConnection connection,</span></span></div><div class="line">        Request&lt;?&gt; request) <span class="keyword">throws</span> IOException, AuthFailureError &#123;</div><div class="line">    <span class="keyword">switch</span> (request.getMethod()) &#123;</div><div class="line">        <span class="keyword">case</span> Method.DEPRECATED_GET_OR_POST:</div><div class="line">            <span class="comment">// This is the deprecated way that needs to be handled for backwards compatibility.</span></div><div class="line">            <span class="comment">// If the request's post body is null, then the assumption is that the request is</span></div><div class="line">            <span class="comment">// GET.  Otherwise, it is assumed that the request is a POST.</span></div><div class="line">            <span class="keyword">byte</span>[] postBody = request.getPostBody();</div><div class="line">            <span class="keyword">if</span> (postBody != <span class="keyword">null</span>) &#123;</div><div class="line">                <span class="comment">// Prepare output. There is no need to set Content-Length explicitly,</span></div><div class="line">                <span class="comment">// since this is handled by HttpURLConnection using the size of the prepared</span></div><div class="line">                <span class="comment">// output stream.</span></div><div class="line">                connection.setDoOutput(<span class="keyword">true</span>);</div><div class="line">                connection.setRequestMethod(<span class="string">"POST"</span>);</div><div class="line">                connection.addRequestProperty(HEADER_CONTENT_TYPE,</div><div class="line">                        request.getPostBodyContentType());</div><div class="line">                DataOutputStream out = <span class="keyword">new</span> DataOutputStream(connection.getOutputStream());</div><div class="line">                out.write(postBody);</div><div class="line">                out.close();</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> Method.GET:</div><div class="line">            <span class="comment">// Not necessary to set the request method because connection defaults to GET but</span></div><div class="line">            <span class="comment">// being explicit here.</span></div><div class="line">            connection.setRequestMethod(<span class="string">"GET"</span>);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> Method.DELETE:</div><div class="line">            connection.setRequestMethod(<span class="string">"DELETE"</span>);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> Method.POST:</div><div class="line">            connection.setRequestMethod(<span class="string">"POST"</span>);</div><div class="line">            addBodyIfExists(connection, request);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> Method.PUT:</div><div class="line">            connection.setRequestMethod(<span class="string">"PUT"</span>);</div><div class="line">            addBodyIfExists(connection, request);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> Method.HEAD:</div><div class="line">            connection.setRequestMethod(<span class="string">"HEAD"</span>);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> Method.OPTIONS:</div><div class="line">            connection.setRequestMethod(<span class="string">"OPTIONS"</span>);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> Method.TRACE:</div><div class="line">            connection.setRequestMethod(<span class="string">"TRACE"</span>);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> Method.PATCH:</div><div class="line">            connection.setRequestMethod(<span class="string">"PATCH"</span>);</div><div class="line">            addBodyIfExists(connection, request);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">default</span>:</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Unknown method type."</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 </li>
 <li><p>接着创建 <code>ProtocolVersion</code> 对象和 <code>StatusLine</code> 对象，并生产 <code>BasicHttpResponse</code> 对象 <code>response</code></p>
 </li>
 <li><p>通过 <code>hasResponseBody(int requestMethod, int responseCode)</code> 方法判断响应中是否有响应体，若有响应体则通过 <code>entityFromConnection(HttpURLConnection)</code> 创建响应体 <code>HttpEntity</code> 对象，并设置给 <code>response</code></p>
-<pre class=" language-Java"><code class="language-Java">
- private static boolean hasResponseBody(int requestMethod, int responseCode) {
-     return requestMethod != Request.Method.HEAD
-         && !(HttpStatus.SC_CONTINUE <= responseCode && responseCode < HttpStatus.SC_OK)
-         && responseCode != HttpStatus.SC_NO_CONTENT
-         && responseCode != HttpStatus.SC_NOT_MODIFIED;
- }
-
- private static HttpEntity entityFromConnection(HttpURLConnection connection) {
-     BasicHttpEntity entity = new BasicHttpEntity();
-     InputStream inputStream;
-     try {
-         inputStream = connection.getInputStream();
-     } catch (IOException ioe) {
-         inputStream = connection.getErrorStream();
-     }
-     entity.setContent(inputStream);
-     entity.setContentLength(connection.getContentLength());
-     entity.setContentEncoding(connection.getContentEncoding());
-     entity.setContentType(connection.getContentType());
-     return entity;
- }
-</code></pre>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">hasResponseBody</span><span class="params">(<span class="keyword">int</span> requestMethod, <span class="keyword">int</span> responseCode)</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> requestMethod != Request.Method.HEAD</div><div class="line">        &amp;&amp; !(HttpStatus.SC_CONTINUE &lt;= responseCode &amp;&amp; responseCode &lt; HttpStatus.SC_OK)</div><div class="line">        &amp;&amp; responseCode != HttpStatus.SC_NO_CONTENT</div><div class="line">        &amp;&amp; responseCode != HttpStatus.SC_NOT_MODIFIED;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> HttpEntity <span class="title">entityFromConnection</span><span class="params">(HttpURLConnection connection)</span> </span>&#123;</div><div class="line">    BasicHttpEntity entity = <span class="keyword">new</span> BasicHttpEntity();</div><div class="line">    InputStream inputStream;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        inputStream = connection.getInputStream();</div><div class="line">    &#125; <span class="keyword">catch</span> (IOException ioe) &#123;</div><div class="line">        inputStream = connection.getErrorStream();</div><div class="line">    &#125;</div><div class="line">    entity.setContent(inputStream);</div><div class="line">    entity.setContentLength(connection.getContentLength());</div><div class="line">    entity.setContentEncoding(connection.getContentEncoding());</div><div class="line">    entity.setContentType(connection.getContentType());</div><div class="line">    <span class="keyword">return</span> entity;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 </li>
 <li><p>通过如下代码为 <code>response</code> 设置响应头，并返回响应对象</p>
-<pre class=" language-Java"><code class="language-Java">for (Entry<String, List<String>> header : connection.getHeaderFields().entrySet()) {
- if (header.getKey() != null) {
-     Header h = new BasicHeader(header.getKey(), header.getValue().get(0));
-     response.addHeader(h);
- }
-}
-</code></pre>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span> (Entry&lt;String, List&lt;String&gt;&gt; header : connection.getHeaderFields().entrySet()) &#123;</div><div class="line">    <span class="keyword">if</span> (header.getKey() != <span class="keyword">null</span>) &#123;</div><div class="line">        Header h = <span class="keyword">new</span> BasicHeader(header.getKey(), header.getValue().get(<span class="number">0</span>));</div><div class="line">        response.addHeader(h);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 </li>
 </ol>
-<h3 id="HttpClientStack-源码解析"><a href="#HttpClientStack-源码解析" class="headerlink" title="HttpClientStack 源码解析"></a>HttpClientStack 源码解析</h3><p>和分析 <code>HurlStack</code> 源码类似，直接分析其中的 <code>performRequest(Request&lt;?&gt;, Map&lt;String, String&gt;)</code> 方法，源码如下：</p>
-<pre class=" language-Java"><code class="language-Java">    @Override
-    public HttpResponse performRequest(Request<?> request, Map<String, String> additionalHeaders)
-            throws IOException, AuthFailureError {
-        HttpUriRequest httpRequest = createHttpRequest(request, additionalHeaders);
-        addHeaders(httpRequest, additionalHeaders);
-        addHeaders(httpRequest, request.getHeaders());
-        onPrepareRequest(httpRequest);
-        HttpParams httpParams = httpRequest.getParams();
-        int timeoutMs = request.getTimeoutMs();
-        // TODO: Reevaluate this connection timeout based on more wide-scale
-        // data collection and possibly different for wifi vs. 3G.
-        HttpConnectionParams.setConnectionTimeout(httpParams, 5000);
-        HttpConnectionParams.setSoTimeout(httpParams, timeoutMs);
-        return mClient.execute(httpRequest);
-    }
-</code></pre>
+<h3 id="HttpClientStack-源码解析"><a href="#HttpClientStack-源码解析" class="headerlink" title="HttpClientStack 源码解析"></a>HttpClientStack 源码解析</h3><p>和分析 <code>HurlStack</code> 源码类似，直接分析其中的 <code>performRequest(Request&lt;?&gt;, Map&lt;String, String&gt;)</code> 方法，源码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> HttpResponse <span class="title">performRequest</span><span class="params">(Request&lt;?&gt; request, Map&lt;String, String&gt; additionalHeaders)</span></span></div><div class="line">        <span class="keyword">throws</span> IOException, AuthFailureError &#123;</div><div class="line">    HttpUriRequest httpRequest = createHttpRequest(request, additionalHeaders);</div><div class="line">    addHeaders(httpRequest, additionalHeaders);</div><div class="line">    addHeaders(httpRequest, request.getHeaders());</div><div class="line">    onPrepareRequest(httpRequest);</div><div class="line">    HttpParams httpParams = httpRequest.getParams();</div><div class="line">    <span class="keyword">int</span> timeoutMs = request.getTimeoutMs();</div><div class="line">    <span class="comment">// <span class="doctag">TODO:</span> Reevaluate this connection timeout based on more wide-scale</span></div><div class="line">    <span class="comment">// data collection and possibly different for wifi vs. 3G.</span></div><div class="line">    HttpConnectionParams.setConnectionTimeout(httpParams, <span class="number">5000</span>);</div><div class="line">    HttpConnectionParams.setSoTimeout(httpParams, timeoutMs);</div><div class="line">    <span class="keyword">return</span> mClient.execute(httpRequest);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p>分析如下：</p>
 <ol>
 <li><p>通过 <code>createHttpRequest(Request&lt;?&gt;, Map&lt;String, String&gt;)</code> 方法生成 <code>HttpUriRequest</code> 类型的对象 <code>httpRequest</code>，在生成的 <code>httpRequest</code> 对象中已经设置了请求的url、请求方式和请求体</p>
-<pre class=" language-Java"><code class="language-Java">
- @SuppressWarnings("deprecation")
- /* protected */ static HttpUriRequest createHttpRequest(Request<?> request,
-         Map<String, String> additionalHeaders) throws AuthFailureError {
-     switch (request.getMethod()) {
-         case Method.DEPRECATED_GET_OR_POST: {
-             // This is the deprecated way that needs to be handled for backwards compatibility.
-             // If the request's post body is null, then the assumption is that the request is
-             // GET.  Otherwise, it is assumed that the request is a POST.
-             byte[] postBody = request.getPostBody();
-             if (postBody != null) {
-                 HttpPost postRequest = new HttpPost(request.getUrl());
-                 postRequest.addHeader(HEADER_CONTENT_TYPE, request.getPostBodyContentType());
-                 HttpEntity entity;
-                 entity = new ByteArrayEntity(postBody);
-                 postRequest.setEntity(entity);
-                 return postRequest;
-             } else {
-                 return new HttpGet(request.getUrl());
-             }
-         }
-         case Method.GET:
-             return new HttpGet(request.getUrl());
-         case Method.DELETE:
-             return new HttpDelete(request.getUrl());
-         case Method.POST: {
-             HttpPost postRequest = new HttpPost(request.getUrl());
-             postRequest.addHeader(HEADER_CONTENT_TYPE, request.getBodyContentType());
-             setEntityIfNonEmptyBody(postRequest, request);
-             return postRequest;
-         }
-         case Method.PUT: {
-             HttpPut putRequest = new HttpPut(request.getUrl());
-             putRequest.addHeader(HEADER_CONTENT_TYPE, request.getBodyContentType());
-             setEntityIfNonEmptyBody(putRequest, request);
-             return putRequest;
-         }
-         case Method.HEAD:
-             return new HttpHead(request.getUrl());
-         case Method.OPTIONS:
-             return new HttpOptions(request.getUrl());
-         case Method.TRACE:
-             return new HttpTrace(request.getUrl());
-         case Method.PATCH: {
-             HttpPatch patchRequest = new HttpPatch(request.getUrl());
-             patchRequest.addHeader(HEADER_CONTENT_TYPE, request.getBodyContentType());
-             setEntityIfNonEmptyBody(patchRequest, request);
-             return patchRequest;
-         }
-         default:
-             throw new IllegalStateException("Unknown request method.");
-     }
- }
-</code></pre>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="meta">@SuppressWarnings</span>(<span class="string">"deprecation"</span>)</div><div class="line"><span class="comment">/* protected */</span> <span class="function"><span class="keyword">static</span> HttpUriRequest <span class="title">createHttpRequest</span><span class="params">(Request&lt;?&gt; request,</span></span></div><div class="line">        Map&lt;String, String&gt; additionalHeaders) <span class="keyword">throws</span> AuthFailureError &#123;</div><div class="line">    <span class="keyword">switch</span> (request.getMethod()) &#123;</div><div class="line">        <span class="keyword">case</span> Method.DEPRECATED_GET_OR_POST: &#123;</div><div class="line">            <span class="comment">// This is the deprecated way that needs to be handled for backwards compatibility.</span></div><div class="line">            <span class="comment">// If the request's post body is null, then the assumption is that the request is</span></div><div class="line">            <span class="comment">// GET.  Otherwise, it is assumed that the request is a POST.</span></div><div class="line">            <span class="keyword">byte</span>[] postBody = request.getPostBody();</div><div class="line">            <span class="keyword">if</span> (postBody != <span class="keyword">null</span>) &#123;</div><div class="line">                HttpPost postRequest = <span class="keyword">new</span> HttpPost(request.getUrl());</div><div class="line">                postRequest.addHeader(HEADER_CONTENT_TYPE, request.getPostBodyContentType());</div><div class="line">                HttpEntity entity;</div><div class="line">                entity = <span class="keyword">new</span> ByteArrayEntity(postBody);</div><div class="line">                postRequest.setEntity(entity);</div><div class="line">                <span class="keyword">return</span> postRequest;</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                <span class="keyword">return</span> <span class="keyword">new</span> HttpGet(request.getUrl());</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">case</span> Method.GET:</div><div class="line">            <span class="keyword">return</span> <span class="keyword">new</span> HttpGet(request.getUrl());</div><div class="line">        <span class="keyword">case</span> Method.DELETE:</div><div class="line">            <span class="keyword">return</span> <span class="keyword">new</span> HttpDelete(request.getUrl());</div><div class="line">        <span class="keyword">case</span> Method.POST: &#123;</div><div class="line">            HttpPost postRequest = <span class="keyword">new</span> HttpPost(request.getUrl());</div><div class="line">            postRequest.addHeader(HEADER_CONTENT_TYPE, request.getBodyContentType());</div><div class="line">            setEntityIfNonEmptyBody(postRequest, request);</div><div class="line">            <span class="keyword">return</span> postRequest;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">case</span> Method.PUT: &#123;</div><div class="line">            HttpPut putRequest = <span class="keyword">new</span> HttpPut(request.getUrl());</div><div class="line">            putRequest.addHeader(HEADER_CONTENT_TYPE, request.getBodyContentType());</div><div class="line">            setEntityIfNonEmptyBody(putRequest, request);</div><div class="line">            <span class="keyword">return</span> putRequest;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">case</span> Method.HEAD:</div><div class="line">            <span class="keyword">return</span> <span class="keyword">new</span> HttpHead(request.getUrl());</div><div class="line">        <span class="keyword">case</span> Method.OPTIONS:</div><div class="line">            <span class="keyword">return</span> <span class="keyword">new</span> HttpOptions(request.getUrl());</div><div class="line">        <span class="keyword">case</span> Method.TRACE:</div><div class="line">            <span class="keyword">return</span> <span class="keyword">new</span> HttpTrace(request.getUrl());</div><div class="line">        <span class="keyword">case</span> Method.PATCH: &#123;</div><div class="line">            HttpPatch patchRequest = <span class="keyword">new</span> HttpPatch(request.getUrl());</div><div class="line">            patchRequest.addHeader(HEADER_CONTENT_TYPE, request.getBodyContentType());</div><div class="line">            setEntityIfNonEmptyBody(patchRequest, request);</div><div class="line">            <span class="keyword">return</span> patchRequest;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">default</span>:</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Unknown request method."</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 </li>
 <li><p>通过 <code>addHeaders(HttpUriRequest, Map&lt;String, String&gt;)</code> 向 <code>httpRequest</code> 对象中添加请求头，请求头来自两部分，和 <code>HurlStack</code> 是一样的</p>
-<pre class=" language-Java"><code class="language-Java"> private static void addHeaders(HttpUriRequest httpRequest, Map<String, String> headers) {
-     for (String key : headers.keySet()) {
-         httpRequest.setHeader(key, headers.get(key));
-     }
- }
-</code></pre>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">addHeaders</span><span class="params">(HttpUriRequest httpRequest, Map&lt;String, String&gt; headers)</span> </span>&#123;</div><div class="line">    <span class="keyword">for</span> (String key : headers.keySet()) &#123;</div><div class="line">        httpRequest.setHeader(key, headers.get(key));</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 </li>
 <li><p>设置超时连接</p>
 </li>
@@ -894,272 +424,32 @@ public class GsonRequest<T> extends Request<T> {
 <li>设置超时时间</li>
 <li>生成响应对象并向响应对象中添加参数，包括：响应头和响应体</li>
 </ol>
-<p>有了如上的流程，<code>OkHttpStack</code> 也是这样的流程。<br>要使用 OKHttp3 库需要在 <code>gradle</code> 中添加对 OKHttp3 的依赖，如下所示：</p>
-<pre class=" language-groovy"><code class="language-groovy">compile <span class="token string">'com.squareup.okhttp3:okhttp:3.8.0'</span>
-</code></pre>
-<p><code>OkHttpStack</code> 源码如下：</p>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">OkHttpStack</span> <span class="token keyword">implements</span> <span class="token class-name">HttpStack</span> <span class="token punctuation">{</span>
-
-    <span class="token keyword">private</span> <span class="token keyword">final</span> OkHttpClient mOkHttpClient<span class="token punctuation">;</span>
-
-    <span class="token keyword">public</span> <span class="token function">OkHttpStack</span><span class="token punctuation">(</span>OkHttpClient okHttpClient<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>okHttpClient <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalArgumentException</span><span class="token punctuation">(</span><span class="token string">"OkHttpClient can't be null"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        mOkHttpClient <span class="token operator">=</span> okHttpClient<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-
-    <span class="token annotation punctuation">@Override</span>
-    <span class="token keyword">public</span> HttpResponse <span class="token function">performRequest</span><span class="token punctuation">(</span>Request<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> request<span class="token punctuation">,</span> Map<span class="token operator">&lt;</span>String<span class="token punctuation">,</span> String<span class="token operator">></span> additionalHeaders<span class="token punctuation">)</span>
-            <span class="token keyword">throws</span> IOException<span class="token punctuation">,</span> AuthFailureError <span class="token punctuation">{</span>
-        <span class="token keyword">int</span> timeoutMs <span class="token operator">=</span> request<span class="token punctuation">.</span><span class="token function">getTimeoutMs</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        OkHttpClient okHttpClient <span class="token operator">=</span> mOkHttpClient
-                <span class="token punctuation">.</span><span class="token function">newBuilder</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">connectTimeout</span><span class="token punctuation">(</span>timeoutMs<span class="token punctuation">,</span> TimeUnit<span class="token punctuation">.</span>MILLISECONDS<span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">readTimeout</span><span class="token punctuation">(</span>timeoutMs<span class="token punctuation">,</span> TimeUnit<span class="token punctuation">.</span>MILLISECONDS<span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">writeTimeout</span><span class="token punctuation">(</span>timeoutMs<span class="token punctuation">,</span> TimeUnit<span class="token punctuation">.</span>MILLISECONDS<span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-        HashMap<span class="token operator">&lt;</span>String<span class="token punctuation">,</span> String<span class="token operator">></span> headers <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HashMap</span><span class="token operator">&lt;</span>String<span class="token punctuation">,</span> String<span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        headers<span class="token punctuation">.</span><span class="token function">putAll</span><span class="token punctuation">(</span>request<span class="token punctuation">.</span><span class="token function">getHeaders</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        headers<span class="token punctuation">.</span><span class="token function">putAll</span><span class="token punctuation">(</span>additionalHeaders<span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-        okhttp3<span class="token punctuation">.</span>Request<span class="token punctuation">.</span>Builder builder <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">okhttp3<span class="token punctuation">.</span>Request</span>
-                <span class="token punctuation">.</span><span class="token function">Builder</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-                <span class="token punctuation">.</span><span class="token function">url</span><span class="token punctuation">(</span>request<span class="token punctuation">.</span><span class="token function">getUrl</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">for</span> <span class="token punctuation">(</span>String key <span class="token operator">:</span> headers<span class="token punctuation">.</span><span class="token function">keySet</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            builder<span class="token punctuation">.</span><span class="token function">header</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> headers<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token function">setConnectionParametersForRequest</span><span class="token punctuation">(</span>builder<span class="token punctuation">,</span> request<span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-        okhttp3<span class="token punctuation">.</span>Request okRequest <span class="token operator">=</span> builder<span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        Call call <span class="token operator">=</span> okHttpClient<span class="token punctuation">.</span><span class="token function">newCall</span><span class="token punctuation">(</span>okRequest<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        Response okResponse <span class="token operator">=</span> call<span class="token punctuation">.</span><span class="token function">execute</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        BasicStatusLine responseStatus <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BasicStatusLine</span><span class="token punctuation">(</span>
-                <span class="token function">parseProtocol</span><span class="token punctuation">(</span>okResponse<span class="token punctuation">.</span><span class="token function">protocol</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-                okResponse<span class="token punctuation">.</span><span class="token function">code</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-                okResponse<span class="token punctuation">.</span><span class="token function">message</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
-        <span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-        BasicHttpResponse response <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BasicHttpResponse</span><span class="token punctuation">(</span>responseStatus<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        response<span class="token punctuation">.</span><span class="token function">setEntity</span><span class="token punctuation">(</span><span class="token function">entityFromOkHttpResponse</span><span class="token punctuation">(</span>okResponse<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-        Headers responseHeaders <span class="token operator">=</span> okResponse<span class="token punctuation">.</span><span class="token function">headers</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">int</span> size <span class="token operator">=</span> responseHeaders<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        String name<span class="token punctuation">;</span>
-        String value<span class="token punctuation">;</span>
-        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> size<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            name <span class="token operator">=</span> responseHeaders<span class="token punctuation">.</span><span class="token function">name</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            value <span class="token operator">=</span> responseHeaders<span class="token punctuation">.</span><span class="token function">value</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>value <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                response<span class="token punctuation">.</span><span class="token function">addHeader</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">BasicHeader</span><span class="token punctuation">(</span>name<span class="token punctuation">,</span> value<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">return</span> response<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-
-    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">setConnectionParametersForRequest</span><span class="token punctuation">(</span>okhttp3<span class="token punctuation">.</span>Request<span class="token punctuation">.</span>Builder builder<span class="token punctuation">,</span> Request<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> request<span class="token punctuation">)</span>
-            <span class="token keyword">throws</span> AuthFailureError <span class="token punctuation">{</span>
-        <span class="token keyword">switch</span> <span class="token punctuation">(</span>request<span class="token punctuation">.</span><span class="token function">getMethod</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">case</span> Request<span class="token punctuation">.</span>Method<span class="token punctuation">.</span>DEPRECATED_GET_OR_POST<span class="token operator">:</span>
-                <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span> postBody <span class="token operator">=</span> request<span class="token punctuation">.</span><span class="token function">getPostBody</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">if</span> <span class="token punctuation">(</span>postBody <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    builder<span class="token punctuation">.</span><span class="token function">post</span><span class="token punctuation">(</span>RequestBody<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span>MediaType<span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>request<span class="token punctuation">.</span><span class="token function">getPostBodyContentType</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span> postBody<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span>
-                <span class="token keyword">break</span><span class="token punctuation">;</span>
-            <span class="token keyword">case</span> Request<span class="token punctuation">.</span>Method<span class="token punctuation">.</span>GET<span class="token operator">:</span>
-                builder<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">break</span><span class="token punctuation">;</span>
-            <span class="token keyword">case</span> Request<span class="token punctuation">.</span>Method<span class="token punctuation">.</span>DELETE<span class="token operator">:</span>
-                builder<span class="token punctuation">.</span><span class="token function">delete</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">break</span><span class="token punctuation">;</span>
-            <span class="token keyword">case</span> Request<span class="token punctuation">.</span>Method<span class="token punctuation">.</span>POST<span class="token operator">:</span>
-                builder<span class="token punctuation">.</span><span class="token function">post</span><span class="token punctuation">(</span><span class="token function">createRequestBody</span><span class="token punctuation">(</span>request<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">break</span><span class="token punctuation">;</span>
-            <span class="token keyword">case</span> Request<span class="token punctuation">.</span>Method<span class="token punctuation">.</span>PUT<span class="token operator">:</span>
-                builder<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token function">createRequestBody</span><span class="token punctuation">(</span>request<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">break</span><span class="token punctuation">;</span>
-            <span class="token keyword">case</span> Request<span class="token punctuation">.</span>Method<span class="token punctuation">.</span>HEAD<span class="token operator">:</span>
-                builder<span class="token punctuation">.</span><span class="token function">head</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">break</span><span class="token punctuation">;</span>
-            <span class="token keyword">case</span> Request<span class="token punctuation">.</span>Method<span class="token punctuation">.</span>OPTIONS<span class="token operator">:</span>
-                builder<span class="token punctuation">.</span><span class="token function">method</span><span class="token punctuation">(</span><span class="token string">"OPTIONS"</span><span class="token punctuation">,</span> null<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">break</span><span class="token punctuation">;</span>
-            <span class="token keyword">case</span> Request<span class="token punctuation">.</span>Method<span class="token punctuation">.</span>TRACE<span class="token operator">:</span>
-                builder<span class="token punctuation">.</span><span class="token function">method</span><span class="token punctuation">(</span><span class="token string">"TRACE"</span><span class="token punctuation">,</span> null<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">break</span><span class="token punctuation">;</span>
-            <span class="token keyword">case</span> Request<span class="token punctuation">.</span>Method<span class="token punctuation">.</span>PATCH<span class="token operator">:</span>
-                builder<span class="token punctuation">.</span><span class="token function">patch</span><span class="token punctuation">(</span><span class="token function">createRequestBody</span><span class="token punctuation">(</span>request<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">break</span><span class="token punctuation">;</span>
-            <span class="token keyword">default</span><span class="token operator">:</span>
-                <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span><span class="token string">"Unknown method type."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-
-    <span class="token keyword">private</span> <span class="token keyword">static</span> RequestBody <span class="token function">createRequestBody</span><span class="token punctuation">(</span>Request<span class="token operator">&lt;</span><span class="token operator">?</span><span class="token operator">></span> r<span class="token punctuation">)</span> <span class="token keyword">throws</span> AuthFailureError <span class="token punctuation">{</span>
-        <span class="token keyword">final</span> <span class="token keyword">byte</span><span class="token punctuation">[</span><span class="token punctuation">]</span> body <span class="token operator">=</span> r<span class="token punctuation">.</span><span class="token function">getBody</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>body <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token keyword">return</span> null<span class="token punctuation">;</span>
-
-        <span class="token keyword">return</span> RequestBody<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span>MediaType<span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>r<span class="token punctuation">.</span><span class="token function">getBodyContentType</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span> body<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-
-    <span class="token keyword">private</span> <span class="token keyword">static</span> ProtocolVersion <span class="token function">parseProtocol</span><span class="token punctuation">(</span><span class="token keyword">final</span> Protocol p<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">switch</span> <span class="token punctuation">(</span>p<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">case</span> HTTP_1_0<span class="token operator">:</span>
-                <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">ProtocolVersion</span><span class="token punctuation">(</span><span class="token string">"HTTP"</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">case</span> HTTP_1_1<span class="token operator">:</span>
-                <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">ProtocolVersion</span><span class="token punctuation">(</span><span class="token string">"HTTP"</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">case</span> SPDY_3<span class="token operator">:</span>
-                <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">ProtocolVersion</span><span class="token punctuation">(</span><span class="token string">"SPDY"</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">case</span> HTTP_2<span class="token operator">:</span>
-                <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">ProtocolVersion</span><span class="token punctuation">(</span><span class="token string">"HTTP"</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-
-        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalAccessError</span><span class="token punctuation">(</span><span class="token string">"Unkwown protocol"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-
-    <span class="token keyword">private</span> <span class="token keyword">static</span> HttpEntity <span class="token function">entityFromOkHttpResponse</span><span class="token punctuation">(</span>Response r<span class="token punctuation">)</span> <span class="token keyword">throws</span> IOException <span class="token punctuation">{</span>
-        BasicHttpEntity entity <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BasicHttpEntity</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        ResponseBody body <span class="token operator">=</span> r<span class="token punctuation">.</span><span class="token function">body</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-        entity<span class="token punctuation">.</span><span class="token function">setContent</span><span class="token punctuation">(</span>body<span class="token punctuation">.</span><span class="token function">byteStream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        entity<span class="token punctuation">.</span><span class="token function">setContentLength</span><span class="token punctuation">(</span>body<span class="token punctuation">.</span><span class="token function">contentLength</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        entity<span class="token punctuation">.</span><span class="token function">setContentEncoding</span><span class="token punctuation">(</span>r<span class="token punctuation">.</span><span class="token function">header</span><span class="token punctuation">(</span><span class="token string">"Content-Encoding"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>body<span class="token punctuation">.</span><span class="token function">contentType</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            entity<span class="token punctuation">.</span><span class="token function">setContentType</span><span class="token punctuation">(</span>body<span class="token punctuation">.</span><span class="token function">contentType</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">type</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">return</span> entity<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-</code></pre>
+<p>有了如上的流程，<code>OkHttpStack</code> 也是这样的流程。<br>要使用 OKHttp3 库需要在 <code>gradle</code> 中添加对 OKHttp3 的依赖，如下所示：<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">compile <span class="string">'com.squareup.okhttp3:okhttp:3.8.0'</span></div></pre></td></tr></table></figure></p>
+<p><code>OkHttpStack</code> 源码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OkHttpStack</span> <span class="keyword">implements</span> <span class="title">HttpStack</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> OkHttpClient mOkHttpClient;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">OkHttpStack</span><span class="params">(OkHttpClient okHttpClient)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (okHttpClient == <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"OkHttpClient can't be null"</span>);</div><div class="line">        &#125;</div><div class="line">        mOkHttpClient = okHttpClient;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> HttpResponse <span class="title">performRequest</span><span class="params">(Request&lt;?&gt; request, Map&lt;String, String&gt; additionalHeaders)</span></span></div><div class="line">            <span class="keyword">throws</span> IOException, AuthFailureError &#123;</div><div class="line">        <span class="keyword">int</span> timeoutMs = request.getTimeoutMs();</div><div class="line">        OkHttpClient okHttpClient = mOkHttpClient</div><div class="line">                .newBuilder()</div><div class="line">                .connectTimeout(timeoutMs, TimeUnit.MILLISECONDS)</div><div class="line">                .readTimeout(timeoutMs, TimeUnit.MILLISECONDS)</div><div class="line">                .writeTimeout(timeoutMs, TimeUnit.MILLISECONDS)</div><div class="line">                .build();</div><div class="line"></div><div class="line">        HashMap&lt;String, String&gt; headers = <span class="keyword">new</span> HashMap&lt;String, String&gt;();</div><div class="line">        headers.putAll(request.getHeaders());</div><div class="line">        headers.putAll(additionalHeaders);</div><div class="line"></div><div class="line">        okhttp3.Request.Builder builder = <span class="keyword">new</span> okhttp3.Request</div><div class="line">                .Builder()</div><div class="line">                .url(request.getUrl());</div><div class="line">        <span class="keyword">for</span> (String key : headers.keySet()) &#123;</div><div class="line">            builder.header(key, headers.get(key));</div><div class="line">        &#125;</div><div class="line">        setConnectionParametersForRequest(builder, request);</div><div class="line"></div><div class="line">        okhttp3.Request okRequest = builder.build();</div><div class="line">        Call call = okHttpClient.newCall(okRequest);</div><div class="line">        Response okResponse = call.execute();</div><div class="line">        BasicStatusLine responseStatus = <span class="keyword">new</span> BasicStatusLine(</div><div class="line">                parseProtocol(okResponse.protocol()),</div><div class="line">                okResponse.code(),</div><div class="line">                okResponse.message()</div><div class="line">        );</div><div class="line"></div><div class="line">        BasicHttpResponse response = <span class="keyword">new</span> BasicHttpResponse(responseStatus);</div><div class="line">        response.setEntity(entityFromOkHttpResponse(okResponse));</div><div class="line"></div><div class="line">        Headers responseHeaders = okResponse.headers();</div><div class="line">        <span class="keyword">int</span> size = responseHeaders.size();</div><div class="line">        String name;</div><div class="line">        String value;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; i++) &#123;</div><div class="line">            name = responseHeaders.name(i);</div><div class="line">            value = responseHeaders.value(i);</div><div class="line">            <span class="keyword">if</span> (value != <span class="keyword">null</span>) &#123;</div><div class="line">                response.addHeader(<span class="keyword">new</span> BasicHeader(name, value));</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> response;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">setConnectionParametersForRequest</span><span class="params">(okhttp3.Request.Builder builder, Request&lt;?&gt; request)</span></span></div><div class="line">            <span class="keyword">throws</span> AuthFailureError &#123;</div><div class="line">        <span class="keyword">switch</span> (request.getMethod()) &#123;</div><div class="line">            <span class="keyword">case</span> Request.Method.DEPRECATED_GET_OR_POST:</div><div class="line">                <span class="keyword">byte</span>[] postBody = request.getPostBody();</div><div class="line">                <span class="keyword">if</span> (postBody != <span class="keyword">null</span>) &#123;</div><div class="line">                    builder.post(RequestBody.create(MediaType.parse(request.getPostBodyContentType()), postBody));</div><div class="line">                &#125;</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> Request.Method.GET:</div><div class="line">                builder.get();</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> Request.Method.DELETE:</div><div class="line">                builder.delete();</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> Request.Method.POST:</div><div class="line">                builder.post(createRequestBody(request));</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> Request.Method.PUT:</div><div class="line">                builder.put(createRequestBody(request));</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> Request.Method.HEAD:</div><div class="line">                builder.head();</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> Request.Method.OPTIONS:</div><div class="line">                builder.method(<span class="string">"OPTIONS"</span>, <span class="keyword">null</span>);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> Request.Method.TRACE:</div><div class="line">                builder.method(<span class="string">"TRACE"</span>, <span class="keyword">null</span>);</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> Request.Method.PATCH:</div><div class="line">                builder.patch(createRequestBody(request));</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">default</span>:</div><div class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Unknown method type."</span>);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> RequestBody <span class="title">createRequestBody</span><span class="params">(Request&lt;?&gt; r)</span> <span class="keyword">throws</span> AuthFailureError </span>&#123;</div><div class="line">        <span class="keyword">final</span> <span class="keyword">byte</span>[] body = r.getBody();</div><div class="line">        <span class="keyword">if</span> (body == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line"></div><div class="line">        <span class="keyword">return</span> RequestBody.create(MediaType.parse(r.getBodyContentType()), body);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> ProtocolVersion <span class="title">parseProtocol</span><span class="params">(<span class="keyword">final</span> Protocol p)</span> </span>&#123;</div><div class="line">        <span class="keyword">switch</span> (p) &#123;</div><div class="line">            <span class="keyword">case</span> HTTP_1_0:</div><div class="line">                <span class="keyword">return</span> <span class="keyword">new</span> ProtocolVersion(<span class="string">"HTTP"</span>, <span class="number">1</span>, <span class="number">0</span>);</div><div class="line">            <span class="keyword">case</span> HTTP_1_1:</div><div class="line">                <span class="keyword">return</span> <span class="keyword">new</span> ProtocolVersion(<span class="string">"HTTP"</span>, <span class="number">1</span>, <span class="number">1</span>);</div><div class="line">            <span class="keyword">case</span> SPDY_3:</div><div class="line">                <span class="keyword">return</span> <span class="keyword">new</span> ProtocolVersion(<span class="string">"SPDY"</span>, <span class="number">3</span>, <span class="number">1</span>);</div><div class="line">            <span class="keyword">case</span> HTTP_2:</div><div class="line">                <span class="keyword">return</span> <span class="keyword">new</span> ProtocolVersion(<span class="string">"HTTP"</span>, <span class="number">2</span>, <span class="number">0</span>);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalAccessError(<span class="string">"Unkwown protocol"</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> HttpEntity <span class="title">entityFromOkHttpResponse</span><span class="params">(Response r)</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">        BasicHttpEntity entity = <span class="keyword">new</span> BasicHttpEntity();</div><div class="line">        ResponseBody body = r.body();</div><div class="line"></div><div class="line">        entity.setContent(body.byteStream());</div><div class="line">        entity.setContentLength(body.contentLength());</div><div class="line">        entity.setContentEncoding(r.header(<span class="string">"Content-Encoding"</span>));</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (body.contentType() != <span class="keyword">null</span>) &#123;</div><div class="line">            entity.setContentType(body.contentType().type());</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> entity;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p>以分析 <code>performRequest(Request&lt;?&gt;, Map&lt;String, String&gt;)</code> 方法为线索，进行分析：</p>
 <ol>
-<li>通过下面代码生成一个 <code>OkHttpClient</code> 对象，并设置超时时间<pre class=" language-Java"><code class="language-Java">int timeoutMs = request.getTimeoutMs();
-OkHttpClient okHttpClient = mOkHttpClient
-     .newBuilder()
-     .connectTimeout(timeoutMs, TimeUnit.MILLISECONDS)
-     .readTimeout(timeoutMs, TimeUnit.MILLISECONDS)
-     .writeTimeout(timeoutMs, TimeUnit.MILLISECONDS)
-     .build();
-</code></pre>
+<li><p>通过下面代码生成一个 <code>OkHttpClient</code> 对象，并设置超时时间</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">int</span> timeoutMs = request.getTimeoutMs();</div><div class="line">OkHttpClient okHttpClient = mOkHttpClient</div><div class="line">        .newBuilder()</div><div class="line">        .connectTimeout(timeoutMs, TimeUnit.MILLISECONDS)</div><div class="line">        .readTimeout(timeoutMs, TimeUnit.MILLISECONDS)</div><div class="line">        .writeTimeout(timeoutMs, TimeUnit.MILLISECONDS)</div><div class="line">        .build();</div></pre></td></tr></table></figure>
 </li>
 <li><p>通过下面代码设置请求的 <code>url</code> 和请求头</p>
-<pre class=" language-Java"><code class="language-Java">     HashMap<String, String> headers = new HashMap<String, String>();
-     headers.putAll(request.getHeaders());
-     headers.putAll(additionalHeaders);
-
-     okhttp3.Request.Builder builder = new okhttp3.Request
-             .Builder()
-             .url(request.getUrl());
-     for (String key : headers.keySet()) {
-         builder.header(key, headers.get(key));
-     }
-</code></pre>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">HashMap&lt;String, String&gt; headers = <span class="keyword">new</span> HashMap&lt;String, String&gt;();</div><div class="line">headers.putAll(request.getHeaders());</div><div class="line">headers.putAll(additionalHeaders);</div><div class="line"></div><div class="line">okhttp3.Request.Builder builder = <span class="keyword">new</span> okhttp3.Request</div><div class="line">        .Builder()</div><div class="line">        .url(request.getUrl());</div><div class="line"><span class="keyword">for</span> (String key : headers.keySet()) &#123;</div><div class="line">    builder.header(key, headers.get(key));</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 </li>
 <li><p>通过 <code>setConnectionParametersForRequest(okhttp3.Request.Builder, Request&lt;?&gt;)</code> 方法设置请求方式和请求体</p>
-<pre class=" language-Java"><code class="language-Java"> private void setConnectionParametersForRequest(okhttp3.Request.Builder builder, Request<?> request)
-         throws AuthFailureError {
-     switch (request.getMethod()) {
-         case Request.Method.DEPRECATED_GET_OR_POST:
-             byte[] postBody = request.getPostBody();
-             if (postBody != null) {
-                 builder.post(RequestBody.create(MediaType.parse(request.getPostBodyContentType()), postBody));
-             }
-             break;
-         case Request.Method.GET:
-             builder.get();
-             break;
-         case Request.Method.DELETE:
-             builder.delete();
-             break;
-         case Request.Method.POST:
-             builder.post(createRequestBody(request));
-             break;
-         case Request.Method.PUT:
-             builder.put(createRequestBody(request));
-             break;
-         case Request.Method.HEAD:
-             builder.head();
-             break;
-         case Request.Method.OPTIONS:
-             builder.method("OPTIONS", null);
-             break;
-         case Request.Method.TRACE:
-             builder.method("TRACE", null);
-             break;
-         case Request.Method.PATCH:
-             builder.patch(createRequestBody(request));
-             break;
-         default:
-             throw new IllegalStateException("Unknown method type.");
-     }
- }
-</code></pre>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">setConnectionParametersForRequest</span><span class="params">(okhttp3.Request.Builder builder, Request&lt;?&gt; request)</span></span></div><div class="line">        <span class="keyword">throws</span> AuthFailureError &#123;</div><div class="line">    <span class="keyword">switch</span> (request.getMethod()) &#123;</div><div class="line">        <span class="keyword">case</span> Request.Method.DEPRECATED_GET_OR_POST:</div><div class="line">            <span class="keyword">byte</span>[] postBody = request.getPostBody();</div><div class="line">            <span class="keyword">if</span> (postBody != <span class="keyword">null</span>) &#123;</div><div class="line">                builder.post(RequestBody.create(MediaType.parse(request.getPostBodyContentType()), postBody));</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> Request.Method.GET:</div><div class="line">            builder.get();</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> Request.Method.DELETE:</div><div class="line">            builder.delete();</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> Request.Method.POST:</div><div class="line">            builder.post(createRequestBody(request));</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> Request.Method.PUT:</div><div class="line">            builder.put(createRequestBody(request));</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> Request.Method.HEAD:</div><div class="line">            builder.head();</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> Request.Method.OPTIONS:</div><div class="line">            builder.method(<span class="string">"OPTIONS"</span>, <span class="keyword">null</span>);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> Request.Method.TRACE:</div><div class="line">            builder.method(<span class="string">"TRACE"</span>, <span class="keyword">null</span>);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> Request.Method.PATCH:</div><div class="line">            builder.patch(createRequestBody(request));</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">default</span>:</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Unknown method type."</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 </li>
 <li><p>通过如下代码得到 OKHttp3 的响应，注意：下面得到的响应是 <code>Response</code> 类型的，并不是 <code>HttpResponse</code> 类型的，需要通过它生成对应的 <code>HttpResponse</code> 对象才可以返回</p>
-<pre class=" language-Java"><code class="language-Java"> okhttp3.Request okRequest = builder.build();
- Call call = okHttpClient.newCall(okRequest);
- Response okResponse = call.execute();
-</code></pre>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">okhttp3.Request okRequest = builder.build();</div><div class="line">Call call = okHttpClient.newCall(okRequest);</div><div class="line">Response okResponse = call.execute();</div></pre></td></tr></table></figure>
 </li>
 <li><p>通过下面的代码和 <code>entityFromOkHttpResponse(Response)</code> 方法生成 <code>BasicHttpResponse</code> 类型的对象 <code>response</code>，并设置 <code>response</code> 的响应体。</p>
-<pre class=" language-Java"><code class="language-Java"> BasicStatusLine responseStatus = new BasicStatusLine(
-             parseProtocol(okResponse.protocol()),
-             okResponse.code(),
-             okResponse.message()
-     );
- BasicHttpResponse response = new BasicHttpResponse(responseStatus);
- response.setEntity(entityFromOkHttpResponse(okResponse));
-</code></pre>
-<pre class=" language-Java"><code class="language-Java">     private static HttpEntity entityFromOkHttpResponse(Response r) throws IOException {
-         BasicHttpEntity entity = new BasicHttpEntity();
-         ResponseBody body = r.body();
-
-         entity.setContent(body.byteStream());
-         entity.setContentLength(body.contentLength());
-         entity.setContentEncoding(r.header("Content-Encoding"));
-
-         if (body.contentType() != null) {
-             entity.setContentType(body.contentType().type());
-         }
-         return entity;
-     }
-</code></pre>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">BasicStatusLine responseStatus = <span class="keyword">new</span> BasicStatusLine(</div><div class="line">            parseProtocol(okResponse.protocol()),</div><div class="line">            okResponse.code(),</div><div class="line">            okResponse.message()</div><div class="line">    );</div><div class="line">BasicHttpResponse response = <span class="keyword">new</span> BasicHttpResponse(responseStatus);</div><div class="line">response.setEntity(entityFromOkHttpResponse(okResponse));</div></pre></td></tr></table></figure>
+ <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> HttpEntity <span class="title">entityFromOkHttpResponse</span><span class="params">(Response r)</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">    BasicHttpEntity entity = <span class="keyword">new</span> BasicHttpEntity();</div><div class="line">    ResponseBody body = r.body();</div><div class="line"></div><div class="line">    entity.setContent(body.byteStream());</div><div class="line">    entity.setContentLength(body.contentLength());</div><div class="line">    entity.setContentEncoding(r.header(<span class="string">"Content-Encoding"</span>));</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (body.contentType() != <span class="keyword">null</span>) &#123;</div><div class="line">        entity.setContentType(body.contentType().type());</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> entity;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 </li>
 <li><p>通过如下方法设置响应头</p>
-<pre class=" language-Java"><code class="language-Java"> Headers responseHeaders = okResponse.headers();
- int size = responseHeaders.size();
- String name;
- String value;
- for (int i = 0; i < size; i++) {
-     name = responseHeaders.name(i);
-     value = responseHeaders.value(i);
-     if (value != null) {
-         response.addHeader(new BasicHeader(name, value));
-     }
- }
-</code></pre>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">Headers responseHeaders = okResponse.headers();</div><div class="line"><span class="keyword">int</span> size = responseHeaders.size();</div><div class="line">String name;</div><div class="line">String value;</div><div class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; i++) &#123;</div><div class="line">    name = responseHeaders.name(i);</div><div class="line">    value = responseHeaders.value(i);</div><div class="line">    <span class="keyword">if</span> (value != <span class="keyword">null</span>) &#123;</div><div class="line">        response.addHeader(<span class="keyword">new</span> BasicHeader(name, value));</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 </li>
 </ol>
 <p>通过上面六步便大功告成了。</p>
-<h3 id="OkHttpStack-的使用"><a href="#OkHttpStack-的使用" class="headerlink" title="OkHttpStack 的使用"></a><code>OkHttpStack</code> 的使用</h3><p>可以通过如下方式使用 <code>OkHttpStack</code></p>
-<pre class=" language-Java"><code class="language-Java">    RequestQueue queue = Volley.newRequestQueue(MainActivity.this,
-                new OkHttpStack(OkHttpManager.getInstance().getHttpClient()));
-    StringRequest request = new StringRequest(mUrl, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                L.i("onResponse " + response);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                L.i("onErrorResponse " + error);
-            }
-        });
-
-    queue.add(request);
-</code></pre>
+<h3 id="OkHttpStack-的使用"><a href="#OkHttpStack-的使用" class="headerlink" title="OkHttpStack 的使用"></a><code>OkHttpStack</code> 的使用</h3><p>可以通过如下方式使用 <code>OkHttpStack</code><br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">RequestQueue queue = Volley.newRequestQueue(MainActivity.<span class="keyword">this</span>,</div><div class="line">            <span class="keyword">new</span> OkHttpStack(OkHttpManager.getInstance().getHttpClient()));</div><div class="line">StringRequest request = <span class="keyword">new</span> StringRequest(mUrl, <span class="keyword">new</span> Response.Listener&lt;String&gt;() &#123;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResponse</span><span class="params">(String response)</span> </span>&#123;</div><div class="line">            L.i(<span class="string">"onResponse "</span> + response);</div><div class="line">        &#125;</div><div class="line">    &#125;, <span class="keyword">new</span> Response.ErrorListener() &#123;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onErrorResponse</span><span class="params">(VolleyError error)</span> </span>&#123;</div><div class="line">            L.i(<span class="string">"onErrorResponse "</span> + error);</div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">queue.add(request);</div></pre></td></tr></table></figure></p>
 <p>除了在生成 <code>RequestQueue</code> 对象的时候，和普通的使用 Volley 不同，其他都是一样的。其中 <code>OkHttpManager.getInstance().getHttpClient()</code> 是我对 OKHttp3 进行的一个简单的封装，返回的是一个 <code>OKHttpClient</code> 的对象</p>
 <hr>
 <p>至此，关于<code>Volley 源码解析及对 Volley 的扩展</code>系列的第三篇文章也结束了，主要介绍了自定义 <code>Request</code> 类，并使用 <code>GsonReqeust</code> 举例；并使用 <code>OkHttp</code> 自定义了实现 <code>HttpStack</code> 接口的 <code>OkHttpStack</code> 类，这样通过 <code>OkHttpStack</code> 创建的 <code>RequestQueue</code> 对象处理的请求使用的都是 OKHttp3 了。</p>
@@ -1301,7 +591,7 @@ OkHttpClient okHttpClient = mOkHttpClient
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-count">18</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>

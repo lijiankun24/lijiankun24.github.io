@@ -355,268 +355,24 @@
 </li>
 </ol>
 <h2 id="Volley-的简单使用及简单封装"><a href="#Volley-的简单使用及简单封装" class="headerlink" title="Volley 的简单使用及简单封装"></a>Volley 的简单使用及简单封装</h2><h3 id="Volley-的简单使用"><a href="#Volley-的简单使用" class="headerlink" title="Volley 的简单使用"></a>Volley 的简单使用</h3><p>Volley 使用还是比较简单方便的，相关的资料和博客有很多，而且不是本文在重点，简单放点代码，展示一个简单的 <code>GET</code> 请求，如下所示：</p>
-<pre class=" language-Java"><code class="language-Java">      String url = "http://gank.io/api/data/Android/10/1";
-      // 创建一个 Request 的对象，并设置好回调函数，StringRequest 默认是 GET 请求
-      StringRequest stringRequest = new StringRequest(url, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    Log.i("lijk", "onResponse " + response);
-                }
-              }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.i("lijk", "onErrorResponse " + error);
-            }
-        });
-      // 创建一个请求队列 RequestQueue 的对象
-      RequestQueue queue = Volley.newRequestQueue(MainActivity.this.getApplicationContext());
-      // 将请求加入到请求队列中，就会执行网络请求
-      queue.add(stringRequest);
-</code></pre>
-<h3 id="Volley-的简单封装"><a href="#Volley-的简单封装" class="headerlink" title="Volley 的简单封装"></a>Volley 的简单封装</h3><p>先来看看封装后，进行一次和上面相同的网络请求的代码：</p>
-<pre class=" language-Java"><code class="language-Java">       String url = "http://gank.io/api/data/Android/10/1";
-       VolleyManager.getInstance(MainActivity.this).addStringRequest(url, new OnHttpListener<String>() {
-            @Override
-            public void onSuccess(String result) {
-                Log.i("lijk", "onSuccess " + result);
-            }
-
-            @Override
-            public void onError(VolleyError error) {
-                Log.i("lijk", "onError " + error);
-            }
-        });
-</code></pre>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">String url = <span class="string">"http://gank.io/api/data/Android/10/1"</span>;</div><div class="line"><span class="comment">// 创建一个 Request 的对象，并设置好回调函数，StringRequest 默认是 GET 请求</span></div><div class="line">StringRequest stringRequest = <span class="keyword">new</span> StringRequest(url, <span class="keyword">new</span> Response.Listener&lt;String&gt;() &#123;</div><div class="line">          <span class="meta">@Override</span></div><div class="line">          <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResponse</span><span class="params">(String response)</span> </span>&#123;</div><div class="line">              Log.i(<span class="string">"lijk"</span>, <span class="string">"onResponse "</span> + response);</div><div class="line">          &#125;</div><div class="line">        &#125;, <span class="keyword">new</span> Response.ErrorListener() &#123;</div><div class="line">          <span class="meta">@Override</span></div><div class="line">          <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onErrorResponse</span><span class="params">(VolleyError error)</span> </span>&#123;</div><div class="line">              Log.i(<span class="string">"lijk"</span>, <span class="string">"onErrorResponse "</span> + error);</div><div class="line">      &#125;</div><div class="line">  &#125;);</div><div class="line"><span class="comment">// 创建一个请求队列 RequestQueue 的对象</span></div><div class="line">RequestQueue queue = Volley.newRequestQueue(MainActivity.<span class="keyword">this</span>.getApplicationContext());</div><div class="line"><span class="comment">// 将请求加入到请求队列中，就会执行网络请求</span></div><div class="line">queue.add(stringRequest);</div></pre></td></tr></table></figure>
+<h3 id="Volley-的简单封装"><a href="#Volley-的简单封装" class="headerlink" title="Volley 的简单封装"></a>Volley 的简单封装</h3><p>先来看看封装后，进行一次和上面相同的网络请求的代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">String url = <span class="string">"http://gank.io/api/data/Android/10/1"</span>;</div><div class="line">VolleyManager.getInstance(MainActivity.<span class="keyword">this</span>).addStringRequest(url, <span class="keyword">new</span> OnHttpListener&lt;String&gt;() &#123;</div><div class="line">     <span class="meta">@Override</span></div><div class="line">     <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onSuccess</span><span class="params">(String result)</span> </span>&#123;</div><div class="line">         Log.i(<span class="string">"lijk"</span>, <span class="string">"onSuccess "</span> + result);</div><div class="line">     &#125;</div><div class="line"></div><div class="line">     <span class="meta">@Override</span></div><div class="line">     <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onError</span><span class="params">(VolleyError error)</span> </span>&#123;</div><div class="line">         Log.i(<span class="string">"lijk"</span>, <span class="string">"onError "</span> + error);</div><div class="line">     &#125;</div><div class="line"> &#125;);</div></pre></td></tr></table></figure></p>
 <p>可以看到，两次请求从功能和效果来看是一样的，但是代码要简洁明了一些，下面对上面的代码做一些解释。</p>
-<p>其中 <code>OnHttpListener</code> 是一个回调接口，用于回调请求的结果，由于有 <code>成功</code> 和 <code>失败</code> 两种结果，所以有两个回调方法。如下代码所示：</p>
-<pre class=" language-Java"><code class="language-Java">public interface OnHttpListener<T> {
-
-    void onSuccess(T result);
-
-    void onError(VolleyError error);
-}
-</code></pre>
+<p>其中 <code>OnHttpListener</code> 是一个回调接口，用于回调请求的结果，由于有 <code>成功</code> 和 <code>失败</code> 两种结果，所以有两个回调方法。如下代码所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">OnHttpListener</span>&lt;<span class="title">T</span>&gt; </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">onSuccess</span><span class="params">(T result)</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">onError</span><span class="params">(VolleyError error)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p><code>VolleyManager</code> 是一个管理 <code>Volley</code> 的类，具有如下特点：</p>
 <ul>
 <li>其中使用单例模式，保证在整个应用生命周期内只存在一个 <code>VolleyManager</code> 对象</li>
 <li>使用弱引用的方式持有 <code>Context</code> 对象，防止造成内存泄露</li>
 <li>在 <code>VolleyManager</code> 中只有一个 <code>RequestQueue</code> 对象，以免创建多个 <code>RequestQueue</code> 对象，从而造成资源的浪费</li>
 </ul>
-<p><code>VolleyManager</code> 的代码如下所示：</p>
-<pre class=" language-Java"><code class="language-Java">public class VolleyManager {
-
-    private static VolleyManager INSTANCE = null;
-
-    private static WeakReference<Context> mWRContext = null;
-
-    private RequestQueue mQueue = null;
-
-    private VolleyManager(Context context) {
-        if (mWRContext == null || mWRContext.get() == null) {
-            mWRContext = new WeakReference<>(context);
-        }
-        mQueue = getRequestQueue();
-    }
-
-    public static VolleyManager getInstance(Context context) {
-        if (INSTANCE == null) {
-            synchronized (VolleyManager.class) {
-                if (INSTANCE == null) {
-                    INSTANCE = new VolleyManager(context);
-                }
-            }
-        }
-        return INSTANCE;
-    }
-
-    public void addStringRequest(String url, final OnHttpListener httpListener) {
-        this.addStringRequest(Request.Method.GET, url, httpListener);
-    }
-
-    public void addStringRequest(int method, final String url, final OnHttpListener<String> httpListener) {
-        StringRequest request = new StringRequest(method, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                httpListener.onSuccess(response);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                httpListener.onError(error);
-            }
-        });
-
-        addRequest(request);
-    }
-
-    public void addJsonObjectRequest(String url, JSONObject jsonRequest, final OnHttpListener<JSONObject> httpListener) {
-        this.addJsonObjectRequest(jsonRequest == null ? Request.Method.GET : Request.Method.POST, url, jsonRequest, httpListener);
-    }
-
-    public void addJsonObjectRequest(int method,final String url, JSONObject jsonRequest, final OnHttpListener<JSONObject> httpListener) {
-        JsonObjectRequest request = new JsonObjectRequest(method, url, jsonRequest, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                httpListener.onSuccess(response);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                httpListener.onError(error);
-            }
-        });
-
-        addRequest(request);
-    }
-
-    public void addJsonArrayRequest(final String url, final OnHttpListener<JSONArray> httpListener) {
-        this.addJsonArrayRequest(Request.Method.GET, url, null, httpListener);
-    }
-
-    public void addJsonArrayRequest(int method, final String url, JSONArray jsonRequest, final OnHttpListener<JSONArray> httpListener) {
-        JsonArrayRequest request = new JsonArrayRequest(method, url, jsonRequest, new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-                httpListener.onSuccess(response);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                httpListener.onError(error);
-            }
-        });
-
-        addRequest(request);
-    }
-
-    public void addImageRequest(String url, int maxWidth, int maxHeight,
-                                Bitmap.Config decodeConfig, final OnHttpListener<Bitmap> httpListener) {
-        this.addImageRequest(url, maxWidth, maxHeight, ImageView.ScaleType.CENTER_INSIDE, decodeConfig, httpListener);
-    }
-
-    public void addImageRequest(final String url, int maxWidth, int maxHeight,
-                                ImageView.ScaleType scaleType, Bitmap.Config decodeConfig,
-                                final OnHttpListener<Bitmap> httpListener) {
-        ImageRequest request = new ImageRequest(url, new Response.Listener<Bitmap>() {
-            @Override
-            public void onResponse(Bitmap response) {
-                httpListener.onSuccess(response);
-            }
-        }, maxWidth, maxHeight, scaleType, decodeConfig, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                httpListener.onError(error);
-            }
-        });
-
-        addRequest(request);
-    }
-
-    private void addRequest(Request request) {
-        if (request == null) {
-            return;
-        }
-        mQueue.add(request);
-    }
-
-    private RequestQueue getRequestQueue() {
-        if (mQueue == null && mWRContext != null && mWRContext.get() != null) {
-            // getApplicationContext() is key, it keeps you from leaking the
-            // Activity or BroadcastReceiver if someone passes one in.
-            mQueue = Volley.newRequestQueue(mWRContext.get().getApplicationContext());
-        }
-        return mQueue;
-    }
-}
-</code></pre>
+<p><code>VolleyManager</code> 的代码如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">VolleyManager</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> VolleyManager INSTANCE = <span class="keyword">null</span>;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> WeakReference&lt;Context&gt; mWRContext = <span class="keyword">null</span>;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> RequestQueue mQueue = <span class="keyword">null</span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="title">VolleyManager</span><span class="params">(Context context)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (mWRContext == <span class="keyword">null</span> || mWRContext.get() == <span class="keyword">null</span>) &#123;</div><div class="line">            mWRContext = <span class="keyword">new</span> WeakReference&lt;&gt;(context);</div><div class="line">        &#125;</div><div class="line">        mQueue = getRequestQueue();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> VolleyManager <span class="title">getInstance</span><span class="params">(Context context)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (INSTANCE == <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">synchronized</span> (VolleyManager.class) &#123;</div><div class="line">                <span class="keyword">if</span> (INSTANCE == <span class="keyword">null</span>) &#123;</div><div class="line">                    INSTANCE = <span class="keyword">new</span> VolleyManager(context);</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> INSTANCE;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addStringRequest</span><span class="params">(String url, <span class="keyword">final</span> OnHttpListener httpListener)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.addStringRequest(Request.Method.GET, url, httpListener);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addStringRequest</span><span class="params">(<span class="keyword">int</span> method, <span class="keyword">final</span> String url, <span class="keyword">final</span> OnHttpListener&lt;String&gt; httpListener)</span> </span>&#123;</div><div class="line">        StringRequest request = <span class="keyword">new</span> StringRequest(method, url, <span class="keyword">new</span> Response.Listener&lt;String&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResponse</span><span class="params">(String response)</span> </span>&#123;</div><div class="line">                httpListener.onSuccess(response);</div><div class="line">            &#125;</div><div class="line">        &#125;, <span class="keyword">new</span> Response.ErrorListener() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onErrorResponse</span><span class="params">(VolleyError error)</span> </span>&#123;</div><div class="line">                httpListener.onError(error);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line"></div><div class="line">        addRequest(request);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addJsonObjectRequest</span><span class="params">(String url, JSONObject jsonRequest, <span class="keyword">final</span> OnHttpListener&lt;JSONObject&gt; httpListener)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.addJsonObjectRequest(jsonRequest == <span class="keyword">null</span> ? Request.Method.GET : Request.Method.POST, url, jsonRequest, httpListener);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addJsonObjectRequest</span><span class="params">(<span class="keyword">int</span> method,<span class="keyword">final</span> String url, JSONObject jsonRequest, <span class="keyword">final</span> OnHttpListener&lt;JSONObject&gt; httpListener)</span> </span>&#123;</div><div class="line">        JsonObjectRequest request = <span class="keyword">new</span> JsonObjectRequest(method, url, jsonRequest, <span class="keyword">new</span> Response.Listener&lt;JSONObject&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResponse</span><span class="params">(JSONObject response)</span> </span>&#123;</div><div class="line">                httpListener.onSuccess(response);</div><div class="line">            &#125;</div><div class="line">        &#125;, <span class="keyword">new</span> Response.ErrorListener() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onErrorResponse</span><span class="params">(VolleyError error)</span> </span>&#123;</div><div class="line">                httpListener.onError(error);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line"></div><div class="line">        addRequest(request);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addJsonArrayRequest</span><span class="params">(<span class="keyword">final</span> String url, <span class="keyword">final</span> OnHttpListener&lt;JSONArray&gt; httpListener)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.addJsonArrayRequest(Request.Method.GET, url, <span class="keyword">null</span>, httpListener);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addJsonArrayRequest</span><span class="params">(<span class="keyword">int</span> method, <span class="keyword">final</span> String url, JSONArray jsonRequest, <span class="keyword">final</span> OnHttpListener&lt;JSONArray&gt; httpListener)</span> </span>&#123;</div><div class="line">        JsonArrayRequest request = <span class="keyword">new</span> JsonArrayRequest(method, url, jsonRequest, <span class="keyword">new</span> Response.Listener&lt;JSONArray&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResponse</span><span class="params">(JSONArray response)</span> </span>&#123;</div><div class="line">                httpListener.onSuccess(response);</div><div class="line">            &#125;</div><div class="line">        &#125;, <span class="keyword">new</span> Response.ErrorListener() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onErrorResponse</span><span class="params">(VolleyError error)</span> </span>&#123;</div><div class="line">                httpListener.onError(error);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line"></div><div class="line">        addRequest(request);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addImageRequest</span><span class="params">(String url, <span class="keyword">int</span> maxWidth, <span class="keyword">int</span> maxHeight,</span></span></div><div class="line">                                Bitmap.Config decodeConfig, <span class="keyword">final</span> OnHttpListener&lt;Bitmap&gt; httpListener) &#123;</div><div class="line">        <span class="keyword">this</span>.addImageRequest(url, maxWidth, maxHeight, ImageView.ScaleType.CENTER_INSIDE, decodeConfig, httpListener);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addImageRequest</span><span class="params">(<span class="keyword">final</span> String url, <span class="keyword">int</span> maxWidth, <span class="keyword">int</span> maxHeight,</span></span></div><div class="line">                                ImageView.ScaleType scaleType, Bitmap.Config decodeConfig,</div><div class="line">                                <span class="keyword">final</span> OnHttpListener&lt;Bitmap&gt; httpListener) &#123;</div><div class="line">        ImageRequest request = <span class="keyword">new</span> ImageRequest(url, <span class="keyword">new</span> Response.Listener&lt;Bitmap&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResponse</span><span class="params">(Bitmap response)</span> </span>&#123;</div><div class="line">                httpListener.onSuccess(response);</div><div class="line">            &#125;</div><div class="line">        &#125;, maxWidth, maxHeight, scaleType, decodeConfig, <span class="keyword">new</span> Response.ErrorListener() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onErrorResponse</span><span class="params">(VolleyError error)</span> </span>&#123;</div><div class="line">                httpListener.onError(error);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line"></div><div class="line">        addRequest(request);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">addRequest</span><span class="params">(Request request)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (request == <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125;</div><div class="line">        mQueue.add(request);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> RequestQueue <span class="title">getRequestQueue</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (mQueue == <span class="keyword">null</span> &amp;&amp; mWRContext != <span class="keyword">null</span> &amp;&amp; mWRContext.get() != <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="comment">// getApplicationContext() is key, it keeps you from leaking the</span></div><div class="line">            <span class="comment">// Activity or BroadcastReceiver if someone passes one in.</span></div><div class="line">            mQueue = Volley.newRequestQueue(mWRContext.get().getApplicationContext());</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> mQueue;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p>整体来讲，代码还是不难的，要得懂还是不难的。</p>
-<h2 id="简单却不准确的统计方法"><a href="#简单却不准确的统计方法" class="headerlink" title="简单却不准确的统计方法"></a>简单却不准确的统计方法</h2><h3 id="统计的回调接口"><a href="#统计的回调接口" class="headerlink" title="统计的回调接口"></a>统计的回调接口</h3><p>首先，需要明确一下统计的数据：网络请求的耗时、网络请求的结果(正确/失败)。每次网络请求都会对应一个 URL 的地址，所以需要把耗时、结果和 URL 对应起来。<br>根据上面的想法，创建一个回调接口，如下所示：</p>
-<pre class=" language-Java"><code class="language-Java">public interface OnResponseInfoInterceptor {
-    /**
-     * 网络请求耗时、网络请求结果的回调接口
-     *
-     * @param url           网络请求对应的 URL
-     * @param networkTimeMs 网络请求的耗时
-     * @param statusCode    网络请求结果的状态码(其实就是 Http 响应中的状态码)
-     */
-    void onResponseInfo(String url, long networkTimeMs, int statusCode);
-}
-</code></pre>
+<h2 id="简单却不准确的统计方法"><a href="#简单却不准确的统计方法" class="headerlink" title="简单却不准确的统计方法"></a>简单却不准确的统计方法</h2><h3 id="统计的回调接口"><a href="#统计的回调接口" class="headerlink" title="统计的回调接口"></a>统计的回调接口</h3><p>首先，需要明确一下统计的数据：网络请求的耗时、网络请求的结果(正确/失败)。每次网络请求都会对应一个 URL 的地址，所以需要把耗时、结果和 URL 对应起来。<br>根据上面的想法，创建一个回调接口，如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">OnResponseInfoInterceptor</span> </span>&#123;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 网络请求耗时、网络请求结果的回调接口</div><div class="line">     *</div><div class="line">     * <span class="doctag">@param</span> url           网络请求对应的 URL</div><div class="line">     * <span class="doctag">@param</span> networkTimeMs 网络请求的耗时</div><div class="line">     * <span class="doctag">@param</span> statusCode    网络请求结果的状态码(其实就是 Http 响应中的状态码)</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">onResponseInfo</span><span class="params">(String url, <span class="keyword">long</span> networkTimeMs, <span class="keyword">int</span> statusCode)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <h3 id="统计方法"><a href="#统计方法" class="headerlink" title="统计方法"></a>统计方法</h3><p>如果对 OkHttp 有所了解的话，那应该知道在 OkHttp 有 <strong>拦截器</strong> 这个东西。拦截器顾名思义，它可以拦截一些东西，可以拦截发出的请求，也可以拦截收到的响应，从而可以对请求或者响应做一些处理(我是这么理解的，如果不同的想法和见解，欢迎沟通交流<code>jiankunli24@gmail.com</code>)。</p>
 <p>因为需要统计网络请求结果的状态码，必须是在收到请求结果之后才可以得到；而网络请求耗时，则比较容易想得到，在网络请求开始的时候记录一下，在收到网络响应之后再次记录一下，中间这段时间就是网络请求的耗时了。</p>
-<p>按照上面的思路，对 <code>VolleyManager</code> 中发送网络请求方法稍微进行修改，如下所示：</p>
-<pre class=" language-Java"><code class="language-Java">public class VolleyManager {
-
-    private OnResponseInfoInterceptor mResponseInfoListener = null;
-
-    ....
-
-    public void setOnResponseInfoInterceptor(OnResponseInfoInterceptor responseInfoListener) {
-            mResponseInfoInterceptor = responseInfoListener;
-    }
-
-    ....
-
-    public void addStringRequest(String url, final OnHttpListener httpListener) {
-        this.addStringRequest(Request.Method.GET, url, httpListener);
-    }
-
-    public void addStringRequest(int method, final String url, final OnHttpListener<String> httpListener) {
-        // 记录网络请求开始的时间
-        final long startTimeStamp = SystemClock.elapsedRealtime();
-        StringRequest request = new CustomStringRequest(method, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                httpListener.onSuccess(response);
-                // 收到正确的网络请求结果
-                handleInterceptor(url, startTimeStamp, 1, interceptor);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                httpListener.onError(error);
-                // 收到错误的网络请求结果
-                handleInterceptor(url, startTimeStamp, 0, interceptor);
-            }
-        })
-
-        addRequest(request);
-    }
-
-    /**
-     * 处理 OnResponseInfoInterceptor 拦截器
-     *
-     * @param url            网络请求对应的URL
-     * @param startTimeStamp 网络请求开始的时间，用于计算网络请求耗时
-     * @param statusCode     网络请求结果的状态，1表示网络请求成功，0表示网络请求失败
-     * @param interceptor    拦截器 {@link OnResponseInfoInterceptor} ，有一个默认的拦截器 mResponseInfoInterceptor，
-     *                       用户也可以通过{@link #addStringRequest(int, String,
-     *                       OnHttpListener, OnResponseInfoInterceptor)} 给网络请求设置单独的拦截器
-     */
-    private void handleInterceptor(String url, long startTimeStamp, int statusCode,
-                                   OnResponseInfoInterceptor interceptor) {
-        long apiDuration = SystemClock.elapsedRealtime() - startTimeStamp;
-        if (apiDuration < 0 || TextUtils.isEmpty(url) || interceptor == null) {
-            return;
-        }
-        interceptor.onResponseInfo(url, apiDuration, statusCode);
-    }
-    ....
-}
-</code></pre>
+<p>按照上面的思路，对 <code>VolleyManager</code> 中发送网络请求方法稍微进行修改，如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">VolleyManager</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> OnResponseInfoInterceptor mResponseInfoListener = <span class="keyword">null</span>;</div><div class="line"></div><div class="line">    ....</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setOnResponseInfoInterceptor</span><span class="params">(OnResponseInfoInterceptor responseInfoListener)</span> </span>&#123;</div><div class="line">            mResponseInfoInterceptor = responseInfoListener;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    ....</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addStringRequest</span><span class="params">(String url, <span class="keyword">final</span> OnHttpListener httpListener)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.addStringRequest(Request.Method.GET, url, httpListener);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addStringRequest</span><span class="params">(<span class="keyword">int</span> method, <span class="keyword">final</span> String url, <span class="keyword">final</span> OnHttpListener&lt;String&gt; httpListener)</span> </span>&#123;</div><div class="line">        <span class="comment">// 记录网络请求开始的时间</span></div><div class="line">        <span class="keyword">final</span> <span class="keyword">long</span> startTimeStamp = SystemClock.elapsedRealtime();</div><div class="line">        StringRequest request = <span class="keyword">new</span> CustomStringRequest(method, url, <span class="keyword">new</span> Response.Listener&lt;String&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResponse</span><span class="params">(String response)</span> </span>&#123;</div><div class="line">                httpListener.onSuccess(response);</div><div class="line">                <span class="comment">// 收到正确的网络请求结果</span></div><div class="line">                handleInterceptor(url, startTimeStamp, <span class="number">1</span>, interceptor);</div><div class="line">            &#125;</div><div class="line">        &#125;, <span class="keyword">new</span> Response.ErrorListener() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onErrorResponse</span><span class="params">(VolleyError error)</span> </span>&#123;</div><div class="line">                httpListener.onError(error);</div><div class="line">                <span class="comment">// 收到错误的网络请求结果</span></div><div class="line">                handleInterceptor(url, startTimeStamp, <span class="number">0</span>, interceptor);</div><div class="line">            &#125;</div><div class="line">        &#125;)</div><div class="line"></div><div class="line">        addRequest(request);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 处理 OnResponseInfoInterceptor 拦截器</div><div class="line">     *</div><div class="line">     * <span class="doctag">@param</span> url            网络请求对应的URL</div><div class="line">     * <span class="doctag">@param</span> startTimeStamp 网络请求开始的时间，用于计算网络请求耗时</div><div class="line">     * <span class="doctag">@param</span> statusCode     网络请求结果的状态，1表示网络请求成功，0表示网络请求失败</div><div class="line">     * <span class="doctag">@param</span> interceptor    拦截器 &#123;<span class="doctag">@link</span> OnResponseInfoInterceptor&#125; ，有一个默认的拦截器 mResponseInfoInterceptor，</div><div class="line">     *                       用户也可以通过&#123;<span class="doctag">@link</span> #addStringRequest(int, String,</div><div class="line">     *                       OnHttpListener, OnResponseInfoInterceptor)&#125; 给网络请求设置单独的拦截器</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">handleInterceptor</span><span class="params">(String url, <span class="keyword">long</span> startTimeStamp, <span class="keyword">int</span> statusCode,</span></span></div><div class="line">                                   OnResponseInfoInterceptor interceptor) &#123;</div><div class="line">        <span class="keyword">long</span> apiDuration = SystemClock.elapsedRealtime() - startTimeStamp;</div><div class="line">        <span class="keyword">if</span> (apiDuration &lt; <span class="number">0</span> || TextUtils.isEmpty(url) || interceptor == <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125;</div><div class="line">        interceptor.onResponseInfo(url, apiDuration, statusCode);</div><div class="line">    &#125;</div><div class="line">    ....</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p>在上面的代码中，我只举了做 <code>String</code> 请求的例子，其他 <code>JsonObject</code>、<code>JsonArray</code> 和 <code>Bitmap</code> 请求的例子也是一样的。</p>
-<p>在业务代码中像下面这样使用：</p>
-<pre class=" language-Java"><code class="language-Java">// 通过 {@link VolleyManager#setOnResponseInfoInterceptor(OnResponseInfoInterceptor)} 设置拦截器，这样应用中所有通过
-// VolleyManager 发出的网络请求都会将网络请求的相关信息(url, networkTimeMs, statusCode) 回调到这儿。
-VolleyManager.getInstance(MyApplication.this).setOnResponseInfoInterceptor(new OnResponseInfoInterceptor() {
-            @Override
-            public void onResponseInfo(String url, long networkTimeMs, int statusCode) {
-                L.i("url " + url);
-                L.i("networkTimeMs " + networkTimeMs);
-                L.i("statusCode " + statusCode);
-            }
-        });
-</code></pre>
+<p>在业务代码中像下面这样使用：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 通过 &#123;@link VolleyManager#setOnResponseInfoInterceptor(OnResponseInfoInterceptor)&#125; 设置拦截器，这样应用中所有通过</span></div><div class="line"><span class="comment">// VolleyManager 发出的网络请求都会将网络请求的相关信息(url, networkTimeMs, statusCode) 回调到这儿。</span></div><div class="line">VolleyManager.getInstance(MyApplication.<span class="keyword">this</span>).setOnResponseInfoInterceptor(<span class="keyword">new</span> OnResponseInfoInterceptor() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResponseInfo</span><span class="params">(String url, <span class="keyword">long</span> networkTimeMs, <span class="keyword">int</span> statusCode)</span> </span>&#123;</div><div class="line">                L.i(<span class="string">"url "</span> + url);</div><div class="line">                L.i(<span class="string">"networkTimeMs "</span> + networkTimeMs);</div><div class="line">                L.i(<span class="string">"statusCode "</span> + statusCode);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div></pre></td></tr></table></figure></p>
 <p>我是在 <code>Application</code> 中设置 <code>VolleyManager</code> 的拦截器的，其他地方如之前一样，正常调用网络请求即可。</p>
 <p>这种统计方法不准确的原因主要有两点(<strong>前方高能，是重点</strong>)：</p>
 <ol>
@@ -626,118 +382,8 @@ VolleyManager.getInstance(MyApplication.this).setOnResponseInfoInterceptor(new O
 <p>综上所述，上面这种统计方法并不准确(如果有不同的想法和见解，欢迎沟通交流 <code>jiankunli24@gmail.com</code>)。</p>
 <h2 id="改进后更加准确的统计时长的方法"><a href="#改进后更加准确的统计时长的方法" class="headerlink" title="改进后更加准确的统计时长的方法"></a>改进后更加准确的统计时长的方法</h2><p>改进后的方法，在使用时并没有什么区别，不同的是在 <code>VolleyManager</code> 中对网络请求相关信息统计的方法和之前的不一样了。</p>
 <p>之前在看 <code>Volley</code> 源码的时候，无意间看到在 <code>Volley</code> 的 <code>NetworkResponse</code> 中有 <code>networkTimeMs</code> 这样一个属性，看了其英文注释，我明白了这个 <code>networkTimeMs</code> 属性就代表着一个网络请求的时间。既然 <code>Volley</code> 已经记录了网络请求耗时，我们只需要通过一定的方法将 <code>networkTimeMs</code> 暴露给开发者，供开发者可以获取到即可。</p>
-<p>新的统计方法需要继承 <code>StringRequest</code>、<code>JsonObjectRequest</code> 、<code>JsonArrayRequest</code> 和 <code>ImageRequest</code>，重写其中的几个方法，生成其子类。拿 <code>StringRequest</code> 举例，自定义的 <code>CustomStringRequest</code> 类，如下所示：</p>
-<pre class=" language-Java"><code class="language-Java">// 在 StringRequest 中，{@link deliverResponse(String)} 方法和 {@link deliverError(VolleyError)} 方法，只会调用其中的一个
-public class CustomStringRequest extends StringRequest {
-
-    // 网络请求耗时
-    private long mNetworkTimeMs = 0L;
-
-    public CustomStringRequest(int method, String url, Response.Listener<String> listener, Response.ErrorListener errorListener) {
-        super(method, url, listener, errorListener);
-    }
-
-    @Override
-    protected Response<String> parseNetworkResponse(NetworkResponse response) {
-        if (response != null) {
-            // 若网络请求正确，则在 NetworkResponse 类中含有网络请求耗时的属性：networkTimeMs
-            mNetworkTimeMs = response.networkTimeMs;
-        }
-        return super.parseNetworkResponse(response);
-    }
-
-    @Override
-    protected void deliverResponse(String response) {
-        super.deliverResponse(response);
-        // 如果已经调用了这个方法，则表明网络请求成功。在 parseNetworkResponse(NetworkResponse) 方法中，为 mNetworkTimeMs 赋值
-        if (mNetworkTimeMs > 0) {
-            this.onResponseTimeAndCode(mNetworkTimeMs, 1);
-        }
-    }
-
-    @Override
-    public void deliverError(VolleyError error) {
-        super.deliverError(error);
-        // 如果调用了这个方法，则表明网络请求失败时。若 VolleyError 中的 networkResponse 不为空，则 networkResponse 中的
-        // networkTimeMs 和 statusCode 表示网络请求耗时和 Http 状态码；若 networkResponse 为空，则
-        // VolleyError 中的 getNetworkTimeMs() 方法可以获得网络请求耗时。
-        NetworkResponse response = error.networkResponse;
-        if (response != null) {
-            this.onResponseTimeAndCode(response.networkTimeMs, response.statusCode);
-        } else {
-            // Http 协议中 417 表示 Expectation Failed
-            this.onResponseTimeAndCode(error.getNetworkTimeMs(), 417);
-        }
-    }
-
-
-    /**
-     * 在子类中重写此方法，即可得到网络请求耗时和网络请求结果
-     *
-     * @param networkTimeMs 网络请求耗时，单位：毫秒
-     * @param statusCode    网络请求结果，成功则为1；失败则是具体的Http状态码，如404，500等(容易定位到请求失败的原因)
-     */
-    protected void onResponseTimeAndCode(long networkTimeMs, int statusCode) {
-    }
-}
-</code></pre>
-<p>自定义好 <code>Custom***Request</code> 之后，在 <code>VolleyManager</code> 中需要使用自定义的 <code>Custom***Request</code>，所以需要对 <code>VolleyManager</code> 做一定的修改，如下所示：</p>
-<pre class=" language-Java"><code class="language-Java">
-public class VolleyManager {
-
-    ......
-
-    public void addStringRequest(String url, final OnHttpListener httpListener) {
-        this.addStringRequest(Request.Method.GET, url, httpListener);
-    }
-
-    public void addStringRequest(int method, final String url, final OnHttpListener<String> httpListener) {
-        this.addStringRequest(method, url, httpListener, mResponseInfoInterceptor);
-    }
-
-    public void addStringRequest(int method, final String url,
-                                 final OnHttpListener<String> httpListener, final OnResponseInfoInterceptor interceptor) {
-        StringRequest request = new CustomStringRequest(method, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                httpListener.onSuccess(response);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                httpListener.onError(error);
-            }
-        }) {
-            @Override
-            protected void onResponseTimeAndCode(long networkTimeMs, int statusCode) {
-                sendResponseInfo(url, networkTimeMs, statusCode, interceptor);
-            }
-        };
-        addRequest(request);
-    }
-
-    /**
-     * 处理 OnResponseInfoInterceptor 拦截器
-     *
-     * @param url            网络请求对应的URL
-     * @param startTimeStamp 网络请求开始的时间，用于计算网络请求耗时
-     * @param statusCode     网络请求结果的状态，1表示网络请求成功，0表示网络请求失败
-     * @param interceptor    拦截器 {@link OnResponseInfoInterceptor} ，有一个默认的拦截器 mResponseInfoInterceptor，用户也可以通过{@link #addStringRequest(int, String,
-     *                       OnHttpListener, OnResponseInfoInterceptor)} 给网络请求设置单独的拦截器
-     */
-    private void handleInterceptor(String url, long startTimeStamp, int statusCode,
-                                   OnResponseInfoInterceptor interceptor) {
-        long apiDuration = SystemClock.elapsedRealtime() - startTimeStamp;
-        if (apiDuration < 0 || TextUtils.isEmpty(url) || interceptor == null) {
-            return;
-        }
-        interceptor.onResponseInfo(url, apiDuration, statusCode);
-    }
-
-    ......
-
-}
-</code></pre>
+<p>新的统计方法需要继承 <code>StringRequest</code>、<code>JsonObjectRequest</code> 、<code>JsonArrayRequest</code> 和 <code>ImageRequest</code>，重写其中的几个方法，生成其子类。拿 <code>StringRequest</code> 举例，自定义的 <code>CustomStringRequest</code> 类，如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 在 StringRequest 中，&#123;@link deliverResponse(String)&#125; 方法和 &#123;@link deliverError(VolleyError)&#125; 方法，只会调用其中的一个</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CustomStringRequest</span> <span class="keyword">extends</span> <span class="title">StringRequest</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">// 网络请求耗时</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">long</span> mNetworkTimeMs = <span class="number">0L</span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">CustomStringRequest</span><span class="params">(<span class="keyword">int</span> method, String url, Response.Listener&lt;String&gt; listener, Response.ErrorListener errorListener)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>(method, url, listener, errorListener);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> Response&lt;String&gt; <span class="title">parseNetworkResponse</span><span class="params">(NetworkResponse response)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (response != <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="comment">// 若网络请求正确，则在 NetworkResponse 类中含有网络请求耗时的属性：networkTimeMs</span></div><div class="line">            mNetworkTimeMs = response.networkTimeMs;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.parseNetworkResponse(response);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">deliverResponse</span><span class="params">(String response)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.deliverResponse(response);</div><div class="line">        <span class="comment">// 如果已经调用了这个方法，则表明网络请求成功。在 parseNetworkResponse(NetworkResponse) 方法中，为 mNetworkTimeMs 赋值</span></div><div class="line">        <span class="keyword">if</span> (mNetworkTimeMs &gt; <span class="number">0</span>) &#123;</div><div class="line">            <span class="keyword">this</span>.onResponseTimeAndCode(mNetworkTimeMs, <span class="number">1</span>);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">deliverError</span><span class="params">(VolleyError error)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.deliverError(error);</div><div class="line">        <span class="comment">// 如果调用了这个方法，则表明网络请求失败时。若 VolleyError 中的 networkResponse 不为空，则 networkResponse 中的</span></div><div class="line">        <span class="comment">// networkTimeMs 和 statusCode 表示网络请求耗时和 Http 状态码；若 networkResponse 为空，则</span></div><div class="line">        <span class="comment">// VolleyError 中的 getNetworkTimeMs() 方法可以获得网络请求耗时。</span></div><div class="line">        NetworkResponse response = error.networkResponse;</div><div class="line">        <span class="keyword">if</span> (response != <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">this</span>.onResponseTimeAndCode(response.networkTimeMs, response.statusCode);</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="comment">// Http 协议中 417 表示 Expectation Failed</span></div><div class="line">            <span class="keyword">this</span>.onResponseTimeAndCode(error.getNetworkTimeMs(), <span class="number">417</span>);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 在子类中重写此方法，即可得到网络请求耗时和网络请求结果</div><div class="line">     *</div><div class="line">     * <span class="doctag">@param</span> networkTimeMs 网络请求耗时，单位：毫秒</div><div class="line">     * <span class="doctag">@param</span> statusCode    网络请求结果，成功则为1；失败则是具体的Http状态码，如404，500等(容易定位到请求失败的原因)</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onResponseTimeAndCode</span><span class="params">(<span class="keyword">long</span> networkTimeMs, <span class="keyword">int</span> statusCode)</span> </span>&#123;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>自定义好 <code>Custom***Request</code> 之后，在 <code>VolleyManager</code> 中需要使用自定义的 <code>Custom***Request</code>，所以需要对 <code>VolleyManager</code> 做一定的修改，如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">VolleyManager</span> </span>&#123;</div><div class="line"></div><div class="line">    ......</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addStringRequest</span><span class="params">(String url, <span class="keyword">final</span> OnHttpListener httpListener)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.addStringRequest(Request.Method.GET, url, httpListener);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addStringRequest</span><span class="params">(<span class="keyword">int</span> method, <span class="keyword">final</span> String url, <span class="keyword">final</span> OnHttpListener&lt;String&gt; httpListener)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.addStringRequest(method, url, httpListener, mResponseInfoInterceptor);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addStringRequest</span><span class="params">(<span class="keyword">int</span> method, <span class="keyword">final</span> String url,</span></span></div><div class="line">                                 <span class="keyword">final</span> OnHttpListener&lt;String&gt; httpListener, <span class="keyword">final</span> OnResponseInfoInterceptor interceptor) &#123;</div><div class="line">        StringRequest request = <span class="keyword">new</span> CustomStringRequest(method, url, <span class="keyword">new</span> Response.Listener&lt;String&gt;() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResponse</span><span class="params">(String response)</span> </span>&#123;</div><div class="line">                httpListener.onSuccess(response);</div><div class="line">            &#125;</div><div class="line">        &#125;, <span class="keyword">new</span> Response.ErrorListener() &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onErrorResponse</span><span class="params">(VolleyError error)</span> </span>&#123;</div><div class="line">                httpListener.onError(error);</div><div class="line">            &#125;</div><div class="line">        &#125;) &#123;</div><div class="line">            <span class="meta">@Override</span></div><div class="line">            <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onResponseTimeAndCode</span><span class="params">(<span class="keyword">long</span> networkTimeMs, <span class="keyword">int</span> statusCode)</span> </span>&#123;</div><div class="line">                sendResponseInfo(url, networkTimeMs, statusCode, interceptor);</div><div class="line">            &#125;</div><div class="line">        &#125;;</div><div class="line">        addRequest(request);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 处理 OnResponseInfoInterceptor 拦截器</div><div class="line">     *</div><div class="line">     * <span class="doctag">@param</span> url            网络请求对应的URL</div><div class="line">     * <span class="doctag">@param</span> startTimeStamp 网络请求开始的时间，用于计算网络请求耗时</div><div class="line">     * <span class="doctag">@param</span> statusCode     网络请求结果的状态，1表示网络请求成功，0表示网络请求失败</div><div class="line">     * <span class="doctag">@param</span> interceptor    拦截器 &#123;<span class="doctag">@link</span> OnResponseInfoInterceptor&#125; ，有一个默认的拦截器 mResponseInfoInterceptor，用户也可以通过&#123;<span class="doctag">@link</span> #addStringRequest(int, String,</div><div class="line">     *                       OnHttpListener, OnResponseInfoInterceptor)&#125; 给网络请求设置单独的拦截器</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">handleInterceptor</span><span class="params">(String url, <span class="keyword">long</span> startTimeStamp, <span class="keyword">int</span> statusCode,</span></span></div><div class="line">                                   OnResponseInfoInterceptor interceptor) &#123;</div><div class="line">        <span class="keyword">long</span> apiDuration = SystemClock.elapsedRealtime() - startTimeStamp;</div><div class="line">        <span class="keyword">if</span> (apiDuration &lt; <span class="number">0</span> || TextUtils.isEmpty(url) || interceptor == <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125;</div><div class="line">        interceptor.onResponseInfo(url, apiDuration, statusCode);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    ......</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p>还是以 <code>StringRequest</code> 为例，在使用自定义的 <code>CustomStringRequest</code> 时，需要重写其中的 <code>onResponseTimeAndCode(long, int)</code>，并使用 <code>handleInterceptor(String , long , int , OnResponseInfoInterceptor )</code> 处理得到的网络请求耗时和请求结果的状态码。</p>
 <p>通过使用这种方法，可以很好的解决第一种统计方法的两个问题：</p>
 <ol>
@@ -879,7 +525,7 @@ public class VolleyManager {
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-count">18</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>

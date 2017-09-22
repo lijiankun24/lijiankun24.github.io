@@ -4,16 +4,18 @@
 
     
   <url>
-    <loc>http://www.lijiankun24.com/%E3%80%8A%E5%9B%BE%E8%A7%A3HTTP%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%89%EF%BC%89/</loc>
-    <lastmod>2017-09-19T02:50:49.000Z</lastmod>
+    <loc>http://www.lijiankun24.com/OkHttp3-%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%E4%B9%8B%E6%95%B4%E4%BD%93%E6%B5%81%E7%A8%8B/</loc>
+    <lastmod>2017-09-22T02:14:50.000Z</lastmod>
     <data>
         <display>
-        <title>《图解HTTP》读书笔记（三）</title>
-        <pubTime>2017-09-16T02:37:03.000Z</pubTime>
+        <title>OKHttp3 源码解析之整体流程（一）</title>
+        <pubTime>2017-09-19T15:28:10.000Z</pubTime>
         
-        <tag>Http</tag>
+        <tag>Android</tag>
          
-        <tag>ReadingNotes</tag>
+        <tag>OKHttp</tag>
+         
+        <tag>Network</tag>
          
          
            
@@ -24,13 +26,32 @@
     
   <url>
     <loc>http://www.lijiankun24.com/Android-%E5%BC%80%E5%8F%91%E7%A2%8E%E7%A2%8E%E5%BF%B51/</loc>
-    <lastmod>2017-09-18T13:50:56.000Z</lastmod>
+    <lastmod>2017-09-22T02:06:05.000Z</lastmod>
     <data>
         <display>
         <title>Android 开发碎碎念1</title>
         <pubTime>2017-09-09T12:24:12.000Z</pubTime>
         
         <tag>Android</tag>
+         
+         
+           
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.lijiankun24.com/%E3%80%8A%E5%9B%BE%E8%A7%A3HTTP%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%89%EF%BC%89/</loc>
+    <lastmod>2017-09-19T13:46:49.000Z</lastmod>
+    <data>
+        <display>
+        <title>《图解HTTP》读书笔记（三）</title>
+        <pubTime>2017-09-16T02:37:03.000Z</pubTime>
+        
+        <tag>Http</tag>
+         
+        <tag>ReadingNotes</tag>
          
          
            

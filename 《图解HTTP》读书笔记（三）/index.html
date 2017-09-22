@@ -108,7 +108,7 @@
 <meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（三）/http_request.png">
 <meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（三）/http_revise.png">
 <meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（三）/http_revise1.png">
-<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（三）/http_revise1.png">
+<meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（三）/https.png">
 <meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（三）/https1.png">
 <meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（三）/https2.png">
 <meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（三）/https3.png">
@@ -127,7 +127,7 @@
 <meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（三）/http_comet.png">
 <meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（三）/spdy.png">
 <meta property="og:image" content="http://www.lijiankun24.com/《图解HTTP》读书笔记（三）/websocket.png">
-<meta property="og:updated_time" content="2017-09-19T02:50:49.000Z">
+<meta property="og:updated_time" content="2017-09-19T13:46:49.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="《图解HTTP》读书笔记（三）">
 <meta name="twitter:description" content="前面两篇文章中关于 HTTP 相关知识基本上介绍的差不多了，这篇文章是对 HTTP 协议的补充，主要介绍以下三点内容：
@@ -465,7 +465,7 @@
 <h3 id="1-2-HTTP-加密-认证-完整性保护-HTTPS"><a href="#1-2-HTTP-加密-认证-完整性保护-HTTPS" class="headerlink" title="1.2 HTTP + 加密 + 认证 + 完整性保护 = HTTPS"></a>1.2 HTTP + 加密 + 认证 + 完整性保护 = HTTPS</h3><h4 id="1-2-1-HTTP-加上加密处理和认证及完整性保护后即是-HTTPS"><a href="#1-2-1-HTTP-加上加密处理和认证及完整性保护后即是-HTTPS" class="headerlink" title="1.2.1 HTTP 加上加密处理和认证及完整性保护后即是 HTTPS"></a>1.2.1 HTTP 加上加密处理和认证及完整性保护后即是 HTTPS</h4><p>如果在 HTTP 协议通信过程中使用未经加密的明文，比如在 Web 页面中输入信用卡号，如果这条通信线路遭到窃听，那么信用卡号就暴露了。</p>
 <p>另外，对于 HTTP 来说，服务器也好，客户端也好，都是没有办法确认通信方的。因为很有可能并不是和原来预想的通信方在实际通信。并且还需要考虑到接收到的报文在通信途中已经遭到篡改这一可能性。</p>
 <p>为了统一解决上述这些问题，需要在 HTTP 上再加入加密处理和认证等机制。我们把添加了加密及认证机制的 HTTP 称为 HTTPS（HTTP Secure）。</p>
-<div align="center"><br>    <img src="/《图解HTTP》读书笔记（三）/http_revise1.png" width="455" height="266"><br></div>
+<div align="center"><br>    <img src="/《图解HTTP》读书笔记（三）/https.png" width="455" height="266"><br></div>
 
 <h4 id="1-2-2-HTTPS-是身披-SSL-外壳的-HTTP"><a href="#1-2-2-HTTPS-是身披-SSL-外壳的-HTTP" class="headerlink" title="1.2.2 HTTPS 是身披 SSL 外壳的 HTTP"></a>1.2.2 HTTPS 是身披 SSL 外壳的 HTTP</h4><p>HTTPS 并非是应用层的一种新协议。只是 HTTP 通信接口部分用 SSL（Secure Socket Layer）和TLS（Transport Layer Security）协议代替而已。</p>
 <p>通常，HTTP 直接和 TCP 通信。当使用 SSL 时，则演变成先和 SSL 通信，再由 SSL 和 TCP 通信了。简言之，所谓 HTTPS，其实就是身披 SSL 外壳的 HTTP。</p>
@@ -670,27 +670,16 @@
 </ul>
 <p>为了实现 WebSocket 通信，在 HTTP 连接建立之后，需要完成一次 “握手” 的步骤。</p>
 <ol>
-<li><p>握手·请求<br>为了实现 WebSocket 通信，需要用到 HTTP 的 <code>Upgrade</code> 首部字段，告知服务器通信协议发送改变，已达到握手的目的。</p>
-<pre><code>“GET /chat HTTP/1.1
-Host: server.example.com
-Upgrade: websocket
-Connection: Upgrade
-Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==
-Origin: http://example.com
-Sec-WebSocket-Protocol: chat, superchat
-Sec-WebSocket-Version: 13”
-</code></pre><p><code>Sec-WebSocket-Protocol</code> 字段内记录着握手过程中必不可少的键值，<code>Sec-WebSocket-Protocol</code> 字段内记录使用的子协议。</p>
-<p>子协议按 <code>WebSocket</code> 协议标准在连接分开使用时，定义那些连接的名称。</p>
-</li>
-<li><p>握手·响应<br>对于之前的请求，返回状态码 <code>101 Switching Protocols</code> 的响应。</p>
-<pre><code>“HTTP/1.1 101 Switching Protocols
-Upgrade: websocket
-Connection: Upgrade
-Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=
-Sec-WebSocket-Protocol: chat”
-</code></pre><p><code>Sec-WebSocket-Accept</code> 的字段值是由握手请求中的 <code>Sec-WebSocket-Accept</code> 的字段值生成的。</p>
+<li>握手·请求<br>为了实现 WebSocket 通信，需要用到 HTTP 的 <code>Upgrade</code> 首部字段，告知服务器通信协议发送改变，已达到握手的目的。<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">“GET /chat HTTP/1.1</div><div class="line">Host: server.example.com</div><div class="line">Upgrade: websocket</div><div class="line">Connection: Upgrade</div><div class="line">Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==</div><div class="line">Origin: http://example.com</div><div class="line">Sec-WebSocket-Protocol: chat, superchat</div><div class="line">Sec-WebSocket-Version: 13”</div></pre></td></tr></table></figure>
 </li>
 </ol>
+<p><code>Sec-WebSocket-Protocol</code> 字段内记录着握手过程中必不可少的键值，<code>Sec-WebSocket-Protocol</code> 字段内记录使用的子协议。</p>
+<p>  子协议按 <code>WebSocket</code> 协议标准在连接分开使用时，定义那些连接的名称。</p>
+<ol>
+<li>握手·响应<br>对于之前的请求，返回状态码 <code>101 Switching Protocols</code> 的响应。<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">“HTTP/1.1 101 Switching Protocols</div><div class="line">Upgrade: websocket</div><div class="line">Connection: Upgrade</div><div class="line">Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=</div><div class="line">Sec-WebSocket-Protocol: chat”</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p><code>Sec-WebSocket-Accept</code> 的字段值是由握手请求中的 <code>Sec-WebSocket-Accept</code> 的字段值生成的。</p>
 <p>成功握手确立 <code>WebSocket</code> 连接之后，通信时不再使用 HTTP 的数据帧，而采用 WebSocket 独立的数据帧。</p>
 <div align="center"><br>    <img src="/《图解HTTP》读书笔记（三）/websocket.png" width="462" height="343"><br></div>
 
@@ -787,6 +776,10 @@ Sec-WebSocket-Protocol: chat”
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/OkHttp3-源码解析之整体流程/" rel="prev" title="OKHttp3 源码解析之整体流程（一）">
+                OKHttp3 源码解析之整体流程（一） <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -857,7 +850,7 @@ Sec-WebSocket-Protocol: chat”
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-count">18</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>

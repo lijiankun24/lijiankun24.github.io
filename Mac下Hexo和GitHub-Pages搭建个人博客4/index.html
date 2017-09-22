@@ -380,29 +380,11 @@ NexT">
 <h3 id="配置-NexT-站点"><a href="#配置-NexT-站点" class="headerlink" title="配置 NexT 站点"></a>配置 NexT 站点</h3><h4 id="修改主题-config-yml-配置文件"><a href="#修改主题-config-yml-配置文件" class="headerlink" title="修改主题 _config.yml 配置文件"></a>修改主题 <code>_config.yml</code> 配置文件</h4><p>打开在 <code>LeanCloud</code> 中刚刚新建的应用（我的是 <code>lijiankun24.com</code> 应用）。通过 <code>设置 ---&gt; 应用 Key</code>，找到 <code>App ID</code> 和 <code>App Key</code>，如下图所示：</p>
 <div align="center"><br>    <img src="/Mac下Hexo和GitHub-Pages搭建个人博客4/hexo_leancloud3.png" width="520" height="264"><br></div>
 
-<p>打开主题配置文件 <code>_config.yml</code>(<code>/hexo/theme/next/_config.yml</code>)，添加如下代码：</p>
-<pre class=" language-hexo"><code class="language-hexo"># add post views
-leancloud_visitors:
-  enable: true
-  app_id: **你的app_id**
-  app_key: **你的app_key**
-</code></pre>
+<p>打开主题配置文件 <code>_config.yml</code>(<code>/hexo/theme/next/_config.yml</code>)，添加如下代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"># add post views</div><div class="line">leancloud_visitors:</div><div class="line">  enable: true</div><div class="line">  app_id: **你的app_id**</div><div class="line">  app_key: **你的app_key**</div></pre></td></tr></table></figure></p>
 <h3 id="增加网站的浏览次数与访客数量统计功能"><a href="#增加网站的浏览次数与访客数量统计功能" class="headerlink" title="增加网站的浏览次数与访客数量统计功能"></a>增加网站的浏览次数与访客数量统计功能</h3><p>网站的浏览次数，即pv；网站的访客数为uv。pv的计算方式是，单个用户连续点击n篇文章，记录n次访问量；uv的计算方式是，单个用户连续点击n篇文章，只记录1次访客数。你可以根据需要添加相应的统计功能。</p>
-<h4 id="安装busuanzi-js脚本"><a href="#安装busuanzi-js脚本" class="headerlink" title="安装busuanzi.js脚本"></a>安装busuanzi.js脚本</h4><p>如果你使用的是 <code>NexT</code> 主题（其他主题类似），打开 <code>/theme/next/layout/_partial/footer.swig</code> 文件，拷贝下面的代码至文件的开头</p>
-<pre class=" language-js"><code class="language-js"><span class="token operator">&lt;</span>script <span class="token keyword">async</span> src<span class="token operator">=</span><span class="token string">"https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"</span><span class="token operator">></span>
-<span class="token operator">&lt;</span><span class="token operator">/</span>script<span class="token operator">></span>
-</code></pre>
-<h4 id="显示统计标签"><a href="#显示统计标签" class="headerlink" title="显示统计标签"></a>显示统计标签</h4><p>编辑 <code>/theme/next/layout/_partial/footer.swig</code> 文件，在你想要显示的位置放置如下代码即可：</p>
-<pre class=" language-js"><code class="language-js"><span class="token operator">&lt;</span><span class="token operator">!</span><span class="token operator">--</span> pv 统计量的显示<span class="token operator">--</span><span class="token operator">></span>
-<span class="token operator">&lt;</span>span id<span class="token operator">=</span><span class="token string">"busuanzi_container_site_pv"</span><span class="token operator">></span>
-    本站总访问量<span class="token operator">&lt;</span>span id<span class="token operator">=</span><span class="token string">"busuanzi_value_site_pv"</span><span class="token operator">></span><span class="token operator">&lt;</span><span class="token operator">/</span>span<span class="token operator">></span>次
-<span class="token operator">&lt;</span><span class="token operator">/</span>span<span class="token operator">></span>
-</code></pre>
-<pre class=" language-js"><code class="language-js"><span class="token operator">&lt;</span><span class="token operator">!</span><span class="token operator">--</span> uv 统计量的显示<span class="token operator">--</span><span class="token operator">></span>
-<span class="token operator">&lt;</span>span id<span class="token operator">=</span><span class="token string">"busuanzi_container_site_uv"</span><span class="token operator">></span>
-  本站访客数<span class="token operator">&lt;</span>span id<span class="token operator">=</span><span class="token string">"busuanzi_value_site_uv"</span><span class="token operator">></span><span class="token operator">&lt;</span><span class="token operator">/</span>span<span class="token operator">></span>人次
-<span class="token operator">&lt;</span><span class="token operator">/</span>span<span class="token operator">></span>
-</code></pre>
+<h4 id="安装busuanzi-js脚本"><a href="#安装busuanzi-js脚本" class="headerlink" title="安装busuanzi.js脚本"></a>安装busuanzi.js脚本</h4><p>如果你使用的是 <code>NexT</code> 主题（其他主题类似），打开 <code>/theme/next/layout/_partial/footer.swig</code> 文件，拷贝下面的代码至文件的开头<br><figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&lt;script <span class="keyword">async</span> src=<span class="string">"https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"</span>&gt;</div><div class="line"><span class="xml"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></div></pre></td></tr></table></figure></p>
+<h4 id="显示统计标签"><a href="#显示统计标签" class="headerlink" title="显示统计标签"></a>显示统计标签</h4><p>编辑 <code>/theme/next/layout/_partial/footer.swig</code> 文件，在你想要显示的位置放置如下代码即可：<br><figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;!-- pv 统计量的显示--&gt;</div><div class="line"><span class="xml"><span class="tag">&lt;<span class="name">span</span> <span class="attr">id</span>=<span class="string">"busuanzi_container_site_pv"</span>&gt;</span></span></div><div class="line">    本站总访问量<span class="tag">&lt;<span class="name">span</span> <span class="attr">id</span>=<span class="string">"busuanzi_value_site_pv"</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span>次</div><div class="line"><span class="tag">&lt;/<span class="name">span</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;!-- uv 统计量的显示--&gt;</div><div class="line"><span class="xml"><span class="tag">&lt;<span class="name">span</span> <span class="attr">id</span>=<span class="string">"busuanzi_container_site_uv"</span>&gt;</span></span></div><div class="line">  本站访客数<span class="tag">&lt;<span class="name">span</span> <span class="attr">id</span>=<span class="string">"busuanzi_value_site_uv"</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span>人次</div><div class="line"><span class="tag">&lt;/<span class="name">span</span>&gt;</span></div></pre></td></tr></table></figure>
 <p><strong>至此，为 NexT 主题中的博客文章添加了统计阅读量的功能就已经完成。</strong></p>
 <h2 id="NexT-主题中一些元素的配置"><a href="#NexT-主题中一些元素的配置" class="headerlink" title="NexT 主题中一些元素的配置"></a>NexT 主题中一些元素的配置</h2><p>如果对 Hexo 博客站点的一些地方还有所不满的话，可以参考 <a href="http://theme-next.iissnan.com/" target="_blank" rel="external">NexT 官网</a>，如下图所示：</p>
 <div align="center"><br>    <img src="/Mac下Hexo和GitHub-Pages搭建个人博客4/hexo_next.png" width="520" height="407"><br></div>
@@ -543,7 +525,7 @@ leancloud_visitors:
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-count">18</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>

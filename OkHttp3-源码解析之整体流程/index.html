@@ -1,0 +1,948 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,OKHttp,Network," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="最近抽时间分析一下 OKHttp3 的源码，关于 OKHttp 源码解析的资料已经有很多了，但是关于 OKHttp3 源码解析的文章似乎不太多，这一系列文章主要是针对 OKHttp3 的源码进行解析。首先，本篇文章将分析一下 OKHttp3 的整体流程，细节相关的知识会在后续的文章中进行介绍。好了，那咱就发车吧~
+
+OKHttp 的简单使用
+请求的整体流程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OKHttp3 源码解析之整体流程（一）">
+<meta property="og:url" content="http://www.lijiankun24.com/OkHttp3-源码解析之整体流程/index.html">
+<meta property="og:site_name" content="一些无处安放的代码和故事">
+<meta property="og:description" content="最近抽时间分析一下 OKHttp3 的源码，关于 OKHttp 源码解析的资料已经有很多了，但是关于 OKHttp3 源码解析的文章似乎不太多，这一系列文章主要是针对 OKHttp3 的源码进行解析。首先，本篇文章将分析一下 OKHttp3 的整体流程，细节相关的知识会在后续的文章中进行介绍。好了，那咱就发车吧~
+
+OKHttp 的简单使用
+请求的整体流程">
+<meta property="og:updated_time" content="2017-09-22T02:14:50.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="OKHttp3 源码解析之整体流程（一）">
+<meta name="twitter:description" content="最近抽时间分析一下 OKHttp3 的源码，关于 OKHttp 源码解析的资料已经有很多了，但是关于 OKHttp3 源码解析的文章似乎不太多，这一系列文章主要是针对 OKHttp3 的源码进行解析。首先，本篇文章将分析一下 OKHttp3 的整体流程，细节相关的知识会在后续的文章中进行介绍。好了，那咱就发车吧~
+
+OKHttp 的简单使用
+请求的整体流程">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.lijiankun24.com/OkHttp3-源码解析之整体流程/"/>
+
+
+
+
+
+  <title> OKHttp3 源码解析之整体流程（一） | 一些无处安放的代码和故事 </title>
+<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">一些无处安放的代码和故事</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://www.lijiankun24.com/OkHttp3-源码解析之整体流程/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="lijiankun24">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一些无处安放的代码和故事">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                OKHttp3 源码解析之整体流程（一）
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-19T23:28:10+08:00">
+                2017-09-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/OkHttp3-源码解析之整体流程/" class="leancloud_visitors" data-flag-title="OKHttp3 源码解析之整体流程（一）">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Views </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近抽时间分析一下 OKHttp3 的源码，关于 OKHttp 源码解析的资料已经有很多了，但是关于 OKHttp3 源码解析的文章似乎不太多，这一系列文章主要是针对 OKHttp3 的源码进行解析。首先，本篇文章将分析一下 OKHttp3 的整体流程，细节相关的知识会在后续的文章中进行介绍。好了，那咱就发车吧~</p>
+<ol>
+<li>OKHttp 的简单使用</li>
+<li>请求的整体流程</li>
+</ol>
+<a id="more"></a>
+<h2 id="1-OKHttp-的简单使用"><a href="#1-OKHttp-的简单使用" class="headerlink" title="1. OKHttp 的简单使用"></a>1. OKHttp 的简单使用</h2><p>OKHttp 支持异步请求和同步请求，下面简单介绍一下异步请求和同步请求。</p>
+<h3 id="1-1-异步请求"><a href="#1-1-异步请求" class="headerlink" title="1.1 异步请求"></a>1.1 异步请求</h3><p>因为是异步的网络请求，不会阻塞 UI 主线程，所以异步请求可以直接写在 UI 主线程中。下面是异步的 GET 请求：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">String url = <span class="string">"https://www.baidu.com"</span>;</div><div class="line">OkHttpClient client = <span class="keyword">new</span> OkHttpClient.Builder()</div><div class="line">        .build();</div><div class="line">Request request = <span class="keyword">new</span> Request.Builder()</div><div class="line">        .method(<span class="string">"GET"</span>, <span class="keyword">null</span>)</div><div class="line">        .url(url)</div><div class="line">        .build();</div><div class="line">client.newCall(request).enqueue(<span class="keyword">new</span> Callback() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onFailure</span><span class="params">(Call call, IOException e)</span> </span>&#123;</div><div class="line">        Log.i(<span class="string">"lijk"</span>, <span class="string">"onFailure "</span> + e.toString());</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onResponse</span><span class="params">(Call call, Response response)</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">        Log.i(<span class="string">"lijk"</span>, <span class="string">"onResponse "</span>);</div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
+<h3 id="1-2-同步请求"><a href="#1-2-同步请求" class="headerlink" title="1.2 同步请求"></a>1.2 同步请求</h3><p>相对于异步请求，不可以在 UI 主线程中直接使用异步请求，必须子线程中进行该请求。<br>下面是同步的 GET 请求：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">    String url = <span class="string">"https://www.baidu.com"</span>;</div><div class="line">    OkHttpClient client = <span class="keyword">new</span> OkHttpClient.Builder()</div><div class="line">          .build();</div><div class="line">    Request request = <span class="keyword">new</span> Request.Builder()</div><div class="line">          .method(<span class="string">"GET"</span>, <span class="keyword">null</span>)</div><div class="line">          .url(url)</div><div class="line">          .build();</div><div class="line">    client.newCall(request).execute();</div><div class="line">&#125; <span class="keyword">catch</span> (IOException e) &#123;</div><div class="line">    e.printStackTrace();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="2-请求的整体流程"><a href="#2-请求的整体流程" class="headerlink" title="2. 请求的整体流程"></a>2. 请求的整体流程</h2><p>从上一小节中可以大概知道 OKHttp 简单的使用，我们就从这儿开始分析 OKHttp 请求的整体流程。先分析异步请求，了解异步请求的流程之后，自然会明白同步请求。</p>
+<h3 id="2-1-异步请求"><a href="#2-1-异步请求" class="headerlink" title="2.1 异步请求"></a>2.1 异步请求</h3><h4 id="2-1-1-OkHttpClient"><a href="#2-1-1-OkHttpClient" class="headerlink" title="2.1.1 OkHttpClient"></a>2.1.1 OkHttpClient</h4><p>首先是创建一个 <code>OkHttpClient</code> 对象，可以通过下面两种方式创建 <code>OKHttpClient</code> 的对象，如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 方式一</span></div><div class="line">OkHttpClient client = <span class="keyword">new</span> OkHttpClient.Builder()</div><div class="line">                  .build();</div><div class="line"></div><div class="line"><span class="comment">// 方式二</span></div><div class="line">OkHttpClient client = <span class="keyword">new</span> OkHttpClient();</div></pre></td></tr></table></figure>
+<p><code>OKHttpClient</code> 的源码如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OkHttpClient</span> <span class="keyword">implements</span> <span class="title">Cloneable</span>, <span class="title">Call</span>.<span class="title">Factory</span>, <span class="title">WebSocket</span>.<span class="title">Factory</span> </span>&#123;</div><div class="line"></div><div class="line">  ......</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="title">OkHttpClient</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">this</span>(<span class="keyword">new</span> Builder());</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  OkHttpClient(Builder builder) &#123;</div><div class="line">    <span class="keyword">this</span>.dispatcher = builder.dispatcher;</div><div class="line">    <span class="keyword">this</span>.proxy = builder.proxy;</div><div class="line">    <span class="keyword">this</span>.protocols = builder.protocols;</div><div class="line">    <span class="keyword">this</span>.connectionSpecs = builder.connectionSpecs;</div><div class="line">    <span class="keyword">this</span>.interceptors = Util.immutableList(builder.interceptors);</div><div class="line">    <span class="keyword">this</span>.networkInterceptors = Util.immutableList(builder.networkInterceptors);</div><div class="line">    <span class="keyword">this</span>.eventListenerFactory = builder.eventListenerFactory;</div><div class="line">    <span class="keyword">this</span>.proxySelector = builder.proxySelector;</div><div class="line">    <span class="keyword">this</span>.cookieJar = builder.cookieJar;</div><div class="line">    <span class="keyword">this</span>.cache = builder.cache;</div><div class="line">    <span class="keyword">this</span>.internalCache = builder.internalCache;</div><div class="line">    <span class="keyword">this</span>.socketFactory = builder.socketFactory;</div><div class="line"></div><div class="line">    <span class="keyword">boolean</span> isTLS = <span class="keyword">false</span>;</div><div class="line">    <span class="keyword">for</span> (ConnectionSpec spec : connectionSpecs) &#123;</div><div class="line">      isTLS = isTLS || spec.isTls();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (builder.sslSocketFactory != <span class="keyword">null</span> || !isTLS) &#123;</div><div class="line">      <span class="keyword">this</span>.sslSocketFactory = builder.sslSocketFactory;</div><div class="line">      <span class="keyword">this</span>.certificateChainCleaner = builder.certificateChainCleaner;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">      X509TrustManager trustManager = systemDefaultTrustManager();</div><div class="line">      <span class="keyword">this</span>.sslSocketFactory = systemDefaultSslSocketFactory(trustManager);</div><div class="line">      <span class="keyword">this</span>.certificateChainCleaner = CertificateChainCleaner.get(trustManager);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">this</span>.hostnameVerifier = builder.hostnameVerifier;</div><div class="line">    <span class="keyword">this</span>.certificatePinner = builder.certificatePinner.withCertificateChainCleaner(</div><div class="line">        certificateChainCleaner);</div><div class="line">    <span class="keyword">this</span>.proxyAuthenticator = builder.proxyAuthenticator;</div><div class="line">    <span class="keyword">this</span>.authenticator = builder.authenticator;</div><div class="line">    <span class="keyword">this</span>.connectionPool = builder.connectionPool;</div><div class="line">    <span class="keyword">this</span>.dns = builder.dns;</div><div class="line">    <span class="keyword">this</span>.followSslRedirects = builder.followSslRedirects;</div><div class="line">    <span class="keyword">this</span>.followRedirects = builder.followRedirects;</div><div class="line">    <span class="keyword">this</span>.retryOnConnectionFailure = builder.retryOnConnectionFailure;</div><div class="line">    <span class="keyword">this</span>.connectTimeout = builder.connectTimeout;</div><div class="line">    <span class="keyword">this</span>.readTimeout = builder.readTimeout;</div><div class="line">    <span class="keyword">this</span>.writeTimeout = builder.writeTimeout;</div><div class="line">    <span class="keyword">this</span>.pingInterval = builder.pingInterval;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  ......</div><div class="line"></div><div class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Builder</span> </span>&#123;</div><div class="line">    Dispatcher dispatcher;</div><div class="line">    <span class="meta">@Nullable</span> Proxy proxy;</div><div class="line">    List&lt;Protocol&gt; protocols;</div><div class="line">    List&lt;ConnectionSpec&gt; connectionSpecs;</div><div class="line">    <span class="keyword">final</span> List&lt;Interceptor&gt; interceptors = <span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line">    <span class="keyword">final</span> List&lt;Interceptor&gt; networkInterceptors = <span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line">    EventListener.Factory eventListenerFactory;</div><div class="line">    ProxySelector proxySelector;</div><div class="line">    CookieJar cookieJar;</div><div class="line">    <span class="meta">@Nullable</span> Cache cache;</div><div class="line">    <span class="meta">@Nullable</span> InternalCache internalCache;</div><div class="line">    SocketFactory socketFactory;</div><div class="line">    <span class="meta">@Nullable</span> SSLSocketFactory sslSocketFactory;</div><div class="line">    <span class="meta">@Nullable</span> CertificateChainCleaner certificateChainCleaner;</div><div class="line">    HostnameVerifier hostnameVerifier;</div><div class="line">    CertificatePinner certificatePinner;</div><div class="line">    Authenticator proxyAuthenticator;</div><div class="line">    Authenticator authenticator;</div><div class="line">    ConnectionPool connectionPool;</div><div class="line">    Dns dns;</div><div class="line">    <span class="keyword">boolean</span> followSslRedirects;</div><div class="line">    <span class="keyword">boolean</span> followRedirects;</div><div class="line">    <span class="keyword">boolean</span> retryOnConnectionFailure;</div><div class="line">    <span class="keyword">int</span> connectTimeout;</div><div class="line">    <span class="keyword">int</span> readTimeout;</div><div class="line">    <span class="keyword">int</span> writeTimeout;</div><div class="line">    <span class="keyword">int</span> pingInterval;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Builder</span><span class="params">()</span> </span>&#123;</div><div class="line">      dispatcher = <span class="keyword">new</span> Dispatcher();</div><div class="line">      protocols = DEFAULT_PROTOCOLS;</div><div class="line">      connectionSpecs = DEFAULT_CONNECTION_SPECS;</div><div class="line">      eventListenerFactory = EventListener.factory(EventListener.NONE);</div><div class="line">      proxySelector = ProxySelector.getDefault();</div><div class="line">      cookieJar = CookieJar.NO_COOKIES;</div><div class="line">      socketFactory = SocketFactory.getDefault();</div><div class="line">      hostnameVerifier = OkHostnameVerifier.INSTANCE;</div><div class="line">      certificatePinner = CertificatePinner.DEFAULT;</div><div class="line">      proxyAuthenticator = Authenticator.NONE;</div><div class="line">      authenticator = Authenticator.NONE;</div><div class="line">      connectionPool = <span class="keyword">new</span> ConnectionPool();</div><div class="line">      dns = Dns.SYSTEM;</div><div class="line">      followSslRedirects = <span class="keyword">true</span>;</div><div class="line">      followRedirects = <span class="keyword">true</span>;</div><div class="line">      retryOnConnectionFailure = <span class="keyword">true</span>;</div><div class="line">      connectTimeout = <span class="number">10_000</span>;</div><div class="line">      readTimeout = <span class="number">10_000</span>;</div><div class="line">      writeTimeout = <span class="number">10_000</span>;</div><div class="line">      pingInterval = <span class="number">0</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    ......</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  ......</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>可以看到，<code>OKHttpClient</code> 对象是通过 Builder 模式创建的，在 <code>OKHttpClient.Builder()</code> 类的构造方法中，对它的属性都有默认值和默认对象。</p>
+<h4 id="2-1-2-RealCall"><a href="#2-1-2-RealCall" class="headerlink" title="2.1.2 RealCall"></a>2.1.2 RealCall</h4><p>创建好 <code>OkHttpClient</code> 对象之后，通过调用 <code>OkHttpClient</code> 对象的 <code>newCall(Request request)</code> 方法即可创建一个 <code>Call</code> 对象，<code>newCall(Request request)</code> 方法如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Prepares the &#123;<span class="doctag">@code</span> request&#125; to be executed at some point in the future.</div><div class="line"> */</div><div class="line"><span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> Call <span class="title">newCall</span><span class="params">(Request request)</span> </span>&#123;</div><div class="line">  <span class="keyword">return</span> <span class="keyword">new</span> RealCall(<span class="keyword">this</span>, request, <span class="keyword">false</span> <span class="comment">/* for web socket */</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>可以看到，<code>newCall(Request request)</code> 方法生成的是 <code>RealCall</code> 类型的对象，<code>RealCall</code> 的源码并不算长，如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">RealCall</span> <span class="keyword">implements</span> <span class="title">Call</span> </span>&#123;</div><div class="line">  <span class="keyword">final</span> OkHttpClient client;</div><div class="line">  <span class="keyword">final</span> RetryAndFollowUpInterceptor retryAndFollowUpInterceptor;</div><div class="line">  <span class="keyword">final</span> EventListener eventListener;</div><div class="line"></div><div class="line">  <span class="comment">/** The application's original request unadulterated by redirects or auth headers. */</span></div><div class="line">  <span class="keyword">final</span> Request originalRequest;</div><div class="line">  <span class="keyword">final</span> <span class="keyword">boolean</span> forWebSocket;</div><div class="line"></div><div class="line">  <span class="comment">// Guarded by this.</span></div><div class="line">  <span class="keyword">private</span> <span class="keyword">boolean</span> executed;</div><div class="line"></div><div class="line">  RealCall(OkHttpClient client, Request originalRequest, <span class="keyword">boolean</span> forWebSocket) &#123;</div><div class="line">    <span class="keyword">final</span> EventListener.Factory eventListenerFactory = client.eventListenerFactory();</div><div class="line"></div><div class="line">    <span class="keyword">this</span>.client = client;</div><div class="line">    <span class="keyword">this</span>.originalRequest = originalRequest;</div><div class="line">    <span class="keyword">this</span>.forWebSocket = forWebSocket;</div><div class="line">    <span class="keyword">this</span>.retryAndFollowUpInterceptor = <span class="keyword">new</span> RetryAndFollowUpInterceptor(client, forWebSocket);</div><div class="line"></div><div class="line">    <span class="comment">// TODO(jwilson): this is unsafe publication and not threadsafe.</span></div><div class="line">    <span class="keyword">this</span>.eventListener = eventListenerFactory.create(<span class="keyword">this</span>);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  ......</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>对于异步请求，会调用 <code>RealCall</code> 对象的 <code>enqueue(Callback responseCallback)</code> 方法，如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">enqueue</span><span class="params">(Callback responseCallback)</span> </span>&#123;</div><div class="line">  <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</div><div class="line">    <span class="keyword">if</span> (executed) <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Already Executed"</span>);</div><div class="line">    executed = <span class="keyword">true</span>;</div><div class="line">  &#125;</div><div class="line">  captureCallStackTrace();</div><div class="line">  client.dispatcher().enqueue(<span class="keyword">new</span> AsyncCall(responseCallback));</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>在 <code>enqueue(Callback responseCallback)</code> 方法中，会调用 <code>Dispatcher</code> 的 <code>enqueue(AsyncCall call)</code> 方法，生成一个 <code>AsyncCall</code> 对象，并将其传入到 <code>Dispatcher</code>对象中去。</p>
+<h4 id="2-1-3-Dispatcher"><a href="#2-1-3-Dispatcher" class="headerlink" title="2.1.3 Dispatcher"></a>2.1.3 Dispatcher</h4><p>接着分析一下 <code>Dispatcher</code> 的源码，如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Dispatcher</span> </span>&#123;</div><div class="line">  <span class="keyword">private</span> <span class="keyword">int</span> maxRequests = <span class="number">64</span>;</div><div class="line">  <span class="keyword">private</span> <span class="keyword">int</span> maxRequestsPerHost = <span class="number">5</span>;</div><div class="line">  <span class="keyword">private</span> <span class="meta">@Nullable</span> Runnable idleCallback;</div><div class="line"></div><div class="line">  <span class="comment">/** Executes calls. Created lazily. */</span></div><div class="line">  <span class="keyword">private</span> <span class="meta">@Nullable</span> ExecutorService executorService;</div><div class="line"></div><div class="line">  <span class="comment">/** Ready async calls in the order they'll be run. */</span></div><div class="line">  <span class="keyword">private</span> <span class="keyword">final</span> Deque&lt;AsyncCall&gt; readyAsyncCalls = <span class="keyword">new</span> ArrayDeque&lt;&gt;();</div><div class="line"></div><div class="line">  <span class="comment">/** Running asynchronous calls. Includes canceled calls that haven't finished yet. */</span></div><div class="line">  <span class="keyword">private</span> <span class="keyword">final</span> Deque&lt;AsyncCall&gt; runningAsyncCalls = <span class="keyword">new</span> ArrayDeque&lt;&gt;();</div><div class="line"></div><div class="line">  <span class="comment">/** Running synchronous calls. Includes canceled calls that haven't finished yet. */</span></div><div class="line">  <span class="keyword">private</span> <span class="keyword">final</span> Deque&lt;RealCall&gt; runningSyncCalls = <span class="keyword">new</span> ArrayDeque&lt;&gt;();</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="title">Dispatcher</span><span class="params">(ExecutorService executorService)</span> </span>&#123;</div><div class="line">    <span class="keyword">this</span>.executorService = executorService;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="title">Dispatcher</span><span class="params">()</span> </span>&#123;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> ExecutorService <span class="title">executorService</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (executorService == <span class="keyword">null</span>) &#123;</div><div class="line">      executorService = <span class="keyword">new</span> ThreadPoolExecutor(<span class="number">0</span>, Integer.MAX_VALUE, <span class="number">60</span>, TimeUnit.SECONDS,</div><div class="line">          <span class="keyword">new</span> SynchronousQueue&lt;Runnable&gt;(), Util.threadFactory(<span class="string">"OkHttp Dispatcher"</span>, <span class="keyword">false</span>));</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> executorService;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  ......</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">enqueue</span><span class="params">(AsyncCall call)</span> </span>&#123;</div><div class="line">    <span class="comment">// runningAsyncCalls异步运行任务的队列个数如果小于 64</span></div><div class="line">    <span class="comment">// 每个主机同时被请求的个数小于 5</span></div><div class="line">    <span class="keyword">if</span> (runningAsyncCalls.size() &lt; maxRequests &amp;&amp; runningCallsForHost(call) &lt; maxRequestsPerHost) &#123;</div><div class="line">      <span class="comment">// 将异步任务加入到异步运行队列中</span></div><div class="line">      runningAsyncCalls.add(call);</div><div class="line">      <span class="comment">// 通过线程池运行该异步任务</span></div><div class="line">      executorService().execute(call);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">      <span class="comment">// 如果不满足上面两个条件，则将异步任务加入到预备异步任务队列中</span></div><div class="line">      readyAsyncCalls.add(call);</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  ......</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>从 <code>Dispatcher</code> 的 <code>enqueue(AsyncCall call)</code> 方法中可以看到，得到异步任务之后，如果异步任务运行队列中的个数小于 64 并且每个主机正在运行的异步任务小于 5，则将该异步任务加入到异步运行队列中，并通过线程池执行该异步任务，若不满足以上两个条件，则将该异步任务加入到预备异步任务队列中。</p>
+<h4 id="2-1-4-AsyncCall"><a href="#2-1-4-AsyncCall" class="headerlink" title="2.1.4 AsyncCall"></a>2.1.4 AsyncCall</h4><p><code>AsyncCall</code> 是 <code>RealCall</code> 的内部类，源码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">AsyncCall</span> <span class="keyword">extends</span> <span class="title">NamedRunnable</span> </span>&#123;</div><div class="line">  <span class="keyword">private</span> <span class="keyword">final</span> Callback responseCallback;</div><div class="line"></div><div class="line">  AsyncCall(Callback responseCallback) &#123;</div><div class="line">    <span class="keyword">super</span>(<span class="string">"OkHttp %s"</span>, redactedUrl());</div><div class="line">    <span class="keyword">this</span>.responseCallback = responseCallback;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="function">String <span class="title">host</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> originalRequest.url().host();</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="function">Request <span class="title">request</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> originalRequest;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="function">RealCall <span class="title">get</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> RealCall.<span class="keyword">this</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="meta">@Override</span> <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">execute</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">boolean</span> signalledCallback = <span class="keyword">false</span>;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">      <span class="comment">// 得到响应对象</span></div><div class="line">      Response response = getResponseWithInterceptorChain();</div><div class="line">      <span class="keyword">if</span> (retryAndFollowUpInterceptor.isCanceled()) &#123;</div><div class="line">        signalledCallback = <span class="keyword">true</span>;</div><div class="line">        <span class="comment">// 取消请求时，回调失败方法</span></div><div class="line">        responseCallback.onFailure(RealCall.<span class="keyword">this</span>, <span class="keyword">new</span> IOException(<span class="string">"Canceled"</span>));</div><div class="line">      &#125; <span class="keyword">else</span> &#123;</div><div class="line">        signalledCallback = <span class="keyword">true</span>;</div><div class="line">        <span class="comment">// 回调成功方法</span></div><div class="line">        responseCallback.onResponse(RealCall.<span class="keyword">this</span>, response);</div><div class="line">      &#125;</div><div class="line">    &#125; <span class="keyword">catch</span> (IOException e) &#123;</div><div class="line">      <span class="keyword">if</span> (signalledCallback) &#123;</div><div class="line">        <span class="comment">// Do not signal the callback twice!</span></div><div class="line">        Platform.get().log(INFO, <span class="string">"Callback failure for "</span> + toLoggableString(), e);</div><div class="line">      &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="comment">// 抛出异常时，回调失败方法</span></div><div class="line">        responseCallback.onFailure(RealCall.<span class="keyword">this</span>, e);</div><div class="line">      &#125;</div><div class="line">    &#125; <span class="keyword">finally</span> &#123;</div><div class="line">      <span class="comment">// 从 Dispatcher 对象的异步请求队列中移除该任务</span></div><div class="line">      client.dispatcher().finished(<span class="keyword">this</span>);</div><div class="line">    &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>可以先看一下在 <code>finally</code> 代码块中的部分，调用 <code>Dispatcher</code> 对象的 <code>finished(AsyncCall call)</code> 方法，源码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/** Used by &#123;<span class="doctag">@code</span> AsyncCall#run&#125; to signal completion. */</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">finished</span><span class="params">(AsyncCall call)</span> </span>&#123;</div><div class="line">  finished(runningAsyncCalls, call, <span class="keyword">true</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/** Used by &#123;<span class="doctag">@code</span> Call#execute&#125; to signal completion. */</span></div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">finished</span><span class="params">(RealCall call)</span> </span>&#123;</div><div class="line">  finished(runningSyncCalls, call, <span class="keyword">false</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">private</span> &lt;T&gt; <span class="function"><span class="keyword">void</span> <span class="title">finished</span><span class="params">(Deque&lt;T&gt; calls, T call, <span class="keyword">boolean</span> promoteCalls)</span> </span>&#123;</div><div class="line">  <span class="keyword">int</span> runningCallsCount;</div><div class="line">  Runnable idleCallback;</div><div class="line">  <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</div><div class="line">    <span class="keyword">if</span> (!calls.remove(call)) <span class="keyword">throw</span> <span class="keyword">new</span> AssertionError(<span class="string">"Call wasn't in-flight!"</span>);</div><div class="line">    <span class="keyword">if</span> (promoteCalls) promoteCalls();</div><div class="line">    runningCallsCount = runningCallsCount();</div><div class="line">    idleCallback = <span class="keyword">this</span>.idleCallback;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="keyword">if</span> (runningCallsCount == <span class="number">0</span> &amp;&amp; idleCallback != <span class="keyword">null</span>) &#123;</div><div class="line">    idleCallback.run();</div><div class="line">  &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">promoteCalls</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (runningAsyncCalls.size() &gt;= maxRequests) <span class="keyword">return</span>; <span class="comment">// Already running max capacity.</span></div><div class="line">    <span class="keyword">if</span> (readyAsyncCalls.isEmpty()) <span class="keyword">return</span>; <span class="comment">// No ready calls to promote.</span></div><div class="line"></div><div class="line">    <span class="keyword">for</span> (Iterator&lt;AsyncCall&gt; i = readyAsyncCalls.iterator(); i.hasNext(); ) &#123;</div><div class="line">      AsyncCall call = i.next();</div><div class="line"></div><div class="line">      <span class="keyword">if</span> (runningCallsForHost(call) &lt; maxRequestsPerHost) &#123;</div><div class="line">        i.remove();</div><div class="line">        runningAsyncCalls.add(call);</div><div class="line">        executorService().execute(call);</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="keyword">if</span> (runningAsyncCalls.size() &gt;= maxRequests) <span class="keyword">return</span>; <span class="comment">// Reached max capacity.</span></div><div class="line">    &#125;</div><div class="line">  &#125;</div></pre></td></tr></table></figure></p>
+<p>最终会调用 <code>finished(Deque&lt;T&gt; calls, T call, boolean promoteCalls)</code> 方法，会将传入的 <code>Call</code> 对象从正在运行的异步任务队列中移除，并将符合条件的预备异步任务队列中的任务加入到正在运行的异步任务队列中，并将其放入线程池中执行。</p>
+<p>在 <code>AsyncCall</code> 中最重要的就是 <code>execute()</code> 方法，其中最重要的就是下面一行：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Response response = getResponseWithInterceptorChain();</div></pre></td></tr></table></figure></p>
+<p>可以看到从 <code>getResponseWithInterceptorChain()</code> 方法得到响应对象，源码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="function">Response <span class="title">getResponseWithInterceptorChain</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">  <span class="comment">// Build a full stack of interceptors.</span></div><div class="line">  List&lt;Interceptor&gt; interceptors = <span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line">  <span class="comment">// 用户自定义拦截器</span></div><div class="line">  interceptors.addAll(client.interceptors());</div><div class="line">  <span class="comment">// 重试重定向拦截器</span></div><div class="line">  interceptors.add(retryAndFollowUpInterceptor);</div><div class="line">  <span class="comment">// 桥接拦截器</span></div><div class="line">  interceptors.add(<span class="keyword">new</span> BridgeInterceptor(client.cookieJar()));</div><div class="line">  <span class="comment">// 缓存拦截器</span></div><div class="line">  interceptors.add(<span class="keyword">new</span> CacheInterceptor(client.internalCache()));</div><div class="line">  <span class="comment">// 连接服务器拦截器</span></div><div class="line">  interceptors.add(<span class="keyword">new</span> ConnectInterceptor(client));</div><div class="line">  <span class="keyword">if</span> (!forWebSocket) &#123;</div><div class="line">    <span class="comment">// 用户定义的网络拦截器</span></div><div class="line">    interceptors.addAll(client.networkInterceptors());</div><div class="line">  &#125;</div><div class="line">  <span class="comment">// 请求服务器拦截器</span></div><div class="line">  interceptors.add(<span class="keyword">new</span> CallServerInterceptor(forWebSocket));</div><div class="line"></div><div class="line">  Interceptor.Chain chain = <span class="keyword">new</span> RealInterceptorChain(</div><div class="line">      interceptors, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="number">0</span>, originalRequest);</div><div class="line">  <span class="comment">// 通过 RealInterceptorChain 对象链式的调用拦截器，从而得到响应。</span></div><div class="line">  <span class="keyword">return</span> chain.proceed(originalRequest);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>对 OKHttp 有所了解的人应该都知道，拦截器 <code>(interceptor)</code> 是 OKHttp 中非常重要的思想，在源码中拦截器应用的也非常广泛和重要，上面源码中的拦截器串联起来并执行，就完成了本次的网络请求，在下一篇文章中会重点介绍拦截器的知识。</p>
+<p>通过对 <code>getResponseWithInterceptorChain()</code> 方法的分析，可以看到将所有的拦截器都聚合之后，生成一个 <code>RealInterceptorChain</code> 拦截器调用链对象 <code>chain</code>，在 <code>chain</code> 中递归的调用所有的拦截器，最后将得到的结果返回。</p>
+<p>这里使用的是责任链模式，拦截器分层的思想也是借鉴了网络协议中的分层思想，请求从最上层到最下层，响应是从最下层到最上层。</p>
+<h4 id="2-1-5-RealInterceptorChain"><a href="#2-1-5-RealInterceptorChain" class="headerlink" title="2.1.5 RealInterceptorChain"></a>2.1.5 RealInterceptorChain</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">RealInterceptorChain</span> <span class="keyword">implements</span> <span class="title">Interceptor</span>.<span class="title">Chain</span> </span>&#123;</div><div class="line"></div><div class="line">  ......</div><div class="line"></div><div class="line">  <span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> Response <span class="title">proceed</span><span class="params">(Request request)</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">    <span class="keyword">return</span> proceed(request, streamAllocation, httpCodec, connection);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">public</span> Response <span class="title">proceed</span><span class="params">(Request request, StreamAllocation streamAllocation, HttpCodec httpCodec,</span></span></div><div class="line">      RealConnection connection) <span class="keyword">throws</span> IOException &#123;</div><div class="line">    <span class="keyword">if</span> (index &gt;= interceptors.size()) <span class="keyword">throw</span> <span class="keyword">new</span> AssertionError();</div><div class="line"></div><div class="line">    calls++;</div><div class="line"></div><div class="line">    <span class="comment">// If we already have a stream, confirm that the incoming request will use it.</span></div><div class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.httpCodec != <span class="keyword">null</span> &amp;&amp; !<span class="keyword">this</span>.connection.supportsUrl(request.url())) &#123;</div><div class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"network interceptor "</span> + interceptors.get(index - <span class="number">1</span>)</div><div class="line">          + <span class="string">" must retain the same host and port"</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// If we already have a stream, confirm that this is the only call to chain.proceed().</span></div><div class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.httpCodec != <span class="keyword">null</span> &amp;&amp; calls &gt; <span class="number">1</span>) &#123;</div><div class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"network interceptor "</span> + interceptors.get(index - <span class="number">1</span>)</div><div class="line">          + <span class="string">" must call proceed() exactly once"</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// Call the next interceptor in the chain.</span></div><div class="line">    RealInterceptorChain next = <span class="keyword">new</span> RealInterceptorChain(</div><div class="line">        interceptors, streamAllocation, httpCodec, connection, index + <span class="number">1</span>, request);</div><div class="line">    Interceptor interceptor = interceptors.get(index);</div><div class="line">    Response response = interceptor.intercept(next);</div><div class="line"></div><div class="line">    <span class="comment">// Confirm that the next interceptor made its required call to chain.proceed().</span></div><div class="line">    <span class="keyword">if</span> (httpCodec != <span class="keyword">null</span> &amp;&amp; index + <span class="number">1</span> &lt; interceptors.size() &amp;&amp; next.calls != <span class="number">1</span>) &#123;</div><div class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"network interceptor "</span> + interceptor</div><div class="line">          + <span class="string">" must call proceed() exactly once"</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// Confirm that the intercepted response isn't null.</span></div><div class="line">    <span class="keyword">if</span> (response == <span class="keyword">null</span>) &#123;</div><div class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException(<span class="string">"interceptor "</span> + interceptor + <span class="string">" returned null"</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> response;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在 <code>RealInterceptorChain</code> 中最重要的就是 <code>proceed(Request request, StreamAllocation streamAllocation, HttpCodec httpCodec,
+    RealConnection connection)</code> 方法，将之前的拦截器列表串联起来并执行，得到响应结果之后，再将结果向上一层层返回。</p>
+<h3 id="2-2-同步请求"><a href="#2-2-同步请求" class="headerlink" title="2.2 同步请求"></a>2.2 同步请求</h3><p>分析完异步请求的流程之后，同步请求的流程就比较容易理解。</p>
+<p>和异步请求一样，会先调用 <code>OkHttpClient</code> 中的 <code>newCall(Request request)</code> 方法生成一个 <code>RealCall</code> 对象<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Prepares the &#123;<span class="doctag">@code</span> request&#125; to be executed at some point in the future.</div><div class="line"> */</div><div class="line"><span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> Call <span class="title">newCall</span><span class="params">(Request request)</span> </span>&#123;</div><div class="line">  <span class="keyword">return</span> <span class="keyword">new</span> RealCall(<span class="keyword">this</span>, request, <span class="keyword">false</span> <span class="comment">/* for web socket */</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>接下来和异步请求就不一样了，会调用 <code>RealCall</code> 对象的 <code>execute()</code> 方法，源码如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> Response <span class="title">execute</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">  <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</div><div class="line">    <span class="keyword">if</span> (executed) <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Already Executed"</span>);</div><div class="line">    executed = <span class="keyword">true</span>;</div><div class="line">  &#125;</div><div class="line">  captureCallStackTrace();</div><div class="line">  <span class="keyword">try</span> &#123;</div><div class="line">    client.dispatcher().executed(<span class="keyword">this</span>);</div><div class="line">    Response result = getResponseWithInterceptorChain();</div><div class="line">    <span class="keyword">if</span> (result == <span class="keyword">null</span>) <span class="keyword">throw</span> <span class="keyword">new</span> IOException(<span class="string">"Canceled"</span>);</div><div class="line">    <span class="keyword">return</span> result;</div><div class="line">  &#125; <span class="keyword">finally</span> &#123;</div><div class="line">    client.dispatcher().finished(<span class="keyword">this</span>);</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<ul>
+<li>会调用 <code>Dispatcher</code> 对象的 <code>executed(RealCall call)</code> 将该同步任务加入到 <code>Dispatcher</code> 对象的同步任务队列中去</li>
+<li>接着会调用 <code>getResponseWithInterceptorChain()</code> 方法获取到请求的响应对象。对，就是之前异步任务请求获取响应对象的同一个方法。</li>
+<li>最终，会走 <code>finally</code> 代码块，将此同步任务从 <code>Dispatcher</code> 对象的同步任务队列中移除。</li>
+</ul>
+<p>如果理解之前异步任务请求的流程，那么同步请求的流程就非常容易理解了。</p>
+<hr>
+<p><strong>参考资料：</strong></p>
+<p><a href="http://yuqirong.me/2017/07/25/OkHttp%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/#далее" target="_blank" rel="external">OkHttp源码解析</a> – <a href="http://yuqirong.me/" target="_blank" rel="external">俞其荣</a></p>
+<p><a href="http://www.gaopei.me/2017/02/10/OkHttp%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" target="_blank" rel="external">OkHttp源码解析</a>  – <a href="http://www.gaopei.me/" target="_blank" rel="external">高沛</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/OKHttp/" rel="tag"># OKHttp</a>
+          
+            <a href="/tags/Network/" rel="tag"># Network</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/《图解HTTP》读书笔记（三）/" rel="next" title="《图解HTTP》读书笔记（三）">
+                <i class="fa fa-chevron-left"></i> 《图解HTTP》读书笔记（三）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="lijiankun24" />
+          <p class="site-author-name" itemprop="name">lijiankun24</p>
+           
+              <p class="site-description motion-element" itemprop="description">守得云开见月明。</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/lijiankun24" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/lijiankun24" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.jianshu.com/u/1abe21b7ff5f" target="_blank" title="Jianshu">
+                  
+                    <i class="fa fa-fw fa-jianshu"></i>
+                  
+                  Jianshu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://gank.io/post/published" title="匠心写作" target="_blank">匠心写作</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/lmj623565791" title="Hongyang" target="_blank">Hongyang</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.liaohuqiu.net/cn/" title="Huqiu Liao" target="_blank">Huqiu Liao</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://drakeet.me/" title="drakeet" target="_blank">drakeet</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.jianshu.com/u/df40282480b4" title="小鄧子" target="_blank">小鄧子</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://yuweiguocn.github.io/" title="于卫国" target="_blank">于卫国</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-OKHttp-的简单使用"><span class="nav-number">1.</span> <span class="nav-text">1. OKHttp 的简单使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-异步请求"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 异步请求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-同步请求"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 同步请求</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-请求的整体流程"><span class="nav-number">2.</span> <span class="nav-text">2. 请求的整体流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-异步请求"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 异步请求</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-1-OkHttpClient"><span class="nav-number">2.1.1.</span> <span class="nav-text">2.1.1 OkHttpClient</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-2-RealCall"><span class="nav-number">2.1.2.</span> <span class="nav-text">2.1.2 RealCall</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-3-Dispatcher"><span class="nav-number">2.1.3.</span> <span class="nav-text">2.1.3 Dispatcher</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-4-AsyncCall"><span class="nav-number">2.1.4.</span> <span class="nav-text">2.1.4 AsyncCall</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-5-RealInterceptorChain"><span class="nav-number">2.1.5.</span> <span class="nav-text">2.1.5 RealInterceptorChain</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-同步请求"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 同步请求</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lijiankun24</span>
+  
+</div>
+
+
+<div>
+  <span id="busuanzi_container_site_pv">
+    Total views <span id="busuanzi_value_site_pv">   </span>
+  </span>
+
+  <span id="busuanzi_container_site_uv">
+    |   Total visitors <span id="busuanzi_value_site_uv"/>
+  </span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("tWG63sCRtLhi5NFeaXtWqtnv-gzGzoHsz", "lPLcNFpeOoNc6wr9PVX8XdbI");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+
+  
+
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+          bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+      } else {
+          bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+</body>
+</html>

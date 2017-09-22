@@ -383,8 +383,7 @@ Hexo 草稿箱的使用
 <h3 id="具体操作"><a href="#具体操作" class="headerlink" title="具体操作"></a>具体操作</h3><p>接下来介绍如何配置主题，其实非常简单：</p>
 <ol>
 <li><p>从 Mac Terminal 进入 <code>hexo/themes</code> 目录下，输入以下命令，将 NexT 主题从 GitHub 上 clone 下来：</p>
-<pre class=" language-hexo"><code class="language-hexo">git clone https://github.com/iissnan/hexo-theme-next.git
-</code></pre>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git clone https://github.com/iissnan/hexo-theme-next.git</div></pre></td></tr></table></figure>
 <p>等待 clone 完成以后，将该文件重命名为 <code>next</code>，如下图所示：</p>
 <div align="center"><br> <img src="/Mac下Hexo和GitHub-Pages搭建个人博客2/hexo_next1.png" width="460" height="202" alt=""><br></div>
 </li>
@@ -394,29 +393,22 @@ Hexo 草稿箱的使用
 <div align="center"><br>    <img src="/Mac下Hexo和GitHub-Pages搭建个人博客2/ hexo_next2.png" width="460" height="76" alt=""><br></div>
 
 <p>此时，Hexo 主题配置已经完成，通过命令 <code>hexo s</code> ,即可在本地预览 NexT 主题效果。</p>
-<h2 id="Hexo-草稿箱的使用"><a href="#Hexo-草稿箱的使用" class="headerlink" title="Hexo 草稿箱的使用"></a>Hexo 草稿箱的使用</h2><p>创建一篇文章的命令是：</p>
-<pre class=" language-hexo"><code class="language-hexo">hexo new "new_page_name"
-</code></pre>
-<p>该命令创建的博客在 <code>hexo/source/_posts</code> 目录下<br>创建一篇草稿文章的命令是：</p>
-<pre class=" language-hexo"><code class="language-hexo">hexo new draft "new_page_name"
-</code></pre>
-<p>该命令会在 <code>hexo/source/_drafts</code> 目录下创建一个 <code>new_page_name.md</code> 文件。<br>预览草稿文章：</p>
-<pre><code>hexo s --draft
-</code></pre><p>当文章创作完成以后，使用以下命令发布文章，即会发表该文章，文章及其所属的同名资源文件夹则会从 <code>hexo/source/_drafts</code> 移到 <code>hexo/source/_posts</code> 下</p>
-<pre><code> hexo publish “new_page_name”
-</code></pre><h2 id="文章中图片的插入"><a href="#文章中图片的插入" class="headerlink" title="文章中图片的插入"></a>文章中图片的插入</h2><ol>
+<h2 id="Hexo-草稿箱的使用"><a href="#Hexo-草稿箱的使用" class="headerlink" title="Hexo 草稿箱的使用"></a>Hexo 草稿箱的使用</h2><p>创建一篇文章的命令是：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo new &quot;new_page_name&quot;</div></pre></td></tr></table></figure></p>
+<p>该命令创建的博客在 <code>hexo/source/_posts</code> 目录下<br>创建一篇草稿文章的命令是：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo new draft &quot;new_page_name&quot;</div></pre></td></tr></table></figure></p>
+<p>该命令会在 <code>hexo/source/_drafts</code> 目录下创建一个 <code>new_page_name.md</code> 文件。<br>预览草稿文章：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo s --draft</div></pre></td></tr></table></figure></p>
+<p>当文章创作完成以后，使用以下命令发布文章，即会发表该文章，文章及其所属的同名资源文件夹则会从 <code>hexo/source/_drafts</code> 移到 <code>hexo/source/_posts</code> 下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo publish “new_page_name”</div></pre></td></tr></table></figure></p>
+<h2 id="文章中图片的插入"><a href="#文章中图片的插入" class="headerlink" title="文章中图片的插入"></a>文章中图片的插入</h2><ol>
 <li>确认 <code>source/_config.yml</code> 中有 <code>post_asset_folder: true</code> 属性。这样设置以后，每次新建文章的时候，Hexo 都会创建一个与文章同名的文件夹，可以把与文章相关的资源都放在该文件夹下，方便管理。</li>
-<li>进入 <code>hexo</code> 目录下，执行以下命令，完成 <a href="https://github.com/CodeFalling/hexo-asset-image" target="_blank" rel="external">CodeFalling/hexo-asset-image</a> 插件的安装：<pre><code>npm install https://github.com/CodeFalling/hexo-asset-image --save
-</code></pre></li>
-<li>在文章中插入图片。首先将图片放入与文章名称相同的文件夹内，然后在文章中用以下方式引用。例如在一篇 <code>test.md</code> 的文章中插入图片，与其对应的文件夹下有一张名为 <code>test.jpg</code> 的图片，那么引用方式则是：<pre><code>![logo](&#39;test&#39;/test.jpg)
-</code></pre><blockquote>
-<p>用上面这种方式引用图片并不能设置图片的大小，经过查找，可以使用以下方式插入图片，并且可以设置图片的大小：</p>
-<pre><code>&lt;div align=center&gt;
- &lt;img src=&quot;test/test.jpg&quot; width=&quot;100&quot; height=&quot;80&quot; alt=&quot;&quot;/&gt;
-&lt;/div&gt;
-</code></pre></blockquote>
+<li><p>进入 <code>hexo</code> 目录下，执行以下命令，完成 <a href="https://github.com/CodeFalling/hexo-asset-image" target="_blank" rel="external">CodeFalling/hexo-asset-image</a> 插件的安装：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install https://github.com/CodeFalling/hexo-asset-image --save</div></pre></td></tr></table></figure>
+</li>
+<li><p>在文章中插入图片。首先将图片放入与文章名称相同的文件夹内，然后在文章中用以下方式引用。例如在一篇 <code>test.md</code> 的文章中插入图片，与其对应的文件夹下有一张名为 <code>test.jpg</code> 的图片，那么引用方式则是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">![logo](&apos;test&apos;/test.jpg)</div></pre></td></tr></table></figure>
 </li>
 </ol>
+<blockquote>
+<p>用上面这种方式引用图片并不能设置图片的大小，经过查找，可以使用以下方式插入图片，并且可以设置图片的大小：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;div align=center&gt;</div><div class="line">    &lt;img src=&quot;test/test.jpg&quot; width=&quot;100&quot; height=&quot;80&quot; alt=&quot;&quot;/&gt;</div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure></p>
+</blockquote>
 <h2 id="为-Hexo-绑定个人域名"><a href="#为-Hexo-绑定个人域名" class="headerlink" title="为 Hexo 绑定个人域名"></a>为 Hexo 绑定个人域名</h2><h3 id="条件"><a href="#条件" class="headerlink" title="条件"></a>条件</h3><p>为 Hexo 绑定个人域名需要两个条件：1.个人域名；2.有一个域名解析提供商账号。</p>
 <ol>
 <li>首先，你需要一个域名，在 <a href="https://wanwang.aliyun.com/" target="_blank" rel="external">万网</a> 可以购买，笔者购买的是 <code>lijiankun24.com</code>。</li>
@@ -579,7 +571,7 @@ Hexo 草稿箱的使用
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-count">18</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
