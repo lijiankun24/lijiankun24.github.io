@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Android,OKHttp,Network," />
+  <meta name="keywords" content="Network,Android,OKHttp," />
 
 
 
@@ -87,23 +87,23 @@
 
 
 
-<meta name="description" content="在上一篇文章中，主要梳理了 OKHttp 请求的整体流程，了解到拦截器在其中有非常重要的意义，那么本篇文章就重点介绍一下 OKHttp 中的精髓 —- 拦截器。本文中涉及到的自定义类的源码都在 Github 上的 OkHttpPractice 工程中。
+<meta name="description" content="在上一篇文章中，主要梳理了 OKHttp3.8.0 请求的整体流程，了解到拦截器在其中有非常重要的意义，那么本篇文章就重点介绍一下 OKHttp 中的精髓 —- 拦截器。本文中涉及到的自定义类的源码都在 Github 上的 OkHttpPractice 工程中。
 
 拦截器的使用
 源码中拦截器的应用及分析">
 <meta property="og:type" content="article">
-<meta property="og:title" content="OkHttp3-源码解析之拦截器（二）">
+<meta property="og:title" content="OKHttp3 源码解析之拦截器（二）">
 <meta property="og:url" content="http://www.lijiankun24.com/OkHttp3-源码解析之拦截器/index.html">
 <meta property="og:site_name" content="一些无处安放的代码和故事">
-<meta property="og:description" content="在上一篇文章中，主要梳理了 OKHttp 请求的整体流程，了解到拦截器在其中有非常重要的意义，那么本篇文章就重点介绍一下 OKHttp 中的精髓 —- 拦截器。本文中涉及到的自定义类的源码都在 Github 上的 OkHttpPractice 工程中。
+<meta property="og:description" content="在上一篇文章中，主要梳理了 OKHttp3.8.0 请求的整体流程，了解到拦截器在其中有非常重要的意义，那么本篇文章就重点介绍一下 OKHttp 中的精髓 —- 拦截器。本文中涉及到的自定义类的源码都在 Github 上的 OkHttpPractice 工程中。
 
 拦截器的使用
 源码中拦截器的应用及分析">
 <meta property="og:image" content="http://www.lijiankun24.com/OkHttp3-源码解析之拦截器/exception.png">
-<meta property="og:updated_time" content="2017-09-24T15:04:25.000Z">
+<meta property="og:updated_time" content="2017-10-09T13:35:10.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="OkHttp3-源码解析之拦截器（二）">
-<meta name="twitter:description" content="在上一篇文章中，主要梳理了 OKHttp 请求的整体流程，了解到拦截器在其中有非常重要的意义，那么本篇文章就重点介绍一下 OKHttp 中的精髓 —- 拦截器。本文中涉及到的自定义类的源码都在 Github 上的 OkHttpPractice 工程中。
+<meta name="twitter:title" content="OKHttp3 源码解析之拦截器（二）">
+<meta name="twitter:description" content="在上一篇文章中，主要梳理了 OKHttp3.8.0 请求的整体流程，了解到拦截器在其中有非常重要的意义，那么本篇文章就重点介绍一下 OKHttp 中的精髓 —- 拦截器。本文中涉及到的自定义类的源码都在 Github 上的 OkHttpPractice 工程中。
 
 拦截器的使用
 源码中拦截器的应用及分析">
@@ -141,7 +141,7 @@
 
 
 
-  <title> OkHttp3-源码解析之拦截器（二） | 一些无处安放的代码和故事 </title>
+  <title> OKHttp3 源码解析之拦截器（二） | 一些无处安放的代码和故事 </title>
 <link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="en">
@@ -291,7 +291,7 @@
             
             
               
-                OkHttp3-源码解析之拦截器（二）
+                OKHttp3 源码解析之拦截器（二）
               
             
           </h1>
@@ -324,7 +324,7 @@
 
           
           
-             <span id="/OkHttp3-源码解析之拦截器/" class="leancloud_visitors" data-flag-title="OkHttp3-源码解析之拦截器（二）">
+             <span id="/OkHttp3-源码解析之拦截器/" class="leancloud_visitors" data-flag-title="OKHttp3 源码解析之拦截器（二）">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -353,7 +353,7 @@
       
 
       
-        <p>在上一篇文章中，主要梳理了 OKHttp 请求的整体流程，了解到拦截器在其中有非常重要的意义，那么本篇文章就重点介绍一下 OKHttp 中的精髓 —- 拦截器。本文中涉及到的自定义类的源码都在 Github 上的 <a href="https://github.com/lijiankun24/OkHttpPractice" target="_blank" rel="external">OkHttpPractice</a> 工程中。</p>
+        <p>在上一篇文章中，主要梳理了 OKHttp3.8.0 请求的整体流程，了解到拦截器在其中有非常重要的意义，那么本篇文章就重点介绍一下 OKHttp 中的精髓 —- 拦截器。本文中涉及到的自定义类的源码都在 Github 上的 <a href="https://github.com/lijiankun24/OkHttpPractice" target="_blank" rel="external">OkHttpPractice</a> 工程中。</p>
 <ol>
 <li>拦截器的使用</li>
 <li>源码中拦截器的应用及分析</li>
@@ -463,11 +463,11 @@
       
         <div class="post-tags">
           
+            <a href="/tags/Network/" rel="tag"># Network</a>
+          
             <a href="/tags/Android/" rel="tag"># Android</a>
           
             <a href="/tags/OKHttp/" rel="tag"># OKHttp</a>
-          
-            <a href="/tags/Network/" rel="tag"># Network</a>
           
         </div>
       
@@ -573,7 +573,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-count">16</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>

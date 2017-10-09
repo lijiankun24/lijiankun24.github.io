@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Android,OKHttp,Network," />
+  <meta name="keywords" content="Network,Android,OKHttp," />
 
 
 
@@ -87,16 +87,16 @@
 
 
 
-<meta name="description" content="最近抽时间分析一下 OKHttp3 的源码，关于 OKHttp 源码解析的资料已经有很多了，但是关于 OKHttp3 源码解析的文章似乎不太多，这一系列文章主要是针对 OKHttp3 的源码进行解析。首先，本篇文章将分析一下 OKHttp3 的整体流程，细节相关的知识会在后续的文章中进行介绍。好了，那咱就发车吧~ 本文中涉及到的自定义类的源码都在 Github 上的 OkHttpPractice">
+<meta name="description" content="最近抽时间分析一下 OKHttp3 的源码，关于 OKHttp 源码解析的资料已经有很多了，但是关于 OKHttp3 源码解析的文章似乎不太多，这一系列文章主要是针对 OKHttp3.8.0 的源码进行解析。首先，本篇文章将分析一下 OKHttp3 的整体流程，细节相关的知识会在后续的文章中进行介绍。好了，那咱就发车吧~ 本文中涉及到的自定义类的源码都在 Github 上的 OkHttpPract">
 <meta property="og:type" content="article">
 <meta property="og:title" content="OKHttp3 源码解析之整体流程（一）">
 <meta property="og:url" content="http://www.lijiankun24.com/OkHttp3-源码解析之整体流程/index.html">
 <meta property="og:site_name" content="一些无处安放的代码和故事">
-<meta property="og:description" content="最近抽时间分析一下 OKHttp3 的源码，关于 OKHttp 源码解析的资料已经有很多了，但是关于 OKHttp3 源码解析的文章似乎不太多，这一系列文章主要是针对 OKHttp3 的源码进行解析。首先，本篇文章将分析一下 OKHttp3 的整体流程，细节相关的知识会在后续的文章中进行介绍。好了，那咱就发车吧~ 本文中涉及到的自定义类的源码都在 Github 上的 OkHttpPractice">
-<meta property="og:updated_time" content="2017-09-24T14:59:47.000Z">
+<meta property="og:description" content="最近抽时间分析一下 OKHttp3 的源码，关于 OKHttp 源码解析的资料已经有很多了，但是关于 OKHttp3 源码解析的文章似乎不太多，这一系列文章主要是针对 OKHttp3.8.0 的源码进行解析。首先，本篇文章将分析一下 OKHttp3 的整体流程，细节相关的知识会在后续的文章中进行介绍。好了，那咱就发车吧~ 本文中涉及到的自定义类的源码都在 Github 上的 OkHttpPract">
+<meta property="og:updated_time" content="2017-10-09T13:34:47.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="OKHttp3 源码解析之整体流程（一）">
-<meta name="twitter:description" content="最近抽时间分析一下 OKHttp3 的源码，关于 OKHttp 源码解析的资料已经有很多了，但是关于 OKHttp3 源码解析的文章似乎不太多，这一系列文章主要是针对 OKHttp3 的源码进行解析。首先，本篇文章将分析一下 OKHttp3 的整体流程，细节相关的知识会在后续的文章中进行介绍。好了，那咱就发车吧~ 本文中涉及到的自定义类的源码都在 Github 上的 OkHttpPractice">
+<meta name="twitter:description" content="最近抽时间分析一下 OKHttp3 的源码，关于 OKHttp 源码解析的资料已经有很多了，但是关于 OKHttp3 源码解析的文章似乎不太多，这一系列文章主要是针对 OKHttp3.8.0 的源码进行解析。首先，本篇文章将分析一下 OKHttp3 的整体流程，细节相关的知识会在后续的文章中进行介绍。好了，那咱就发车吧~ 本文中涉及到的自定义类的源码都在 Github 上的 OkHttpPract">
 
 
 
@@ -342,7 +342,7 @@
       
 
       
-        <p>最近抽时间分析一下 OKHttp3 的源码，关于 OKHttp 源码解析的资料已经有很多了，但是关于 OKHttp3 源码解析的文章似乎不太多，这一系列文章主要是针对 OKHttp3 的源码进行解析。首先，本篇文章将分析一下 OKHttp3 的整体流程，细节相关的知识会在后续的文章中进行介绍。好了，那咱就发车吧~ 本文中涉及到的自定义类的源码都在 Github 上的 <a href="https://github.com/lijiankun24/OkHttpPractice" target="_blank" rel="external">OkHttpPractice</a> 工程中。</p>
+        <p>最近抽时间分析一下 OKHttp3 的源码，关于 OKHttp 源码解析的资料已经有很多了，但是关于 OKHttp3 源码解析的文章似乎不太多，这一系列文章主要是针对 OKHttp3.8.0 的源码进行解析。首先，本篇文章将分析一下 OKHttp3 的整体流程，细节相关的知识会在后续的文章中进行介绍。好了，那咱就发车吧~ 本文中涉及到的自定义类的源码都在 Github 上的 <a href="https://github.com/lijiankun24/OkHttpPractice" target="_blank" rel="external">OkHttpPractice</a> 工程中。</p>
 <ol>
 <li>OKHttp 的简单使用</li>
 <li>请求的整体流程</li>
@@ -417,11 +417,11 @@
       
         <div class="post-tags">
           
+            <a href="/tags/Network/" rel="tag"># Network</a>
+          
             <a href="/tags/Android/" rel="tag"># Android</a>
           
             <a href="/tags/OKHttp/" rel="tag"># OKHttp</a>
-          
-            <a href="/tags/Network/" rel="tag"># Network</a>
           
         </div>
       
@@ -444,8 +444,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/OkHttp3-源码解析之拦截器/" rel="prev" title="OkHttp3-源码解析之拦截器（二）">
-                OkHttp3-源码解析之拦截器（二） <i class="fa fa-chevron-right"></i>
+              <a href="/OkHttp3-源码解析之拦截器/" rel="prev" title="OKHttp3 源码解析之拦截器（二）">
+                OKHttp3 源码解析之拦截器（二） <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -531,7 +531,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-count">16</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>
