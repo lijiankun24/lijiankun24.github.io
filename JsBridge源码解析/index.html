@@ -1,0 +1,960 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,WebView," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="我们知道在 WebView 的使用中，WebView 与 Js 代码的交互是非常重要的一部分，在上篇文章 WebView 的使用 中，简单介绍了 WebView 与 Js 代码的交互。JsBridge 是一个 WebView 与 Js 代码交互的库，封装的非常完善，但是源码也不算难，在 GitHub 上有 3000+ Star，值得分析一下。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JsBridge源码解析">
+<meta property="og:url" content="http://www.lijiankun24.com/JsBridge源码解析/index.html">
+<meta property="og:site_name" content="一些无处安放的代码和故事">
+<meta property="og:description" content="我们知道在 WebView 的使用中，WebView 与 Js 代码的交互是非常重要的一部分，在上篇文章 WebView 的使用 中，简单介绍了 WebView 与 Js 代码的交互。JsBridge 是一个 WebView 与 Js 代码交互的库，封装的非常完善，但是源码也不算难，在 GitHub 上有 3000+ Star，值得分析一下。">
+<meta property="og:image" content="http://www.lijiankun24.com/JsBridge源码解析/catalog.png">
+<meta property="og:updated_time" content="2017-10-19T14:09:56.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JsBridge源码解析">
+<meta name="twitter:description" content="我们知道在 WebView 的使用中，WebView 与 Js 代码的交互是非常重要的一部分，在上篇文章 WebView 的使用 中，简单介绍了 WebView 与 Js 代码的交互。JsBridge 是一个 WebView 与 Js 代码交互的库，封装的非常完善，但是源码也不算难，在 GitHub 上有 3000+ Star，值得分析一下。">
+<meta name="twitter:image" content="http://www.lijiankun24.com/JsBridge源码解析/catalog.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.lijiankun24.com/JsBridge源码解析/"/>
+
+
+
+
+
+  <title> JsBridge源码解析 | 一些无处安放的代码和故事 </title>
+<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">一些无处安放的代码和故事</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://www.lijiankun24.com/JsBridge源码解析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="lijiankun24">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一些无处安放的代码和故事">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                JsBridge源码解析
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-10-15T21:04:10+08:00">
+                2017-10-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/JsBridge源码解析/" class="leancloud_visitors" data-flag-title="JsBridge源码解析">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Views </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>我们知道在 <code>WebView</code> 的使用中，<code>WebView</code> 与 Js 代码的交互是非常重要的一部分，在上篇文章 <a href="http://lijiankun24.com/WebView%20%E7%9A%84%E4%BD%BF%E7%94%A8/" target="_blank" rel="external">WebView 的使用</a> 中，简单介绍了 <code>WebView</code> 与 Js 代码的交互。<a href="https://github.com/lzyzsd/JsBridge" target="_blank" rel="external">JsBridge</a> 是一个 <code>WebView</code> 与 Js 代码交互的库，封装的非常完善，但是源码也不算难，在 GitHub 上有 3000+ Star，值得分析一下。</p>
+<div align="center"><br>      <img src="/JsBridge源码解析/catalog.png" width="769" height="245"><br></div>
+
+<a id="more"></a>
+<h2 id="1-WebView-与-Js-交互回顾"><a href="#1-WebView-与-Js-交互回顾" class="headerlink" title="1. WebView 与 Js 交互回顾"></a>1. WebView 与 Js 交互回顾</h2><p>在 <a href="http://lijiankun24.com/WebView%20%E7%9A%84%E4%BD%BF%E7%94%A8/" target="_blank" rel="external">WebView 的使用</a> 中已经对 <code>WebView</code> 与 Js 代码进行了简单的介绍：</p>
+<ol>
+<li><p>Js 调用 <code>WebView</code> 的方法</p>
+<ul>
+<li>设置 <code>WebView</code> 支持 JavaScript</li>
+<li>定义用于交互的类，并用 <code>@JavascriptInterface</code> 关键字注解其中可以被 Js 调用的方法</li>
+<li>使用 <code>WebView</code> 的 <code>addJavascriptInterface(Object object, String name)</code> 方法将该类的方法传入 <code>WebView</code> 中，Js 便可以通过 <code>name</code> 调用该对象</li>
+</ul>
+</li>
+<li><p><code>WebView</code> 调用 Js 代码</p>
+<ul>
+<li>设置 <code>WebView</code> 支持 JavaScript</li>
+<li>使用 <code>WebView</code> 的 <code>loadUrl(String url)</code> 便可以调用 Js 中的方法，如：<code>webView.loadUrl(&quot;javascript:testConfirm()&quot;)</code>，<code>testConfirm()</code> 便是一个 Js 函数。</li>
+</ul>
+</li>
+</ol>
+<h2 id="2-JsBridge-源码解析"><a href="#2-JsBridge-源码解析" class="headerlink" title="2. JsBridge 源码解析"></a>2. JsBridge 源码解析</h2><p>JsBridge 使用起来很简单，在 <a href="https://github.com/lzyzsd/JsBridge" target="_blank" rel="external">JsBridge</a> 的 README 中有详细的介绍，这里就不多做介绍，直接分析其源码。</p>
+<p>在 JsBridge 中有两个非常重要的类：<a href="https://github.com/lzyzsd/JsBridge/blob/master/library/src/main/java/com/github/lzyzsd/jsbridge/BridgeWebView.java" target="_blank" rel="external">BridgeWebView</a> 和 <a href="https://github.com/lzyzsd/JsBridge/blob/master/library/src/main/java/com/github/lzyzsd/jsbridge/BridgeWebViewClient.java" target="_blank" rel="external">BridgeWebViewClient</a></p>
+<h3 id="2-1-Android-调用-Js-代码"><a href="#2-1-Android-调用-Js-代码" class="headerlink" title="2.1 Android 调用 Js 代码"></a>2.1 Android 调用 Js 代码</h3><p>首先看一下，在 JsBridge 中，Android 是如何调用 Js 代码的</p>
+<ul>
+<li><p>在 Js 代码中，声明 Android 可以调用的方法，如下所示：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">WebViewJavascriptBridge.registerHandler(<span class="string">"functionInJs"</span>, <span class="function"><span class="keyword">function</span>(<span class="params">data, responseCallback</span>) </span>&#123;</div><div class="line">  <span class="built_in">document</span>.getElementById(<span class="string">"show"</span>).innerHTML = (<span class="string">"data from Java: = "</span> + data);</div><div class="line">  <span class="keyword">var</span> responseData = <span class="string">"Javascript Says Right back aka!"</span>;</div><div class="line">  responseCallback(responseData);</div><div class="line">&#125;);</div><div class="line"></div><div class="line">bridge.init(<span class="function"><span class="keyword">function</span>(<span class="params">message, responseCallback</span>) </span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">'JS got a message'</span>, message);</div><div class="line">    <span class="keyword">var</span> data = &#123;</div><div class="line">        <span class="string">'Javascript Responds'</span>: <span class="string">'Wee!'</span></div><div class="line">    &#125;;</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">'JS responding with'</span>, data);</div><div class="line">    responseCallback(data);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+</li>
+<li><p>Java 调用此 JavaScript 函数的方法如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">webView.callHandler(<span class="string">"functionInJs"</span>, <span class="keyword">new</span> Gson().toJson(user), <span class="keyword">new</span> CallBackFunction() &#123;</div><div class="line">  <span class="meta">@Override</span></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCallBack</span><span class="params">(String data)</span> </span>&#123;</div><div class="line"></div><div class="line">  &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+</li>
+<li><p>同时在 Android 中可以使用如下方法，向 JavaScript 发送数据：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">webView.send(<span class="string">"hello"</span>);</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>接下来分析一下 JsBridge 中是如何实现 Java 调用 Js 方法的<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@SuppressLint</span>(<span class="string">"SetJavaScriptEnabled"</span>)</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BridgeWebView</span> <span class="keyword">extends</span> <span class="title">WebView</span> <span class="keyword">implements</span> <span class="title">WebViewJavascriptBridge</span> </span>&#123;</div><div class="line"></div><div class="line">    ......</div><div class="line"></div><div class="line">    Map&lt;String, CallBackFunction&gt; responseCallbacks = <span class="keyword">new</span> HashMap&lt;&gt;();</div><div class="line"></div><div class="line">    <span class="keyword">private</span> List&lt;Message&gt; startupMessage = <span class="keyword">new</span> ArrayList&lt;&gt;();</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> List&lt;Message&gt; <span class="title">getStartupMessage</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> startupMessage;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setStartupMessage</span><span class="params">(List&lt;Message&gt; startupMessage)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.startupMessage = startupMessage;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.setVerticalScrollBarEnabled(<span class="keyword">false</span>);</div><div class="line">        <span class="keyword">this</span>.setHorizontalScrollBarEnabled(<span class="keyword">false</span>);</div><div class="line">        <span class="keyword">this</span>.getSettings().setJavaScriptEnabled(<span class="keyword">true</span>);</div><div class="line">        <span class="keyword">if</span> (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.KITKAT) &#123;</div><div class="line">            WebView.setWebContentsDebuggingEnabled(<span class="keyword">true</span>);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">this</span>.setWebViewClient(generateBridgeWebViewClient());</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">protected</span> BridgeWebViewClient <span class="title">generateBridgeWebViewClient</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> BridgeWebViewClient(<span class="keyword">this</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">handlerReturnData</span><span class="params">(String url)</span> </span>&#123;</div><div class="line">        String functionName = BridgeUtil.getFunctionFromReturnUrl(url);</div><div class="line">        CallBackFunction f = responseCallbacks.get(functionName);</div><div class="line">        String data = BridgeUtil.getDataFromReturnUrl(url);</div><div class="line">        <span class="keyword">if</span> (f != <span class="keyword">null</span>) &#123;</div><div class="line">            f.onCallBack(data);</div><div class="line">            responseCallbacks.remove(functionName);</div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">send</span><span class="params">(String data)</span> </span>&#123;</div><div class="line">        send(data, <span class="keyword">null</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">send</span><span class="params">(String data, CallBackFunction responseCallback)</span> </span>&#123;</div><div class="line">        doSend(<span class="keyword">null</span>, data, responseCallback);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">doSend</span><span class="params">(String handlerName, String data, CallBackFunction responseCallback)</span> </span>&#123;</div><div class="line">        Message m = <span class="keyword">new</span> Message();</div><div class="line">        <span class="keyword">if</span> (!TextUtils.isEmpty(data)) &#123;</div><div class="line">            m.setData(data);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (responseCallback != <span class="keyword">null</span>) &#123;</div><div class="line">            String callbackStr = String.format(BridgeUtil.CALLBACK_ID_FORMAT, ++uniqueId + (BridgeUtil.UNDERLINE_STR + SystemClock.currentThreadTimeMillis()));</div><div class="line">            responseCallbacks.put(callbackStr, responseCallback);</div><div class="line">            m.setCallbackId(callbackStr);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (!TextUtils.isEmpty(handlerName)) &#123;</div><div class="line">            m.setHandlerName(handlerName);</div><div class="line">        &#125;</div><div class="line">        queueMessage(m);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">queueMessage</span><span class="params">(Message m)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (startupMessage != <span class="keyword">null</span>) &#123;</div><div class="line">            startupMessage.add(m);</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            dispatchMessage(m);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">dispatchMessage</span><span class="params">(Message m)</span> </span>&#123;</div><div class="line">        String messageJson = m.toJson();</div><div class="line">        <span class="comment">//escape special characters for json string</span></div><div class="line">        messageJson = messageJson.replaceAll(<span class="string">"(\\\\)([^utrn])"</span>, <span class="string">"\\\\\\\\$1$2"</span>);</div><div class="line">        messageJson = messageJson.replaceAll(<span class="string">"(?&lt;=[^\\\\])(\")"</span>, <span class="string">"\\\\\""</span>);</div><div class="line">        String javascriptCommand = String.format(BridgeUtil.JS_HANDLE_MESSAGE_FROM_JAVA, messageJson);</div><div class="line">        <span class="keyword">if</span> (Thread.currentThread() == Looper.getMainLooper().getThread()) &#123;</div><div class="line">            <span class="keyword">this</span>.loadUrl(javascriptCommand);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">loadUrl</span><span class="params">(String jsUrl, CallBackFunction returnCallback)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.loadUrl(jsUrl);</div><div class="line">        responseCallbacks.put(BridgeUtil.parseFunctionName(jsUrl), returnCallback);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * call javascript registered handler</div><div class="line">     *</div><div class="line">     * <span class="doctag">@param</span> handlerName</div><div class="line">     * <span class="doctag">@param</span> data</div><div class="line">     * <span class="doctag">@param</span> callBack</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">callHandler</span><span class="params">(String handlerName, String data, CallBackFunction callBack)</span> </span>&#123;</div><div class="line">        doSend(handlerName, data, callBack);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<ol>
+<li>从上面  <a href="https://github.com/lzyzsd/JsBridge/blob/master/library/src/main/java/com/github/lzyzsd/jsbridge/BridgeWebView.java" target="_blank" rel="external">BridgeWebView</a> 源码中可以看到，不论是通过 <code>callHandler(String handlerName, String data, CallBackFunction callBack)</code> 方法还是通过 <code>send(String data, CallBackFunction responseCallback)</code> 方法，最后都走到 <code>queueMessage(Message m)</code> 中。</li>
+<li>在 <code>queueMessage(Message m)</code> 方法中<ul>
+<li>如果 <code>startupMessage</code> 为空，则直接通过 <code>dispatchMessage(Message m)</code> 方法，在其中生成调用 Js 方法的命令行，并通过 <code>WebView.loadUrl(String url)</code> 方法调用 Js 中的方法</li>
+<li>若 <code>startupMessage</code> 不为空，则将该 <code>Message</code> 对象加入到 <code>startupMessage</code> 消息列表中，那么消息列表是在何处调用呢？</li>
+</ul>
+</li>
+<li><p><a href="https://github.com/lzyzsd/JsBridge/blob/master/library/src/main/java/com/github/lzyzsd/jsbridge/BridgeWebViewClient.java" target="_blank" rel="external">BridgeWebViewClient</a> 的源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BridgeWebViewClient</span> <span class="keyword">extends</span> <span class="title">WebViewClient</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> BridgeWebView webView;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">BridgeWebViewClient</span><span class="params">(BridgeWebView webView)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.webView = webView;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">shouldOverrideUrlLoading</span><span class="params">(WebView view, String url)</span> </span>&#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            url = URLDecoder.decode(url, <span class="string">"UTF-8"</span>);</div><div class="line">        &#125; <span class="keyword">catch</span> (UnsupportedEncodingException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (url.startsWith(BridgeUtil.YY_RETURN_DATA)) &#123; <span class="comment">// 如果是返回数据</span></div><div class="line">            webView.handlerReturnData(url);</div><div class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (url.startsWith(BridgeUtil.YY_OVERRIDE_SCHEMA)) &#123; <span class="comment">//</span></div><div class="line">            webView.flushMessageQueue();</div><div class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">super</span>.shouldOverrideUrlLoading(view, url);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onPageFinished</span><span class="params">(WebView view, String url)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onPageFinished(view, url);</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (BridgeWebView.toLoadJs != <span class="keyword">null</span>) &#123;</div><div class="line">            BridgeUtil.webViewLoadLocalJs(view, BridgeWebView.toLoadJs);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">//</span></div><div class="line">        <span class="keyword">if</span> (webView.getStartupMessage() != <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">for</span> (Message m : webView.getStartupMessage()) &#123;</div><div class="line">                webView.dispatchMessage(m);</div><div class="line">            &#125;</div><div class="line">            webView.setStartupMessage(<span class="keyword">null</span>);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>可以看到，在 <code>BridgeWebViewClient</code> 的 <code>onPageFinished(WebView view, String url)</code> 方法中，会将 <code>BridgeWebView</code> 中的 <code>List&lt;Message&gt; startupMessage</code> 对象中的消息都通过 <code>dispatchMessage(Message m)</code> 将消息发送出去，也就是 Java 调用 Js 中的方法。</p>
+</li>
+<li>在 <code>BridgeWebView.doSend(String handlerName, String data, CallBackFunction responseCallback)</code> 方法中会将 <code>CallBackFunction responseCallback</code> 方法加入 <code>Map&lt;String, CallBackFunction&gt; responseCallbacks</code> 回调集合中，在 <code>BridgeWebViewClient.shouldOverrideUrlLoading(WebView view, String url)</code> 拦截传递进来的 <code>String url</code> 数据，并进行判断，若是 Java 调用 Js 方法处理的结果，则找到对应的 <code>CallBackFunction</code> 对象将结果返回。</li>
+</ol>
+<p>可以看到，在 JsBridge 中还是通过 <code>WebView.loadUrl(String url)</code> 的方法实现 Java 调用 Js 方法的功能的。</p>
+<h3 id="2-2-Js-调用-Android-方法"><a href="#2-2-Js-调用-Android-方法" class="headerlink" title="2.2 Js 调用 Android 方法"></a>2.2 Js 调用 Android 方法</h3><p>看一下 Js 代码如何调用 Android 中的方法</p>
+<p>在 Java 中注册 Js 可以调用的方法，如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">webView.registerHandler(<span class="string">"submitFromWeb"</span>, <span class="keyword">new</span> BridgeHandler() &#123;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handler</span><span class="params">(String data, CallBackFunction function)</span> </span>&#123;</div><div class="line">            Log.i(TAG, <span class="string">"handler = submitFromWeb, data from web = "</span> + data);</div><div class="line">            function.onCallBack(<span class="string">"submitFromWeb exe, response data from Java"</span>);</div><div class="line">        &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
+<p>并在 Js 中进行调用：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">WebViewJavascriptBridge.callHandler(</div><div class="line">    <span class="string">'submitFromWeb'</span></div><div class="line">    , &#123;<span class="string">'param'</span>: str1&#125;</div><div class="line">    , <span class="function"><span class="keyword">function</span>(<span class="params">responseData</span>) </span>&#123;</div><div class="line">        <span class="built_in">document</span>.getElementById(<span class="string">"show"</span>).innerHTML = <span class="string">"send get responseData from java, data = "</span> + responseData</div><div class="line">    &#125;</div><div class="line">);</div></pre></td></tr></table></figure></p>
+<ol>
+<li>首先将回调方法 <code>BridgeHandler handler</code> 对象，通过 <code>registerHandler(String handlerName, BridgeHandler handler)</code> 方法添加到 <code>BridgeWebView</code> 中的 <code>Map&lt;String, BridgeHandler&gt; messageHandlers</code> 集合中</li>
+<li>当 Js 代码调用 Java 方法时，通过 <code>BridgeWebViewClient.shouldOverrideUrlLoading(WebView view, String url)</code> 方法进行拦截，并通过 <code>BridgeWebView.flushMessageQueue()</code> 方法去主动获取 Js 中的消息队列，再通过 <code>BridgeWebViewClient.shouldOverrideUrlLoading(WebView view, String url)</code> 拦截得到获取到的数据</li>
+<li>得到获取到的数据之后，找到 <code>Map&lt;String, BridgeHandler&gt; messageHandlers</code> 中的回调方法，再将结果通过 <code>BridgeHandler handler</code> 对象回调</li>
+</ol>
+<h2 id="3-总结"><a href="#3-总结" class="headerlink" title="3.总结"></a>3.总结</h2><p>其实，在 Js 和 <code>WebView</code> 交互的过程中，主要实现两个方向可以通信即可。</p>
+<ul>
+<li><code>WebView</code> 向 Js 传递数据是通过 <code>WebView.loadUrl(String url)</code> 实现的</li>
+<li>在 <code>WebView</code> 中接收 Js 传递的数据是通过 <code>WebViewClient</code> 中的 <code>shouldOverrideUrlLoading(WebView view, String url)</code> 拦截加载链接 <code>String url</code> 参数实现的。</li>
+</ul>
+<hr>
+<p><strong>参考资料：</strong></p>
+<p><a href="http://blog.csdn.net/qq_22329521/article/details/73610277" target="_blank" rel="external">Android webView与js 交互以及jsbridge框架源码分析</a> – <a href="http://my.csdn.net/qq_22329521" target="_blank" rel="external">林胖子的私生活</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/WebView/" rel="tag"># WebView</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/WebView 的使用/" rel="next" title="WebView 的使用">
+                <i class="fa fa-chevron-left"></i> WebView 的使用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="lijiankun24" />
+          <p class="site-author-name" itemprop="name">lijiankun24</p>
+           
+              <p class="site-description motion-element" itemprop="description">守得云开见月明。</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/lijiankun24" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/lijiankun24" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.jianshu.com/u/1abe21b7ff5f" target="_blank" title="Jianshu">
+                  
+                    <i class="fa fa-fw fa-jianshu"></i>
+                  
+                  Jianshu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://gank.io/post/published" title="匠心写作" target="_blank">匠心写作</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/lmj623565791" title="Hongyang" target="_blank">Hongyang</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.liaohuqiu.net/cn/" title="Huqiu Liao" target="_blank">Huqiu Liao</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://drakeet.me/" title="drakeet" target="_blank">drakeet</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.jianshu.com/u/df40282480b4" title="小鄧子" target="_blank">小鄧子</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://yuweiguocn.github.io/" title="于卫国" target="_blank">于卫国</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-WebView-与-Js-交互回顾"><span class="nav-number">1.</span> <span class="nav-text">1. WebView 与 Js 交互回顾</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-JsBridge-源码解析"><span class="nav-number">2.</span> <span class="nav-text">2. JsBridge 源码解析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-Android-调用-Js-代码"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 Android 调用 Js 代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-Js-调用-Android-方法"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 Js 调用 Android 方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-总结"><span class="nav-number">3.</span> <span class="nav-text">3.总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lijiankun24</span>
+  
+</div>
+
+
+<div>
+  <span id="busuanzi_container_site_pv">
+    Total views <span id="busuanzi_value_site_pv">   </span>
+  </span>
+
+  <span id="busuanzi_container_site_uv">
+    |   Total visitors <span id="busuanzi_value_site_uv"/>
+  </span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("tWG63sCRtLhi5NFeaXtWqtnv-gzGzoHsz", "lPLcNFpeOoNc6wr9PVX8XdbI");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+
+  
+
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+          bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+      } else {
+          bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+</body>
+</html>
