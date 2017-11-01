@@ -4,6 +4,44 @@
 
     
   <url>
+    <loc>http://www.lijiankun24.com/%E8%AE%B0%E4%B8%80%E6%AC%A1%E9%9D%A2%E8%AF%95/</loc>
+    <lastmod>2017-11-01T16:27:59.000Z</lastmod>
+    <data>
+        <display>
+        <title>记一次面试</title>
+        <pubTime>2017-11-01T15:18:20.000Z</pubTime>
+        
+        <tag>碎碎念</tag>
+         
+         
+           
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.lijiankun24.com/%E7%AE%80%E5%8D%95%E5%A5%BD%E7%94%A8%E7%9A%84%E9%98%B4%E5%BD%B1%E5%BA%93-ShadowLayout/</loc>
+    <lastmod>2017-10-25T14:32:02.000Z</lastmod>
+    <data>
+        <display>
+        <title>简单好用的阴影库 ShadowLayout</title>
+        <pubTime>2017-08-13T01:43:40.000Z</pubTime>
+        
+        <tag>Android</tag>
+         
+        <tag>UI</tag>
+         
+        <tag>Library</tag>
+         
+         
+           
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://www.lijiankun24.com/JsBridge%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/</loc>
     <lastmod>2017-10-19T14:09:56.000Z</lastmod>
     <data>
@@ -49,9 +87,9 @@
         <title>OKHttp3 源码解析之拦截器（二）</title>
         <pubTime>2017-09-23T01:31:18.000Z</pubTime>
         
-        <tag>Network</tag>
-         
         <tag>Android</tag>
+         
+        <tag>Network</tag>
          
         <tag>OKHttp</tag>
          
@@ -70,9 +108,9 @@
         <title>OKHttp3 源码解析之整体流程（一）</title>
         <pubTime>2017-09-19T15:28:10.000Z</pubTime>
         
-        <tag>Network</tag>
-         
         <tag>Android</tag>
+         
+        <tag>Network</tag>
          
         <tag>OKHttp</tag>
          
@@ -177,27 +215,6 @@
 
     
   <url>
-    <loc>http://www.lijiankun24.com/%E7%AE%80%E5%8D%95%E5%A5%BD%E7%94%A8%E7%9A%84%E9%98%B4%E5%BD%B1%E5%BA%93-ShadowLayout/</loc>
-    <lastmod>2017-08-19T04:17:38.000Z</lastmod>
-    <data>
-        <display>
-        <title>简单好用的阴影库 ShadowLayout</title>
-        <pubTime>2017-08-13T01:43:40.000Z</pubTime>
-        
-        <tag>Android</tag>
-         
-        <tag>UI</tag>
-         
-        <tag>Library</tag>
-         
-         
-           
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
     <loc>http://www.lijiankun24.com/Volley%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%E5%8F%8A%E5%AF%B9Volley%E7%9A%84%E6%89%A9%E5%B1%953/</loc>
     <lastmod>2017-06-29T15:02:11.000Z</lastmod>
     <data>
@@ -205,9 +222,9 @@
         <title>Volley源码解析及对Volley的扩展（三）</title>
         <pubTime>2017-06-25T03:03:02.000Z</pubTime>
         
-        <tag>Network</tag>
-         
         <tag>Android</tag>
+         
+        <tag>Network</tag>
          
         <tag>OKHttp</tag>
          
@@ -245,9 +262,9 @@
         <title>Volley 源码解析及对 Volley 的扩展（二）</title>
         <pubTime>2017-06-20T13:03:32.000Z</pubTime>
         
-        <tag>Network</tag>
-         
         <tag>Android</tag>
+         
+        <tag>Network</tag>
          
         <tag>OKHttp</tag>
          
@@ -268,9 +285,9 @@
         <title>Volley 源码解析及对 Volley 的扩展（一）</title>
         <pubTime>2017-06-13T13:54:09.000Z</pubTime>
         
-        <tag>Network</tag>
-         
         <tag>Android</tag>
+         
+        <tag>Network</tag>
          
         <tag>OKHttp</tag>
          
