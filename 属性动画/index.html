@@ -1,0 +1,1097 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,Animation," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="接下来的两篇文章会介绍 属性动画 相关的知识，如下图所示。本篇文章会介绍下图中绿色相关的知识。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="属性动画（一）">
+<meta property="og:url" content="http://www.lijiankun24.com/属性动画/index.html">
+<meta property="og:site_name" content="一些无处安放的代码和故事">
+<meta property="og:description" content="接下来的两篇文章会介绍 属性动画 相关的知识，如下图所示。本篇文章会介绍下图中绿色相关的知识。">
+<meta property="og:image" content="http://www.lijiankun24.com/属性动画/PropertyAnimator.png">
+<meta property="og:image" content="http://www.lijiankun24.com/属性动画/示意图1.png">
+<meta property="og:image" content="http://www.lijiankun24.com/属性动画/示意图2.png">
+<meta property="og:image" content="http://www.lijiankun24.com/属性动画/示意图3.png">
+<meta property="og:updated_time" content="2017-11-07T15:44:45.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="属性动画（一）">
+<meta name="twitter:description" content="接下来的两篇文章会介绍 属性动画 相关的知识，如下图所示。本篇文章会介绍下图中绿色相关的知识。">
+<meta name="twitter:image" content="http://www.lijiankun24.com/属性动画/PropertyAnimator.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.lijiankun24.com/属性动画/"/>
+
+
+
+
+
+  <title> 属性动画（一） | 一些无处安放的代码和故事 </title>
+<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">一些无处安放的代码和故事</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://www.lijiankun24.com/属性动画/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="lijiankun24">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一些无处安放的代码和故事">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                属性动画（一）
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-11-03T20:23:03+08:00">
+                2017-11-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/属性动画/" class="leancloud_visitors" data-flag-title="属性动画（一）">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Views </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>接下来的两篇文章会介绍 <code>属性动画</code> 相关的知识，如下图所示。本篇文章会介绍下图中绿色相关的知识。</p>
+<div align="center"><br>      <img src="/属性动画/PropertyAnimator.png" width="682" height="631"><br></div>
+
+<a id="more"></a>
+<h2 id="1-简介"><a href="#1-简介" class="headerlink" title="1. 简介"></a>1. 简介</h2><p>相比视图动画（View Animation），属性动画的功能还是非常强大的。</p>
+<p>属性动画不仅可以对视图（View）的位置、大小、透明度、旋转进行动画操作，而且对于视图的背景颜色等属性也可以改变。</p>
+<p>除此之外，属性动画还可以作用于视图之外的对象，比如自定义的类的对象。</p>
+<p>一句话，只要是对象的属性都可以被属性动画所操纵。</p>
+<p>因为还是属于动画的概念，所以需要设定一些动画相关的特性：</p>
+<ul>
+<li>持续时间：动画持续的时间，默认是 <code>300 ms</code></li>
+<li>时间插值器（Time interpolation）：用于定义属性的变化率，即用于计算在某一时刻，属性的值是多少</li>
+<li>重复次数和行为：定义是否重复和重复次数，行为表示是否翻转动画</li>
+<li>动画集合（Animator sets）：可以将多个动画设置到一个集合中，并控制其中的执行顺序</li>
+<li>动画帧刷新频率（Frame refresh delay）：动画多久刷新一帧，默认是每 <code>10ms</code> 刷新一帧</li>
+</ul>
+<h2 id="2-工作原理"><a href="#2-工作原理" class="headerlink" title="2. 工作原理"></a>2. 工作原理</h2><h3 id="2-1-匀速平移动画"><a href="#2-1-匀速平移动画" class="headerlink" title="2.1 匀速平移动画"></a>2.1 匀速平移动画</h3><p>如下图所示，是一个简单动画的执行过程的示意图：</p>
+<div align="center"><br>      <img src="/属性动画/示意图1.png" width="587" height="197"><br></div>
+
+<ul>
+<li>此示意图中的动画是匀速进行的</li>
+<li>在 <code>40ms</code> 的时间内， <code>View</code> 沿 <code>x</code> 轴向右平移 <code>40px</code>。每隔 <code>10ms</code> 都向右平移 <code>10px</code>，最后再 <code>40ms</code> 的时候，<code>View</code> 停在了 <code>40px</code> 的位置</li>
+</ul>
+<h3 id="2-2-非匀速平移动画"><a href="#2-2-非匀速平移动画" class="headerlink" title="2.2 非匀速平移动画"></a>2.2 非匀速平移动画</h3><div align="center"><br>      <img src="/属性动画/示意图2.png" width="604" height="204"><br></div>
+
+<ul>
+<li>此示意图中的动画是非匀速进行的</li>
+<li>在 <code>40ms</code> 的时间内， <code>View</code> 沿 <code>x</code> 轴向右平移 <code>40px</code>。在初始阶段，<code>View</code> 是加速运动的，一直加速到中点；中点之后，开始减速运动，到达终点时，速度减为0。</li>
+<li>在初始阶段和结束阶段，同样的时间内，<code>View</code> 运动的距离比在中点附近同样时间内运动的距离短，因为中点附近时的速度是最大的。</li>
+</ul>
+<h3 id="2-3-属性值的计算原理"><a href="#2-3-属性值的计算原理" class="headerlink" title="2.3 属性值的计算原理"></a>2.3 属性值的计算原理</h3><div align="center"><br>      <img src="/属性动画/示意图3.png" widt="“786”" height="285"><br></div>
+
+<ul>
+<li>此示意图说明了在属性动画中，属性值是怎样计算出来的</li>
+<li><code>ValueAnimator</code> 用于追踪动画时间，比如：动画已经运行了多长时间，在当前时间点的属性值是多少</li>
+<li><code>ValueAnimator</code> 中包含两个对象：<code>TimeInterpolator</code> 和 <code>TypeEvaluator</code>，<code>TimeInterpolator</code> 是动画插值器，<code>TypeEvaluator</code> 用于定义在某一时间点，属性值该怎么计算</li>
+<li>动画开始时，创建一个 <code>ValueAnimator</code> 对象，并将属性值的初始值、结束值和动画执行时间赋予它。当调用 <code>start()</code> 方法时，动画开始。在整个动画执行期间，<code>ValueAnimator</code> 会基于动画的总时长和已运行的动画时间，计算动画的时间完成度（<code>elapsed fraction</code>），完成度值的范围是 <code>0</code> 到 <code>1</code>。</li>
+<li>当 <code>ValueAnimator</code> 计算完成时间完成度之后，它会调用当前设置的插值器 <code>TimeInterpolator</code> 计算插值完成度（<code>interpolated fraction</code>）。插值完成度是由时间完成度计算得到的。</li>
+<li>当计算得到插值完成度（<code>interpolated fraction</code>）之后，根据动画设置的初始值、结束值和插值完成度，通过 <code>TypeEvaluator</code> 即可计算得到当前的属性值。</li>
+</ul>
+<h2 id="3-和视图动画的区别"><a href="#3-和视图动画的区别" class="headerlink" title="3. 和视图动画的区别"></a>3. 和视图动画的区别</h2><p>视图动画（<code>View animation</code>）具有如下局限性：</p>
+<ul>
+<li>视图动画（<code>View animation</code>）只可以作用于视图（<code>View</code>）对象，对于非视图对象则难以处理，视图动画只可以改变视图的位置、大小、透明度和旋转，对于视图的其他属性也没办法改变。</li>
+<li>视图动画只是改变了视图显示的样式，并没有真正的改变视图的属性值</li>
+</ul>
+<p>属性动画则视图动画的局限性，属性动画可以作用于视图对象和非视图对象，并且可以改变任何对象的任何属性。例如，可以作用于自定义的对象的属性值，也可以作用于视图对象的背景颜色、位置大小等属性。</p>
+<h2 id="4-相关-API-一览"><a href="#4-相关-API-一览" class="headerlink" title="4. 相关 API 一览"></a>4. 相关 API 一览</h2><p>在 <code>android.animation</code> 包下可以找到属性动画相关的所有类，视图动画相关的类定义在 <code>android.view.animation</code> 包下。</p>
+<table>
+<thead>
+<tr>
+<th>Class</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ValueAnimator</code></td>
+<td>ValueAnimator 是属性动画的核心类，其中包含动画相关的关键信息，包括动画时间相关的细节、动画是否重复、接收更新时间的监听器等等。属性动画包括两部分：1. 计算属性值；2. 将计算得到的属性值赋予对象的属性。<code>ValueAnimator</code> 并不会执行第二部，所以需要开发者监听属性值的变化，并根据你自己的逻辑更新对象的属性。</td>
+</tr>
+<tr>
+<td><code>ObjectAnimator</code></td>
+<td><code>ObjectAnimator</code> 是 <code>ValueAnimator</code> 类的子类，它允许开发者设置目标对象和动画操纵的属性。在计算得到新的属性值时，这个类会相应地更新对象的属性。大多数时候，使用 <code>ObjectAnimator</code> 都是方便的，但有时候也需要使用 <code>ValueAnimator</code>，因为 <code>ObjectAnimator</code> 有一些限制，例如 <code>ObjectAnimator</code> 需要目标类有相应的访问目标属性的方法</td>
+</tr>
+<tr>
+<td><code>AnimatorSet</code></td>
+<td><code>AnimatorSet</code> 提供了一种将动画合并到一起的机制，比如将多个动画同时播放、按顺序播放等。</td>
+</tr>
+</tbody>
+</table>
+<p><code>Evaluators</code> 用于告诉属性动画系统怎么计算属性值。它根据 <code>Animator</code> 提供的时间值（开始时间和结束时间），计算当前的属性值。<code>SDK</code> 提供以下 <code>evaluators</code>。</p>
+<table>
+<thead>
+<tr>
+<th>Class/Interface</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>IntEvaluator</code></td>
+<td>用于计算 <code>int</code> 类型的属性值</td>
+</tr>
+<tr>
+<td><code>FloatEvaluator</code></td>
+<td>用于计算 <code>Float</code> 类型的属性值</td>
+</tr>
+<tr>
+<td><code>AnimatorSet</code></td>
+<td>用于计算 <code>ARGB</code> 颜色类型的属性值</td>
+</tr>
+<tr>
+<td><code>TypeEvaluator</code></td>
+<td>用于实现自定义属性值变化的 <code>evaluator</code>。如果你正在作用的对象的属性不是 <code>int</code> 、<code>float</code>、<code>argb</code> 类型的，必须实现 <code>TypeEvaluator</code> 的子类去定义该属性值怎么变化。</td>
+</tr>
+</tbody>
+</table>
+<p>插值器 <code>Interpolators</code> 是用于属性值的变化率。比如是属性值是加速变化的、减速变化的、还是先加速再减速。如果默认提供的 <code>Interpolators</code> 不能满足开发者的需求，则可以实现 <code>TimeInterpolator</code> 接口自定义插值器，规定属性值该怎样从初始值变化到最终值。</p>
+<table>
+<thead>
+<tr>
+<th>Class/Interface</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AccelerateDecelerateInterpolator</code></td>
+<td>先加速再减速（<code>默认的插值器</code>）</td>
+</tr>
+<tr>
+<td><code>AccelerateInterpolator</code></td>
+<td>持续加速</td>
+</tr>
+<tr>
+<td><code>AnticipateInterpolator</code></td>
+<td>先向反向变化一下，再向前运动</td>
+</tr>
+<tr>
+<td><code>OvershootInterpolator</code></td>
+<td>动画到达终点时，会先超过一点，再回缩到终点值</td>
+</tr>
+<tr>
+<td><code>AnticipateOvershootInterpolator</code></td>
+<td>先反向，再向前运动，超过终点值一点，再回缩到终点值</td>
+</tr>
+<tr>
+<td><code>BounceInterpolator</code></td>
+<td>会在目标值处弹跳</td>
+</tr>
+<tr>
+<td><code>CycleInterpolator</code></td>
+<td>正弦 / 余弦曲线变化率</td>
+</tr>
+<tr>
+<td><code>DecelerateInterpolator</code></td>
+<td>持续减速直到0</td>
+</tr>
+<tr>
+<td><code>LinearInterpolator</code></td>
+<td>匀速</td>
+</tr>
+<tr>
+<td><code>TimeInterpolator</code></td>
+<td>实现自定义插值器时需要实现的接口</td>
+</tr>
+</tbody>
+</table>
+<h3 id="4-1-ViewPropertyAnimator"><a href="#4-1-ViewPropertyAnimator" class="headerlink" title="4.1 ViewPropertyAnimator"></a>4.1 ViewPropertyAnimator</h3><p><code>ViewPropertyAnimator</code> 是实现视图（<code>View</code>）类对象属性动画非常方便的类</p>
+<ul>
+<li>当同时有多个视图对象的属性需要更新时，使用 <code>ViewPropertyAnimator</code> 的性能会比使用 <code>ObjectAnimator</code> 更好。因为 <code>ViewPropertyAnimator</code> 会一次性同时更新多个属性值并绘制，而 <code>ObjectAnimator</code> 则是将多个属性值分别更新并绘制</li>
+<li>使用 <code>ViewPropertyAnimator</code> 实现属性动画的语法也比使用 <code>ObjectAnimator</code> 实现属性动画的语法更简单</li>
+</ul>
+<p><code>ViewPropertyAnimator</code> 的使用方法如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">  <span class="comment">// 表示将此按钮 translationX 值渐变为 500</span></div><div class="line">  Button button = (Button) findViewById(R.id.btn);</div><div class="line">  button.animate()</div><div class="line">        .translationX(<span class="number">500</span>)</div><div class="line"><span class="comment">//      .translationXBy(500) 表示将 translationX 渐变地增加 500</span></div><div class="line">        .setDuration(<span class="number">1000</span>)</div><div class="line">        .start();</div></pre></td></tr></table></figure></p>
+<p><code>ViewPropertyAnimator</code> 在实现视图类对象的位置、大小、透明度、旋转的动画的时候，是非常方便的，使用方法和上面代码非常类似，具体可以参照 API 文档和源码注释。</p>
+<h3 id="4-2-ObjectAnimator"><a href="#4-2-ObjectAnimator" class="headerlink" title="4.2 ObjectAnimator"></a>4.2 ObjectAnimator</h3><p><code>ObjectAnimator</code> 的用法也非常简单，如下代码实现了 <code>Button</code> 按钮从 <code>0px</code> 向右平移到 <code>500px</code> 位置的动画<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Button button = (Button) findViewById(R.id.btn);</div><div class="line">ObjectAnimator animator = ObjectAnimator.ofFloat(button,<span class="string">"translationX"</span>,<span class="number">0f</span>,<span class="number">500f</span>);</div><div class="line">animator.setDuration(<span class="number">800</span>);</div><div class="line">animator.start();</div></pre></td></tr></table></figure></p>
+<p>若要正确使用 <code>ObjectAnimator</code>，需要注意以下几点：</p>
+<ul>
+<li>动画作用的属性需要有一个名为 <code>setXXX()</code> 的方法，因为属性动画更新对象的属性值，所以该对象必须要有一个可以修改该属性的 <code>setXXX()</code> 方法。比如，若动画作用的属性名为 <code>foo</code>，则该对象必须要拥有一个名为 <code>setFoo()</code> 的方法供属性动画使用。若没有这样的方法，有以下几个解决办法：<ul>
+<li>如果该类可以修改，增加对应的 <code>setXXX()</code> 方法</li>
+<li>如果可以修改该属性，可以使用一个包装类，增加对应的 <code>setXXX()</code> 方法，将接收到的属性更改值，传递到原始对象的属性</li>
+<li>使用 <code>ValueAnimator</code>，而不是 <code>ObjectAnimator</code></li>
+</ul>
+</li>
+<li>如果在 <code>ObjectAnimator</code> 的工厂方法中只传递进去一个属性值，则该属性值是该动画的结束值。所以此对象的这个属性值也必须拥有一个 <code>getXXX()</code> 方法，用于获得动画的初始值。例如，若动画作用的属性名为 <code>foo</code>，则该类需要有一个 <code>getFoo()</code> 的方法</li>
+<li><p>属性的 <code>getXXX()</code> 方法和 <code>setXXX()</code> 方法中参数的类型，必须和 <code>ObjectAnimator</code> 静态工厂中的方法的类型相同。例如，若有一个对象是 <code>targetObject.setPropName(float)</code> 和 <code>targetObject.getPropName(float)</code>，则创建对应的 <code>ObjectAnimator</code> 对象时，需要时如下的代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ObjectAnimator.ofFloat(targetObject, <span class="string">"propName"</span>, <span class="number">1f</span>)</div></pre></td></tr></table></figure>
+</li>
+<li><p>对于有些对象的属性，如果目标对象是 <code>View</code> 对象时，属性动画更新属性值的时候，需要调用 <code>invalidate()</code> 方法强制地重新绘制这个 <code>View</code> 对象。此步骤发生在 <code>onAnimationUpdate()</code> 回调方法中。例如，若属性动画作用于一个 <code>Drawable</code> 对象的颜色时，只有重新绘制该 <code>Drawable</code> 对象，则颜色属性才会生效。对于 <code>View</code> 对象的 <code>setAlpha()</code>、<code>setTranslationX()</code>等属性值，在属性动画作用的时候，都会正确地重绘，所以不必关心它们。</p>
+</li>
+</ul>
+<h3 id="4-3-ValueAnimator"><a href="#4-3-ValueAnimator" class="headerlink" title="4.3 ValueAnimator"></a>4.3 ValueAnimator</h3><p><code>ValueAnimator</code> 可以在某一段时间内，对一些类型的值进行改变。通过调用它的 <code>ofInt()</code>， <code>ofFloat()</code> 或 <code>ofObject()</code> 工厂方法可以得到 <code>ValueAnimator</code> 的对象。例如：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">ValueAnimator animation = ValueAnimator.ofFloat(<span class="number">0f</span>, <span class="number">100f</span>);</div><div class="line">animation.setDuration(<span class="number">1000</span>);</div><div class="line">animation.start();</div></pre></td></tr></table></figure></p>
+<p>上述代码，当调用 <code>start()</code> 方法动画开始时，动画的值在 <code>1000ms</code> 内，从 <code>0</code> 变化到了 <code>100</code>。<br>可以为 <code>ValueAnimator</code> 添加监听器，监测在这段时间内动画值的变化情况，如下代码所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">  animation.addUpdateListener(<span class="keyword">new</span> ValueAnimator.AnimatorUpdateListener() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationUpdate</span><span class="params">(ValueAnimator updatedAnimation)</span> </span>&#123;</div><div class="line">        <span class="comment">// You can use the animated value in a property that uses the</span></div><div class="line">        <span class="comment">// same type as the animation. In this case, you can use the</span></div><div class="line">        <span class="comment">// float value in the translationX property.</span></div><div class="line">        <span class="keyword">float</span> animatedValue = (<span class="keyword">float</span>)updatedAnimation.getAnimatedValue();</div><div class="line">        textView.setTranslationX(animatedValue);</div><div class="line">    &#125;</div><div class="line">&#125;);</div></pre></td></tr></table></figure></p>
+<h3 id="4-4-AnimatorSet"><a href="#4-4-AnimatorSet" class="headerlink" title="4.4 AnimatorSet"></a>4.4 AnimatorSet</h3><p>在许多情况下，一个动画需要在另一个动画开始或结束时开始执行。系统提供的 <code>AnimatorSet</code> 类可以将多个动画组合在一起，动画之间和同时播放，可以按顺序播放或延时播放。</p>
+<p>同样，也可以将多个 <code>AnimatorSet</code> 嵌套使用。</p>
+<p>下面是一个使用 <code>AnimatorSet</code> 播放组合动画的例子：</p>
+<ul>
+<li>首先播放 <code>bounceAnim</code></li>
+<li>然后同时播放 <code>squashAnim1</code>, <code>squashAnim2</code>, <code>stretchAnim1</code> 和 <code>stretchAnim2</code></li>
+<li>接着播放 <code>bounceBackAnim</code></li>
+<li>最后播放 <code>fadeAnim</code><br>代码如下所示：<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">AnimatorSet bouncer = <span class="keyword">new</span> AnimatorSet();</div><div class="line">bouncer.play(bounceAnim).before(squashAnim1);</div><div class="line">bouncer.play(squashAnim1).with(squashAnim2);</div><div class="line">bouncer.play(squashAnim1).with(stretchAnim1);</div><div class="line">bouncer.play(squashAnim1).with(stretchAnim2);</div><div class="line">bouncer.play(bounceBackAnim).after(stretchAnim2);</div><div class="line">ValueAnimator fadeAnim = ObjectAnimator.ofFloat(newBall, <span class="string">"alpha"</span>, <span class="number">1f</span>, <span class="number">0f</span>);</div><div class="line">fadeAnim.setDuration(<span class="number">250</span>);</div><div class="line">AnimatorSet animatorSet = <span class="keyword">new</span> AnimatorSet();</div><div class="line">animatorSet.play(bouncer).before(fadeAnim);</div><div class="line">animatorSet.start();</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="4-5-PropertyValuesHolder"><a href="#4-5-PropertyValuesHolder" class="headerlink" title="4.5 PropertyValuesHolder"></a>4.5 PropertyValuesHolder</h3><p><code>PropertyValuesHolder</code> 可以实现在一个动画中，多个属性同时变化的情况，比如：一个 <code>Button</code> 按钮，在从小不断变大的过程中，透明度也在同时发生着变化，代码如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">Button button = (Button) findViewById(R.id.btn);</div><div class="line">PropertyValuesHolder holder1 = PropertyValuesHolder.ofFloat(<span class="string">"scaleX"</span>, <span class="number">1</span>);  </div><div class="line">PropertyValuesHolder holder2 = PropertyValuesHolder.ofFloat(<span class="string">"scaleY"</span>, <span class="number">1</span>);  </div><div class="line">PropertyValuesHolder holder3 = PropertyValuesHolder.ofFloat(<span class="string">"alpha"</span>, <span class="number">1</span>);</div><div class="line"></div><div class="line">ObjectAnimator animator = ObjectAnimator.ofPropertyValuesHolder(button, holder1, holder2, holder3)  </div><div class="line">animator.setDuration(<span class="number">800</span>);</div><div class="line">animator.start();</div></pre></td></tr></table></figure></p>
+<p>提到 <code>PropertyValuesHolder</code>，还有一个类也需要提一下 — <code>Keyframe</code>（关键帧）。通过 <code>Keyframe</code> 可以将一个动画拆分成多个阶段。如下代码所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">Button button = (Button) findViewById(R.id.btn);</div><div class="line"><span class="comment">// 在 0% 处开始</span></div><div class="line">Keyframe keyframe1 = Keyframe.ofFloat(<span class="number">0</span>, <span class="number">0</span>);  </div><div class="line"><span class="comment">// 时间经过 50% 的时候，动画完成度 100%</span></div><div class="line">Keyframe keyframe2 = Keyframe.ofFloat(<span class="number">0.5f</span>, <span class="number">100</span>);  </div><div class="line"><span class="comment">// 时间见过 100% 的时候，动画完成度倒退到 80%，即反弹 20%</span></div><div class="line">Keyframe keyframe3 = Keyframe.ofFloat(<span class="number">1</span>, <span class="number">80</span>);  </div><div class="line">PropertyValuesHolder holder = PropertyValuesHolder.ofKeyframe(<span class="string">"scaleX"</span>, keyframe1, keyframe2, keyframe3);</div><div class="line"></div><div class="line">ObjectAnimator animator = ObjectAnimator.ofPropertyValuesHolder(button, holder);  </div><div class="line">animator.start();</div></pre></td></tr></table></figure></p>
+<h3 id="4-6-动画监听器"><a href="#4-6-动画监听器" class="headerlink" title="4.6 动画监听器"></a>4.6 动画监听器</h3><p>在动画运行期间，可以通过以下监听器监听动画的关键时刻：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">interface</span> <span class="title">AnimatorListener</span> </span>&#123;</div><div class="line">    <span class="comment">// 在动画开始时被调用</span></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">onAnimationStart</span><span class="params">(Animator animation)</span></span>;</div><div class="line"></div><div class="line">    <span class="comment">// 在动画结束时被调用</span></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">onAnimationEnd</span><span class="params">(Animator animation)</span></span>;</div><div class="line"></div><div class="line">    <span class="comment">// 在动画取消时被调用</span></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">onAnimationCancel</span><span class="params">(Animator animation)</span></span>;</div><div class="line"></div><div class="line">    <span class="comment">// 在动画重复执行时被调用</span></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">onAnimationRepeat</span><span class="params">(Animator animation)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">interface</span> <span class="title">AnimatorPauseListener</span> </span>&#123;</div><div class="line"></div><div class="line">       <span class="comment">//在动画暂停时被调用</span></div><div class="line">       <span class="function"><span class="keyword">void</span> <span class="title">onAnimationPause</span><span class="params">(Animator animation)</span></span>;</div><div class="line"></div><div class="line">       <span class="comment">// 在动画被重新执行时被调用</span></div><div class="line">       <span class="function"><span class="keyword">void</span> <span class="title">onAnimationResume</span><span class="params">(Animator animation)</span></span>;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">interface</span> <span class="title">AnimatorUpdateListener</span> </span>&#123;</div><div class="line">    <span class="comment">// 在动画刷新每一帧的时候都会被调用</span></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">onAnimationUpdate</span><span class="params">(ValueAnimator animation)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li><p>在 <code>AnimatorUpdateListener.onAnimationUpdate(ValueAnimator animation)</code> 方法中有 <code>animation</code> 参数，通过参数 <code>animation.getAnimatedValue()</code> 可以得到当前动画执行的完成度的值。</p>
+</li>
+<li><p>如果不想实现 <code>AnimatorListener</code> 接口的所有方法，也可以继承 <code>AnimatorListenerAdapter</code>，选择想实现的方法。例如，以下代码通过实现 <code>AnimatorListenerAdapter</code> 匿名内部类的方式，只实现了 <code>onAnimationEnd()</code> 回调方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">ValueAnimator fadeAnim = ObjectAnimator.ofFloat(newBall, <span class="string">"alpha"</span>, <span class="number">1f</span>, <span class="number">0f</span>);</div><div class="line">fadeAnim.setDuration(<span class="number">250</span>);</div><div class="line">fadeAnim.addListener(<span class="keyword">new</span> AnimatorListenerAdapter() &#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationEnd</span><span class="params">(Animator animation)</span> </span>&#123;</div><div class="line">      balls.remove(((ObjectAnimator)animation).getTarget());</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<hr>
+<p><strong>参考资料：</strong></p>
+<p><a href="https://developer.android.com/guide/topics/graphics/prop-animation.html" target="_blank" rel="external">官方文档</a></p>
+<p><a href="http://yuweiguocn.github.io/android-basic-animation-2/" target="_blank" rel="external">Android基础——动画（二）</a> – <a href="http://yuweiguocn.github.io/" target="_blank" rel="external">林于卫国</a></p>
+<p><a href="http://hencoder.com/ui-1-7/" target="_blank" rel="external">HenCoder Android 自定义 View 1-7：属性动画 Property Animation（进阶篇）</a> – <a href="http://hencoder.com/" target="_blank" rel="external">HenCoder</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/Animation/" rel="tag"># Animation</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/JsBridge源码解析/" rel="next" title="JsBridge源码解析">
+                <i class="fa fa-chevron-left"></i> JsBridge源码解析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="lijiankun24" />
+          <p class="site-author-name" itemprop="name">lijiankun24</p>
+           
+              <p class="site-description motion-element" itemprop="description">守得云开见月明。</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/lijiankun24" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/lijiankun24" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.jianshu.com/u/1abe21b7ff5f" target="_blank" title="Jianshu">
+                  
+                    <i class="fa fa-fw fa-jianshu"></i>
+                  
+                  Jianshu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://gank.io/post/published" title="匠心写作" target="_blank">匠心写作</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/lmj623565791" title="Hongyang" target="_blank">Hongyang</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.liaohuqiu.net/cn/" title="Huqiu Liao" target="_blank">Huqiu Liao</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://drakeet.me/" title="drakeet" target="_blank">drakeet</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.jianshu.com/u/df40282480b4" title="小鄧子" target="_blank">小鄧子</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://yuweiguocn.github.io/" title="于卫国" target="_blank">于卫国</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-简介"><span class="nav-number">1.</span> <span class="nav-text">1. 简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-工作原理"><span class="nav-number">2.</span> <span class="nav-text">2. 工作原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-匀速平移动画"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 匀速平移动画</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-非匀速平移动画"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 非匀速平移动画</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-属性值的计算原理"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 属性值的计算原理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-和视图动画的区别"><span class="nav-number">3.</span> <span class="nav-text">3. 和视图动画的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-相关-API-一览"><span class="nav-number">4.</span> <span class="nav-text">4. 相关 API 一览</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-ViewPropertyAnimator"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 ViewPropertyAnimator</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-ObjectAnimator"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 ObjectAnimator</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-ValueAnimator"><span class="nav-number">4.3.</span> <span class="nav-text">4.3 ValueAnimator</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-AnimatorSet"><span class="nav-number">4.4.</span> <span class="nav-text">4.4 AnimatorSet</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-5-PropertyValuesHolder"><span class="nav-number">4.5.</span> <span class="nav-text">4.5 PropertyValuesHolder</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-6-动画监听器"><span class="nav-number">4.6.</span> <span class="nav-text">4.6 动画监听器</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lijiankun24</span>
+  
+</div>
+
+
+<div>
+  <span id="busuanzi_container_site_pv">
+    Total views <span id="busuanzi_value_site_pv">   </span>
+  </span>
+
+  <span id="busuanzi_container_site_uv">
+    |   Total visitors <span id="busuanzi_value_site_uv"/>
+  </span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("tWG63sCRtLhi5NFeaXtWqtnv-gzGzoHsz", "lPLcNFpeOoNc6wr9PVX8XdbI");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+
+  
+
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+          bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+      } else {
+          bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+</body>
+</html>
