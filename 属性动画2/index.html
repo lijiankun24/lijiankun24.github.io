@@ -1,0 +1,1092 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,Animation," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="在上篇文章 属性动画（一） 中已经对属性动画有了基本的介绍，本篇文章将对属性动画中稍微高级点的内容进行介绍，主要介绍下图中绿色部分标明的知识点。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="属性动画（二）">
+<meta property="og:url" content="http://www.lijiankun24.com/属性动画2/index.html">
+<meta property="og:site_name" content="一些无处安放的代码和故事">
+<meta property="og:description" content="在上篇文章 属性动画（一） 中已经对属性动画有了基本的介绍，本篇文章将对属性动画中稍微高级点的内容进行介绍，主要介绍下图中绿色部分标明的知识点。">
+<meta property="og:image" content="http://www.lijiankun24.com/属性动画2/catalog.png">
+<meta property="og:image" content="http://www.lijiankun24.com/属性动画2/cos.png">
+<meta property="og:image" content="http://www.lijiankun24.com/属性动画2/sin.png">
+<meta property="og:image" content="http://www.lijiankun24.com/属性动画2/unsupported_api1.png">
+<meta property="og:image" content="http://www.lijiankun24.com/属性动画2/unsupported_api2.png">
+<meta property="og:updated_time" content="2017-11-18T08:27:47.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="属性动画（二）">
+<meta name="twitter:description" content="在上篇文章 属性动画（一） 中已经对属性动画有了基本的介绍，本篇文章将对属性动画中稍微高级点的内容进行介绍，主要介绍下图中绿色部分标明的知识点。">
+<meta name="twitter:image" content="http://www.lijiankun24.com/属性动画2/catalog.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.lijiankun24.com/属性动画2/"/>
+
+
+
+
+
+  <title> 属性动画（二） | 一些无处安放的代码和故事 </title>
+<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">一些无处安放的代码和故事</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://www.lijiankun24.com/属性动画2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="lijiankun24">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一些无处安放的代码和故事">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                属性动画（二）
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-11-10T22:25:43+08:00">
+                2017-11-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/属性动画2/" class="leancloud_visitors" data-flag-title="属性动画（二）">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Views </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在上篇文章 <a href="http://lijiankun24.com/%E5%B1%9E%E6%80%A7%E5%8A%A8%E7%94%BB/" target="_blank" rel="external">属性动画（一）</a> 中已经对属性动画有了基本的介绍，本篇文章将对属性动画中稍微高级点的内容进行介绍，主要介绍下图中绿色部分标明的知识点。</p>
+<div align="center"><br>      <img src="/属性动画2/catalog.png" width="634" height="628"><br></div>
+
+<a id="more"></a>
+<h2 id="1-Evaluators"><a href="#1-Evaluators" class="headerlink" title="1. Evaluators"></a>1. Evaluators</h2><p><code>Evaluator</code> 是干什么用的呢？简单来说，它是用于告诉动画系统，某种类型的属性值怎么从初始值变化到结束值的。</p>
+<h3 id="1-1-TypeEvaluator-解析"><a href="#1-1-TypeEvaluator-解析" class="headerlink" title="1.1 TypeEvaluator 解析"></a>1.1 <code>TypeEvaluator</code> 解析</h3><p>系统中自带一些默认的的 <code>Evaluator</code>，比如：<code>IntEvaluator</code>、<code>FloatEvaluator</code> 和 <code>ArgbEvaluator</code> 等等，我们简单分析一下其中的 <code>IntEvaluator</code> 的源码。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">IntEvaluator</span> <span class="keyword">implements</span> <span class="title">TypeEvaluator</span>&lt;<span class="title">Integer</span>&gt; </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> Integer <span class="title">evaluate</span><span class="params">(<span class="keyword">float</span> fraction, Integer startValue, Integer endValue)</span> </span>&#123;</div><div class="line">        <span class="keyword">int</span> startInt = startValue;</div><div class="line">        <span class="keyword">return</span> (<span class="keyword">int</span>)(startInt + fraction * (endValue - startInt));</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><code>IntEvaluator</code> 实现了 <code>TypeEvaluator</code> 接口，重写其中的 <code>evaluate(float fraction, Integer startValue, Integer endValue)</code> 方法。该方法中有三个参数值：</p>
+<ul>
+<li><code>float fraction</code>：表示动画的完成度，用于计算此时属性的值</li>
+<li><code>Integer startValue</code>：属性值的初始值</li>
+<li><code>Integer endValue</code>：属性值的结束值</li>
+</ul>
+<p><code>evaluate(float fraction, Integer startValue, Integer endValue)</code> 方法内部的实现也很简单：用最终值减去初始值再乘以完成度的，加上初始值，就是动画当前的属性值。</p>
+<h3 id="1-2-自定义-Evaluator"><a href="#1-2-自定义-Evaluator" class="headerlink" title="1.2 自定义 Evaluator"></a>1.2 自定义 <code>Evaluator</code></h3><p>仿照 <code>IntEvaluator</code>，我们可以自定义 <code>Evaluator</code>。</p>
+<p>假设我们现在有一个自定义 <code>View</code>，其颜色是是从纯绿色渐变为纯红色，那该怎么实现的？答案是我们可以通过自定义 <code>Evaluator</code> 来实现。<br>假设自定义<code>View</code> 的代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CustomView</span> <span class="keyword">extends</span> <span class="title">View</span> </span>&#123;</div><div class="line"></div><div class="line">    Paint paint = <span class="keyword">new</span> Paint(Paint.ANTI_ALIAS_FLAG);</div><div class="line"></div><div class="line">    <span class="keyword">int</span> color = <span class="number">0xff00ff00</span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">CustomView</span><span class="params">(Context context)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>(context);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">CustomView</span><span class="params">(Context context, @Nullable AttributeSet attrs)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>(context, attrs);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">CustomView</span><span class="params">(Context context, @Nullable AttributeSet attrs, <span class="keyword">int</span> defStyleAttr)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>(context, attrs, defStyleAttr);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getColor</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> color;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setColor</span><span class="params">(<span class="keyword">int</span> color)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.color = color;</div><div class="line">        invalidate();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onDraw</span><span class="params">(Canvas canvas)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onDraw(canvas);</div><div class="line"></div><div class="line">        <span class="keyword">int</span> width = getWidth();</div><div class="line">        <span class="keyword">int</span> height = getHeight();</div><div class="line"></div><div class="line">        paint.setColor(color);</div><div class="line">        canvas.drawCircle(width / <span class="number">2</span>, height / <span class="number">2</span>, width / <span class="number">6</span>, paint);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>上述自定义 <code>View</code> 的代码其实很简单，根据设置的大小，画一个默认是绿色的圆。</p>
+<blockquote>
+<p>需要注意的是，在该自定义 <code>View</code> 中，如果要改变 <code>color</code> 颜色的属性，该属性需要有一个对应的 <code>setter</code> 的方法，并在其中调用 <code>invalidate()</code> 方法，保证 <code>color</code> 属性变化的时候，都会重新调用 <code>onDraw(Canvas canvas)</code> 重新绘制该 <code>View</code>。</p>
+</blockquote>
+<p>那接下来该实现颜色变化的自定义 <code>Evaluator</code> 了，具体代码如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HsvEvaluator</span> <span class="keyword">implements</span> <span class="title">TypeEvaluator</span>&lt;<span class="title">Integer</span>&gt; </span>&#123;</div><div class="line"></div><div class="line">     <span class="keyword">private</span> <span class="keyword">float</span>[] startColor;</div><div class="line"></div><div class="line">     <span class="keyword">private</span> <span class="keyword">float</span>[] endColor;</div><div class="line"></div><div class="line">     <span class="keyword">private</span> <span class="keyword">float</span>[] midColor;</div><div class="line"></div><div class="line">     <span class="function"><span class="keyword">public</span> <span class="title">HsvEvaluator</span><span class="params">()</span> </span>&#123;</div><div class="line">         startColor = <span class="keyword">new</span> <span class="keyword">float</span>[<span class="number">3</span>];</div><div class="line">         endColor = <span class="keyword">new</span> <span class="keyword">float</span>[<span class="number">3</span>];</div><div class="line">         midColor = <span class="keyword">new</span> <span class="keyword">float</span>[<span class="number">3</span>];</div><div class="line">     &#125;</div><div class="line"></div><div class="line">     <span class="comment">// 重写 evaluate() 方法，让颜色按照 HSV 来变化</span></div><div class="line">     <span class="meta">@Override</span></div><div class="line">     <span class="function"><span class="keyword">public</span> Integer <span class="title">evaluate</span><span class="params">(<span class="keyword">float</span> fraction, Integer startValue, Integer endValue)</span> </span>&#123;</div><div class="line">         Color.colorToHSV(startValue, startColor);</div><div class="line">         Color.colorToHSV(endValue, endColor);</div><div class="line"></div><div class="line">         midColor[<span class="number">0</span>] = startColor[<span class="number">0</span>] + fraction * (endColor[<span class="number">0</span>] - startColor[<span class="number">0</span>]);</div><div class="line">         midColor[<span class="number">1</span>] = startColor[<span class="number">1</span>] + fraction * (endColor[<span class="number">1</span>] - startColor[<span class="number">1</span>]);</div><div class="line">         midColor[<span class="number">2</span>] = startColor[<span class="number">2</span>] + fraction * (endColor[<span class="number">2</span>] - startColor[<span class="number">2</span>]);</div><div class="line"></div><div class="line">         Integer integer = Color.HSVToColor(midColor);</div><div class="line">         <span class="keyword">return</span> integer;</div><div class="line">     &#125;</div><div class="line"> &#125;</div></pre></td></tr></table></figure></p>
+<p>在其中，主要是重写 <code>evaluate(float fraction, Integer startValue, Integer endValue)</code> 方法，通过 <code>Color.colorToHSV(int color, float hsv[])</code> 方法，将 <code>Integer</code> 类型的颜色值转换为保存在长度为 3 的 <code>float</code> 数组中，其中每一位对应的是该颜色的 <code>HSV</code> 值。</p>
+<p>然后，通过完成度的值 <code>fraction</code>，计算出当前时刻的颜色属性的 <code>HSV</code> 值，并保存在对应的数组中，最后通过  <code>Color.HSVToColor(float hsv[])</code> 方法转换成 <code>Integer</code> 类型的颜色值，并返回。</p>
+<p>那实现该动画的代码如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">CustomView view = (CustomView) findViewById(R.id.objectAnimatorView);</div><div class="line">ObjectAnimator animator = ObjectAnimator.ofInt(view, <span class="string">"color"</span>, <span class="number">0xffff0000</span>, <span class="number">0xff00ff00</span>);</div><div class="line">animator.setEvaluator(<span class="keyword">new</span> HsvEvaluator()); <span class="comment">// 使用自定义的 HsvEvaluator</span></div><div class="line">animator.setInterpolator(<span class="keyword">new</span> LinearInterpolator());</div><div class="line">animator.setDuration(<span class="number">2000</span>);</div><div class="line">animator.start();</div></pre></td></tr></table></figure></p>
+<h2 id="2-Interpolators"><a href="#2-Interpolators" class="headerlink" title="2. Interpolators"></a>2. Interpolators</h2><p><code>Interpolator</code> 直译过来叫做 <code>插值器</code>，定义属性动画的变化率，<code>Interpolator</code> 允许动画不是线性变化的，而是非线性变化的，比如加速变化、减速变化等等。</p>
+<p>系统已经默认提供了许多实现了 <code>Interpolator</code> 的类：</p>
+<ul>
+<li><code>BaseInterpolator</code></li>
+<li><code>LinearInterpolator</code></li>
+<li><code>AccelerateDecelerateInterpolator</code></li>
+<li><code>AccelerateInterpolator</code></li>
+<li><code>AnticipateInterpolator</code></li>
+<li><code>AnticipateOvershootInterpolator</code></li>
+<li><code>BounceInterpolator</code></li>
+<li><code>......</code></li>
+</ul>
+<h3 id="2-1-TimeInterpolator"><a href="#2-1-TimeInterpolator" class="headerlink" title="2.1 TimeInterpolator"></a>2.1 <code>TimeInterpolator</code></h3><p><code>Interpolator</code> 都实现了接口 <code>TimeInterpolator</code>，它的源码还是非常简单的，如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * A time interpolator defines the rate of change of an animation. This allows animations</div><div class="line"> * to have non-linear motion, such as acceleration and deceleration.</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">TimeInterpolator</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * Maps a value representing the elapsed fraction of an animation to a value that represents</div><div class="line">     * the interpolated fraction. This interpolated value is then multiplied by the change in</div><div class="line">     * value of an animation to derive the animated value at the current elapsed animation time.</div><div class="line">     *</div><div class="line">     * <span class="doctag">@param</span> input A value between 0 and 1.0 indicating our current point</div><div class="line">     *        in the animation where 0 represents the start and 1.0 represents</div><div class="line">     *        the end</div><div class="line">     * <span class="doctag">@return</span> The interpolation value. This value can be more than 1.0 for</div><div class="line">     *         interpolators which overshoot their targets, or less than 0 for</div><div class="line">     *         interpolators that undershoot their targets.</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">float</span> <span class="title">getInterpolation</span><span class="params">(<span class="keyword">float</span> input)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>其中只有一个方法，<code>getInterpolation(float input)</code>，按照其注释，不难理解。</p>
+<ul>
+<li>输入的 <code>float</code> 参数 <code>input</code> 是随着动画的运行均匀变化的，范围是 <code>0</code> 到 <code>1</code>，开始时是 <code>0</code>，结束时是 <code>1</code>。</li>
+<li>其返回值，则是由输入的 <code>input</code> 计算得到的。返回值可以比 <code>1</code> 大，表示动画属性值超过设定的结束值，也可以比 <code>1</code> 小，表示动画属性值小于设定的结束值。</li>
+<li>其实，<code>getInterpolation(float input)</code> 的返回值，就是之前提到的动画完成度 —- <code>fraction</code></li>
+</ul>
+<p>我们简单分析下 <code>LinearInterpolator</code> 匀速插值器的源码，如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * An interpolator where the rate of change is constant</div><div class="line"> */</div><div class="line"><span class="meta">@HasNativeInterpolator</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LinearInterpolator</span> <span class="keyword">extends</span> <span class="title">BaseInterpolator</span> <span class="keyword">implements</span> <span class="title">NativeInterpolatorFactory</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">LinearInterpolator</span><span class="params">()</span> </span>&#123;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">LinearInterpolator</span><span class="params">(Context context, AttributeSet attrs)</span> </span>&#123;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">float</span> <span class="title">getInterpolation</span><span class="params">(<span class="keyword">float</span> input)</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> input;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/** <span class="doctag">@hide</span> */</span></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">createNativeInterpolator</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> NativeInterpolatorFactoryHelper.createLinearInterpolator();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>可以看到，其中的 <code>getInterpolation(float input)</code> 方法的实现非常简单，直接将输入的值 <code>input</code> 作为结果返回，则实现了匀速变化的效果。</p>
+<p>再简单分析下 <code>AccelerateDecelerateInterpolator</code> 的源码，如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AccelerateDecelerateInterpolator</span> <span class="keyword">extends</span> <span class="title">BaseInterpolator</span></span></div><div class="line">        <span class="keyword">implements</span> <span class="title">NativeInterpolatorFactory</span> &#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">AccelerateDecelerateInterpolator</span><span class="params">()</span> </span>&#123;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@SuppressWarnings</span>(&#123;<span class="string">"UnusedDeclaration"</span>&#125;)</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">AccelerateDecelerateInterpolator</span><span class="params">(Context context, AttributeSet attrs)</span> </span>&#123;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">float</span> <span class="title">getInterpolation</span><span class="params">(<span class="keyword">float</span> input)</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> (<span class="keyword">float</span>)(Math.cos((input + <span class="number">1</span>) * Math.PI) / <span class="number">2.0f</span>) + <span class="number">0.5f</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/** <span class="doctag">@hide</span> */</span></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">createNativeInterpolator</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> NativeInterpolatorFactoryHelper.createAccelerateDecelerateInterpolator();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>通过数学做图工具，得到如下图所示的示意图：</p>
+<div align="center"><br>      <img src="/属性动画2/cos.png" width="706" height="485"><br></div>
+
+<p>可以看到：</p>
+<ul>
+<li>在 <code>0.0</code> 到 <code>0.3</code> 之间时，<code>y</code> 轴随 <code>x</code> 轴变化较慢</li>
+<li>在 <code>0.3</code> 到 <code>0.7</code> 之间时，<code>y</code> 轴随 <code>x</code> 轴变化较快</li>
+<li>在 <code>0.7</code> 到 <code>1.0</code> 之间时，<code>y</code> 轴随 <code>x</code> 轴变化较又变慢</li>
+</ul>
+<p>所以它是一个先加速再减速的过程</p>
+<h3 id="2-2-自定义-TimeInterpolator"><a href="#2-2-自定义-TimeInterpolator" class="headerlink" title="2.2 自定义 TimeInterpolator"></a>2.2 自定义 <code>TimeInterpolator</code></h3><p>通过对 <code>LinearInterpolator</code> 和 <code>AccelerateDecelerateInterpolator</code> 源码的分析，我们也可以实现一个自定义的 <code>Interpolator</code>。</p>
+<p>我们可以实现一个<code>Interpolator</code>。如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DecelerateAccelerateInterpolator</span> <span class="keyword">implements</span> <span class="title">BaseInterpolator</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">float</span> <span class="title">getInterpolation</span><span class="params">(<span class="keyword">float</span> input)</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> (<span class="keyword">float</span>) Math.sin(input * Math.PI);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>使用数学做图工具，可以得到如下所示的变化示意图：</p>
+<div align="center"><br>      <img src="/属性动画2/sin.png" width="706" height="485"><br></div>
+
+<p>可以看到：</p>
+<ul>
+<li>在 <code>0.0</code> 到 <code>0.5</code> 之间时，<code>y</code> 轴随 <code>x</code> 轴变化慢慢减缓</li>
+<li>在 <code>0.5</code> 到 <code>1.0</code> 之间时，<code>y</code> 轴随 <code>x</code> 轴变化慢慢加速</li>
+<li>在时间走到一半的时候，属性值已经到达了设定的结束值，然后在剩下的一半时间内，属性值又从设定的结束值恢复到初始值。</li>
+</ul>
+<h2 id="3-Animations-in-XML"><a href="#3-Animations-in-XML" class="headerlink" title="3.Animations in XML"></a>3.Animations in XML</h2><p>属性动画允许在 <code>xml</code> 文件中定义动画，而不是通过 <code>Java</code> 代码的形式。使用 <code>xml</code> 定义动画，不仅使得重复利用相同的动画更加方便，而且也更容易修改动画。</p>
+<p>为区分在 <code>xml</code> 中定义的视图动画，属性动画的 <code>xml</code> 文件放在 <code>res/animator/</code> 目录下。</p>
+<p>属性动画在 <code>xml</code> 中支持以下几个标签：</p>
+<ul>
+<li><code>ValueAnimator</code> – <code>&lt;animator&gt;</code></li>
+<li><code>ObjectAnimator</code> – <code>&lt;objectAnimator&gt;</code></li>
+<li><code>AnimatorSet</code> – <code>&lt;set&gt;</code></li>
+</ul>
+<p>可以在 <a href="https://developer.android.com/guide/topics/resources/animation-resource.html#Property" target="_blank" rel="external">这儿Animation Resources</a> 找到属性动画中的所有属性。</p>
+<p>以下代码是一个简单的 <code>xml</code> 属性动画的例子：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">set</span> <span class="attr">android:ordering</span>=<span class="string">"sequentially"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">set</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">objectAnimator</span></span></div><div class="line">            <span class="attr">android:propertyName</span>=<span class="string">"x"</span></div><div class="line">            <span class="attr">android:duration</span>=<span class="string">"500"</span></div><div class="line">            <span class="attr">android:valueTo</span>=<span class="string">"400"</span></div><div class="line">            <span class="attr">android:valueType</span>=<span class="string">"intType"</span>/&gt;</div><div class="line">        <span class="tag">&lt;<span class="name">objectAnimator</span></span></div><div class="line">            <span class="attr">android:propertyName</span>=<span class="string">"y"</span></div><div class="line">            <span class="attr">android:duration</span>=<span class="string">"500"</span></div><div class="line">            <span class="attr">android:valueTo</span>=<span class="string">"300"</span></div><div class="line">            <span class="attr">android:valueType</span>=<span class="string">"intType"</span>/&gt;</div><div class="line">    <span class="tag">&lt;/<span class="name">set</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">objectAnimator</span></span></div><div class="line">        <span class="attr">android:propertyName</span>=<span class="string">"alpha"</span></div><div class="line">        <span class="attr">android:duration</span>=<span class="string">"500"</span></div><div class="line">        <span class="attr">android:valueTo</span>=<span class="string">"1f"</span>/&gt;</div><div class="line"><span class="tag">&lt;/<span class="name">set</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<p>在 <code>xml</code> 中定义好属性动画之后，在 <code>Java</code> 代码中使用该动画的话，需要先将该动画集合加载进来，之后调用 <code>setTarget()</code> 为该动画设置目标对象即可，如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">AnimatorSet set = (AnimatorSet) AnimatorInflater.loadAnimator(myContext,</div><div class="line">    R.anim.property_animator);</div><div class="line">set.setTarget(myObject);</div><div class="line">set.start();</div></pre></td></tr></table></figure></p>
+<p>在 <code>xml</code> 中也可以通过使用 <code>&lt;animator&gt;</code> 标签定义 <code>ValueAnimator</code> 动画，如下所示：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">animator</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></div><div class="line">    <span class="attr">android:duration</span>=<span class="string">"1000"</span></div><div class="line">    <span class="attr">android:valueType</span>=<span class="string">"floatType"</span></div><div class="line">    <span class="attr">android:valueFrom</span>=<span class="string">"0f"</span></div><div class="line">    <span class="attr">android:valueTo</span>=<span class="string">"-100f"</span> /&gt;</div></pre></td></tr></table></figure></p>
+<p>在 <code>Java</code> 代码中使用上面定义的 <code>ValueAnimator</code> 动画，也需要将该 <code>xml</code> 动画加载进来，如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">ValueAnimator xmlAnimator = (ValueAnimator) AnimatorInflater.loadAnimator(<span class="keyword">this</span>,R.animator.animator);</div><div class="line">xmlAnimator.addUpdateListener(<span class="keyword">new</span> ValueAnimator.AnimatorUpdateListener() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationUpdate</span><span class="params">(ValueAnimator updatedAnimation)</span> </span>&#123;</div><div class="line">        <span class="keyword">float</span> animatedValue = (<span class="keyword">float</span>)updatedAnimation.getAnimatedValue();</div><div class="line">        textView.setTranslationX(animatedValue);</div><div class="line">    &#125;</div><div class="line">&#125;);</div><div class="line">xmlAnimator.start();</div></pre></td></tr></table></figure></p>
+<p>关于在 <code>xml</code> 中定义属性动画更多的信息，请查阅 <a href="https://developer.android.com/guide/topics/resources/animation-resource.html#Property" target="_blank" rel="external">Animation Resources</a>。</p>
+<h2 id="4-硬件加速"><a href="#4-硬件加速" class="headerlink" title="4.硬件加速"></a>4.硬件加速</h2><p>从 Android 3.0（API level 11），Android 支持硬件加速绘制 <code>2D</code> 渲染，意思就是说在 <code>View</code> 上进行的一些 <code>canvas</code> 操作都使用 <code>GPU</code> 来实现。因为使用硬件加速需要更多的资源，所以会造成内存增加的后果。</p>
+<p>在 <code>API level</code> 大于 <code>14</code> 的时候，硬件加速默认是打开的。如果你的应用只会绘制标准的 <code>View</code> 和 <code>Drawable</code> 对象，全局都打开硬件加速并不会造成什么不好的影响。但是硬件加速并不是支持所有的的 <code>2D</code> 绘制操作的，打开硬件加速可能会造成你的自定义控件和一些绘制操作出现异常。为避免造成异常，Android 可以在几个不同的层级上对硬件加速进行开关的控制。</p>
+<p>如果开启硬件加速之后，自定义控件和自定义绘制出现了问题，可以在真机上打开硬件加速进行测试，找出问题所在。</p>
+<h3 id="4-1-控制硬件加速的开关"><a href="#4-1-控制硬件加速的开关" class="headerlink" title="4.1 控制硬件加速的开关"></a>4.1 控制硬件加速的开关</h3><p>总共可以在四个层级上对硬件加速进行控制，如下：</p>
+<ul>
+<li><code>Application</code></li>
+<li><code>Activity</code></li>
+<li><code>Window</code></li>
+<li><code>View</code></li>
+</ul>
+<h4 id="4-1-1-Applicatin-层级"><a href="#4-1-1-Applicatin-层级" class="headerlink" title="4.1.1 Applicatin 层级"></a>4.1.1 <code>Applicatin</code> 层级</h4><p>在 <code>AndroidManifest.xml</code> 文件中，可以通过在 <code>application</code> 中使用以下元素对硬件加速进行控制<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">application</span> <span class="attr">android:hardwareAccelerated</span>=<span class="string">"true"</span> <span class="attr">...</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<h4 id="4-1-2-Activity-层级"><a href="#4-1-2-Activity-层级" class="headerlink" title="4.1.2 Activity 层级"></a>4.1.2 <code>Activity</code> 层级</h4><p>如果在 <code>Application</code> 层级对硬件加速控制的不够精细，可以对某个单独的 <code>Activity</code> 中的硬件加速进行开关的控制，如下所示：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">application</span> <span class="attr">android:hardwareAccelerated</span>=<span class="string">"true"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">activity</span> <span class="attr">...</span> /&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:hardwareAccelerated</span>=<span class="string">"false"</span> /&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">application</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<p>上面代码的意思是，在应用的全局都打开硬件加速，但是在这个 <code>Activity</code> 中关闭了硬件加速。</p>
+<h4 id="4-1-3-Window-层级"><a href="#4-1-3-Window-层级" class="headerlink" title="4.1.3 Window 层级"></a>4.1.3 <code>Window</code> 层级</h4><p>可以对单独的某个 <code>Window</code> 进行硬件加速的控制，如下代码所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">getWindow().setFlags(</div><div class="line">    WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,</div><div class="line">    WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);</div></pre></td></tr></table></figure></p>
+<p>对 <code>Window</code> 来说，只能打开硬件加速，而不能关闭硬件加速。</p>
+<h4 id="4-1-4-View-层级"><a href="#4-1-4-View-层级" class="headerlink" title="4.1.4 View 层级"></a>4.1.4 <code>View</code> 层级</h4><p>使用以下代码，可以在运行的时候，把该 <code>View</code> 的硬件加速关闭<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">myView.setLayerType(View.LAYER_TYPE_SOFTWARE, <span class="keyword">null</span>);</div></pre></td></tr></table></figure></p>
+<p>对 <code>View</code> 来说，只能关闭硬件加速，而不能打开硬件加速。</p>
+<h3 id="4-2-检测硬件加速是否打开"><a href="#4-2-检测硬件加速是否打开" class="headerlink" title="4.2 检测硬件加速是否打开"></a>4.2 检测硬件加速是否打开</h3><p>如果在应用中自定义控件和自定义绘制有很多的话，检查硬件加速是否处于打开状态还是非常有必要的，有以下两种方式可以判断：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">View.isHardwareAccelerated();</div><div class="line">Canvas.isHardwareAccelerated();</div></pre></td></tr></table></figure></p>
+<ul>
+<li><code>View.isHardwareAccelerated()</code> 如果返回 <code>true</code> 可以说明此 <code>View</code> 依附的 <code>Window</code> 的硬件加速是打开的</li>
+<li><code>Canvas.isHardwareAccelerated()</code> 如果返回 <code>true</code> 则说明该 <code>canvas</code> 对象的硬件加速是打开的。</li>
+</ul>
+<h3 id="4-3-Android-绘制模式"><a href="#4-3-Android-绘制模式" class="headerlink" title="4.3 Android 绘制模式"></a>4.3 Android 绘制模式</h3><p>如果硬件加速开启，Android FrameWork 会使用新的绘制模式将应用显示在屏幕上，这种新的绘制模式中使用到了一个关键的概念 —- <code>display lists</code>。</p>
+<p>为了完全理解硬件加速相关的知识，首先理解 Android 不使用硬件加速是的软件绘制模式是非常有帮助的。</p>
+<h4 id="4-3-1-软件绘制模式"><a href="#4-3-1-软件绘制模式" class="headerlink" title="4.3.1 软件绘制模式"></a>4.3.1 软件绘制模式</h4><p>在软件绘制模式中，将 <code>views</code> 绘制到屏幕上需要以下两个步骤：</p>
+<ul>
+<li><code>Invalidate the hierarchy</code></li>
+<li><code>Draw the hierarchy</code></li>
+</ul>
+<p>当应用需要更加 <code>UI</code> 中的某一部分时，有改变的 <code>View</code> （脏区域）需要调用 <code>invalidate()</code>，<code>invalidation</code> 信号就会遍历 <code>View</code> 树来计算哪些 <code>views</code> 需要重新绘制，然后 Android 系统会将与这些 <code>views</code> 相关的 <code>views</code> 都进行重新绘制。这种绘制模式有两个缺点：</p>
+<ul>
+<li>这种模式在进行每一次重新绘制的时候，都会进行大量的代码计算。比如，在界面中有一个 <code>button</code> 在另一个 <code>view</code> 之上，该 <code>button</code> 调用了 <code>invalidate()</code> 方法，那么 Android 系统也会将该 <code>button</code> 之下的 <code>view</code> 进行重新绘制。</li>
+<li>另一个问题是，软件绘制模式会有一些隐藏的 bug。比如，有一个 <code>view</code> 的重新绘制依赖于另一个与其相关的 <code>view</code> 的重新绘制，当另一个 <code>view</code> 重新绘制的操作去掉之后，这个 <code>view</code> 的绘制工作也就不会被进行，所以可能会怀疑此 <code>view</code> 的代码有什么问题，这样就带来了问题。所以最好的方式是，在有所改变的自定义 <code>view</code> 中，主动去调用 <code>invalidate()</code> 方法进行重新绘制。</li>
+</ul>
+<h4 id="4-3-2-硬件加速绘制模式"><a href="#4-3-2-硬件加速绘制模式" class="headerlink" title="4.3.2 硬件加速绘制模式"></a>4.3.2 硬件加速绘制模式</h4><p>在硬件加速绘制模式中，还是调用 <code>incalidate()</code> 方法和 <code>draw()</code> 方法进行重新绘制的，但是实际上处理绘制的操作还是有所不同的。</p>
+<p>在硬件加速绘制模式中，Android 系统不会立即执行绘制指令，而是会先将其记录在 <code>display lists</code> 中，在 <code>display lists</code> 中存储着 <code>view</code> 树的绘制代码，Android 系统只需要将调用了 <code>invalidate()</code> 方法的 <code>views</code> 的绘制代码，记录和更新到 <code>display lists</code> 中即可。那些没有调用 <code>incalidate()</code> 方法的 <code>views</code>，只需要将原来存储于 <code>display lists</code> 中的绘制代码简单地绘制出来即可。</p>
+<p>硬件加速绘制模式包括以下三个步骤：</p>
+<ul>
+<li><code>Invalidate the hierarchy</code></li>
+<li><code>Record and update display lists</code></li>
+<li><code>Draw the display lists</code></li>
+</ul>
+<p>使用这种方式，就不能再使用与<code>脏区域</code>相关的特性而执行本 <code>view</code> 的 <code>draw()</code> 方法了。为了使 Android 系统记录和更新一个 <code>view</code> 在 <code>display lists</code> 的绘制代码，必须调用该 <code>view</code> 的 <code>invalidate()</code> 方法了，如果忘记调用 <code>incalidate()</code> 方法，则该 <code>view</code> 不会发生什么变化。</p>
+<p>使用 <code>display lists</code> 对属性动画的性能也有很大的好处，一些属性（比如：透明度、旋转角度）并不需要调用 <code>invalidate()</code> 方法即可完成变化，它完全可以自动完成计算。这种特性也会应用在一些普通 <code>View</code> 的操作上。比如，现在有一个 <code>LinearLayout</code> 包含一个 <code>ListView</code> 和一个 <code>Button</code>，此时该 <code>LinearLayout</code> 的 <code>display lists</code> 是这样的：</p>
+<ul>
+<li><code>DrawDisplayList(ListView)</code></li>
+<li><code>DrawDisplayList(Button)</code></li>
+</ul>
+<p>假如现在改变 <code>ListView</code> 的透明度，调用 <code>ListView</code> 的 <code>setAlpha(0.5f)</code> 方法，那么此时，该 <code>LinearLayout</code> 的 <code>display lists</code> 如下所示：</p>
+<ul>
+<li><code>SaveLayerAlpha(0.5)</code></li>
+<li><code>DrawDisplayList(ListView)</code></li>
+<li><code>Restore</code></li>
+<li><code>DrawDisplayList(Button)</code></li>
+</ul>
+<p>复杂的 <code>ListView</code> 的绘制操作计算并没有被执行，相反，系统只需要更新该 <code>LinearLayout</code> 的 <code>display lists</code> 即可。如果使用软件绘制模式，就会重新计算 <code>ListView</code> 和 <code>Button</code> 的绘制操作。</p>
+<h3 id="4-4-不支持硬件加速的绘制操作"><a href="#4-4-不支持硬件加速的绘制操作" class="headerlink" title="4.4 不支持硬件加速的绘制操作"></a>4.4 不支持硬件加速的绘制操作</h3><p>大部分的 <code>Canvas</code> 的方法都支持硬件加速，但是有一些方法是从某些版本之后才开始支持硬件加速的，如下表所示：</p>
+<div align="center"><br>      <img src="/属性动画2/unsupported_api1.png" width="991" height="653"><br></div><br><div align="center"><br>      <img src="/属性动画2/unsupported_api2.png" width="991" height="220"><br></div>
+
+<h3 id="4-5-View-Layers（视图层级）"><a href="#4-5-View-Layers（视图层级）" class="headerlink" title="4.5 View Layers（视图层级）"></a>4.5 View Layers（视图层级）</h3><p>在 Android 所有的版本中，<code>View</code> 都有能力实现离屏缓冲，实现离屏缓冲的方式：</p>
+<ul>
+<li>可以通过 <code>View</code> 的绘制缓存</li>
+<li>通过 <code>Canvas.saveLayer()</code> 的方式</li>
+</ul>
+<p>离屏缓冲有一些很好的用途：当进行于复杂视图的动画，或者一些组合效果时，使用离屏缓冲会有更好的性能。比如实现一个渐变的效果，通过使用 <code>Canvas.saveLayer()</code> 先临时将 <code>view</code> 缓冲到 <code>layers</code> (层级)上，然后再通过一个不透明因子将其绘制到屏幕上。</p>
+<p>从 Android 3.0 （API level 11）开始，通过使用 <code>View.setLayerType()</code> 方法，对什么时候以及怎样使用视图层级有了更高的控制权限。在该方法中有两个参数：</p>
+<ul>
+<li>一个是视图的层级类型<ul>
+<li><code>LAYER_TYPE_NONE</code>：<code>View</code> 进行普通的渲染，并且不会使用离屏缓冲，这是默认参数</li>
+<li><code>LAYER_TYPE_HARDWARE</code>：如果应用启动了硬件加速，则使用硬件将 <code>View</code> 绘制到 <code>hardware texture</code> 上。如果硬件加速没有开启，则视图层级的操作和使用 <code>LAYER_TYPE_SOFTWARE</code> 参数时的视图操作是一致的</li>
+<li><code>LAYER_TYPE_SOFTWARE</code>：使用软件将该 <code>View</code> 先绘制到一个 <code>Bitmap</code> 对象上</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>另一个是可选的 <code>Paint</code> 对象，该 <code>Paint</code> 对象可以用于描述怎样实现当前的层级。通过该 <code>Paint</code> 对象可以将一些 <code>color filters</code> (颜色过滤器)、<code>opacity</code>(不透明度)应用于该层级。</li>
+</ul>
+<p>对于视图类型参数的选择，从以下几个因素考虑：</p>
+<ul>
+<li><code>Performance</code>（性能）：使用 <code>LAYER_TYPE_HARDWARE</code> 参数会将 <code>View</code> 绘制到 <code>hardware texture</code> 之上，一旦该 <code>View</code> 绘制到 <code>hardware texture</code> 之上，那么它的绘制代码就不会改变，除非再次调用 <code>invalidate()</code> 方法。在一些动画中，比如透明度改变的动画，会使用 <code>GPU</code> 直接改变视图层级上的代码，这样更高效。</li>
+<li><code>Visual effects</code>：不论是使用 <code>LAYER_TYPE_HARDWARE</code> 还是使用 <code>LAYER_TYPE_SOFTWARE</code> 参数，都可以通过第二个参数 <code>Paint</code> 的对象，将一些特殊的视觉效果应用于该 <code>View</code>，比如通过对 <code>Paint</code> 对象使用 <code>ColorMatrixColorFilter</code> 参数，将 <code>View</code> 变为黑白的。</li>
+<li><code>Compatibility</code>（兼容性）：有时候使用硬件加速，会有一些问题，这时候就要考虑使用 <code>LAYER_TYPE_SOFTWARE</code> 参数关闭硬件加速，通过使用软件绘制该 <code>View</code> 了。</li>
+</ul>
+<h3 id="4-6-视图层级和动画"><a href="#4-6-视图层级和动画" class="headerlink" title="4.6 视图层级和动画"></a>4.6 视图层级和动画</h3><p>如果应用开启了硬件加速，使用硬件层级绘制一些复杂的动画会更快且更平滑。如果有一些很复杂的动画，每秒中进行 60 帧的绘制会是一个问题，有时候会掉帧，这时候使用硬件加速将 <code>View</code>会知道 <code>hardware texture</code> 之上，就会有一定的改善。</p>
+<p><code>View</code> 不会进行重新绘制，除非调用了 <code>invalidate()</code> 方法。如果在应用中设置了一个动画，但是动画并不平滑，可以考虑使用硬件加速优化动画效果。</p>
+<p>如果开启了硬件加速，在 <code>View</code> 中有一些属性的改变并不会对该 <code>View</code> 进行重新绘制操作，而是直接改变图层上的绘制代码：</p>
+<ul>
+<li><code>alpha</code>：改变图层的透明度</li>
+<li><code>x, y, translationX, translationY</code>：改变图层的位置</li>
+<li><code>scaleX, scaleY</code>：改变图层的大小</li>
+<li><code>rotation, rotationX, rotationY</code>：改变图层在 3D 空间的方向</li>
+<li><code>pivotX, pivotY</code>：改变图层变化的原点位置</li>
+</ul>
+<p>例如下面这样的动画代码效率会更高，而且更平滑：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">view.setLayerType(View.LAYER_TYPE_HARDWARE, <span class="keyword">null</span>);</div><div class="line">ObjectAnimator.ofFloat(view, <span class="string">"rotationY"</span>, <span class="number">180</span>).start();</div></pre></td></tr></table></figure></p>
+<p>因为硬件加速会占用很高的内存，所以一般是在使用的时候开启硬件加速，不使用的时候关闭硬件加速，如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">view.setLayerType(View.LAYER_TYPE_HARDWARE, <span class="keyword">null</span>);</div><div class="line">ObjectAnimator animator = ObjectAnimator.ofFloat(view, <span class="string">"rotationY"</span>, <span class="number">180</span>);</div><div class="line">animator.addListener(<span class="keyword">new</span> AnimatorListenerAdapter() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimationEnd</span><span class="params">(Animator animation)</span> </span>&#123;</div><div class="line">        view.setLayerType(View.LAYER_TYPE_NONE, <span class="keyword">null</span>);</div><div class="line">    &#125;</div><div class="line">&#125;);</div><div class="line">animator.start();</div></pre></td></tr></table></figure></p>
+<h3 id="4-7-一些建议"><a href="#4-7-一些建议" class="headerlink" title="4.7 一些建议"></a>4.7 一些建议</h3><p>虽然使用硬件加速可以提高 <code>View</code> 的显示效果，提高性能，但是还是应该更加合理的使用硬件加速，不能滥用。对此给出以下几点建议：</p>
+<ul>
+<li>减少应用中 <code>View</code> 的数量。不论是使用硬件绘制还是使用软件绘制，都会占用资源，所以当然是绘制的 <code>View</code> 越少越好</li>
+<li>避免过渡绘制。在开发中会不可避免的遇到一些复杂的布局，这时很可能会出现多个 <code>View</code> 重叠的现象，而且布局文件可能也会嵌套的比较深，所以最好减少布局文件，将嵌套层次尽可能的降低。就目前的硬件条件来看，一个像素点最多不要超过 2.5 倍的绘制。简言之，就是嵌套层级尽可能少，不要对同一个像素点进行过多的绘制。</li>
+<li>在绘制方法中不要创建对象。因为像 <code>onDraw()</code> 这样的绘制方法，会不断的被调用，如果在其中创建对象，就会造成内存增长过快，垃圾回收器就会更频繁的调用。</li>
+<li>不要频繁修改外形。复杂的形状，比如<code>shapes, paths, and circles</code>，是使用 <code>texture masks</code> 进行绘制的。每次修改上面这些形状时，都会创建 <code>texture masks</code>，这样的代价还是比较大的。</li>
+<li>不要频繁的修改 <code>Bitmap</code> 对象。每一次修改 <code>bitmap</code> 中的内容，在绘制的时候都会上传至 GPU 中的 <code>texture</code>。</li>
+<li>小心使用透明度。当使用 <code>setAlpha</code>、<code>AlphaAnimation</code> 和 <code>ObjectAnimator</code> 来改变一个 <code>View</code> 的透明度时，它渲染到离屏缓冲时需要两倍的填充率。当需要改变一个很大的 <code>View</code> 的透明度时，考虑使用硬件加速来实现。</li>
+</ul>
+<hr>
+<p><strong>参考资料：</strong></p>
+<p><a href="https://developer.android.com/guide/topics/graphics/prop-animation.html" target="_blank" rel="external">动画官方文档</a></p>
+<p><a href="https://developer.android.com/guide/topics/graphics/hardware-accel.html" target="_blank" rel="external">硬件加速官方文档</a></p>
+<p><a href="http://hencoder.com/ui-1-7/" target="_blank" rel="external">HenCoder Android 自定义 View 1-7：属性动画 Property Animation（进阶篇）</a> – <a href="http://hencoder.com/" target="_blank" rel="external">HenCoder</a></p>
+<p><a href="http://hencoder.com/ui-1-8/" target="_blank" rel="external">HenCoder Android 自定义 View 1-8 硬件加速</a> – <a href="http://hencoder.com/" target="_blank" rel="external">HenCoder</a></p>
+<p><a href="http://hencoder.com/ui-1-8/" target="_blank" rel="external">HenCoder Android 自定义 View 1-8 硬件加速</a> – <a href="http://hencoder.com/" target="_blank" rel="external">HenCoder</a></p>
+<p><a href="https://tech.meituan.com/hardware-accelerate.html" target="_blank" rel="external">Android硬件加速原理与实现简介）</a> – <a href="https://tech.meituan.com/" target="_blank" rel="external">美团点评技术团队</a></p>
+<p><a href="http://www.jianshu.com/p/9cd7097a4fcf" target="_blank" rel="external">关于硬件加速的那么点儿东西</a> – <a href="http://www.jianshu.com/u/5c58e19b2ccf" target="_blank" rel="external">黑白咖</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/Animation/" rel="tag"># Animation</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/属性动画/" rel="next" title="属性动画（一）">
+                <i class="fa fa-chevron-left"></i> 属性动画（一）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="lijiankun24" />
+          <p class="site-author-name" itemprop="name">lijiankun24</p>
+           
+              <p class="site-description motion-element" itemprop="description">守得云开见月明。</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/lijiankun24" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/lijiankun24" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.jianshu.com/u/1abe21b7ff5f" target="_blank" title="Jianshu">
+                  
+                    <i class="fa fa-fw fa-jianshu"></i>
+                  
+                  Jianshu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://gank.io/post/published" title="匠心写作" target="_blank">匠心写作</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/lmj623565791" title="Hongyang" target="_blank">Hongyang</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.liaohuqiu.net/cn/" title="Huqiu Liao" target="_blank">Huqiu Liao</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://drakeet.me/" title="drakeet" target="_blank">drakeet</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.jianshu.com/u/df40282480b4" title="小鄧子" target="_blank">小鄧子</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://yuweiguocn.github.io/" title="于卫国" target="_blank">于卫国</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Evaluators"><span class="nav-number">1.</span> <span class="nav-text">1. Evaluators</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-TypeEvaluator-解析"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 TypeEvaluator 解析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-自定义-Evaluator"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 自定义 Evaluator</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Interpolators"><span class="nav-number">2.</span> <span class="nav-text">2. Interpolators</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-TimeInterpolator"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 TimeInterpolator</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-自定义-TimeInterpolator"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 自定义 TimeInterpolator</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-Animations-in-XML"><span class="nav-number">3.</span> <span class="nav-text">3.Animations in XML</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-硬件加速"><span class="nav-number">4.</span> <span class="nav-text">4.硬件加速</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-控制硬件加速的开关"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 控制硬件加速的开关</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-1-Applicatin-层级"><span class="nav-number">4.1.1.</span> <span class="nav-text">4.1.1 Applicatin 层级</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-2-Activity-层级"><span class="nav-number">4.1.2.</span> <span class="nav-text">4.1.2 Activity 层级</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-3-Window-层级"><span class="nav-number">4.1.3.</span> <span class="nav-text">4.1.3 Window 层级</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-4-View-层级"><span class="nav-number">4.1.4.</span> <span class="nav-text">4.1.4 View 层级</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-检测硬件加速是否打开"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 检测硬件加速是否打开</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-Android-绘制模式"><span class="nav-number">4.3.</span> <span class="nav-text">4.3 Android 绘制模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3-1-软件绘制模式"><span class="nav-number">4.3.1.</span> <span class="nav-text">4.3.1 软件绘制模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3-2-硬件加速绘制模式"><span class="nav-number">4.3.2.</span> <span class="nav-text">4.3.2 硬件加速绘制模式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-不支持硬件加速的绘制操作"><span class="nav-number">4.4.</span> <span class="nav-text">4.4 不支持硬件加速的绘制操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-5-View-Layers（视图层级）"><span class="nav-number">4.5.</span> <span class="nav-text">4.5 View Layers（视图层级）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-6-视图层级和动画"><span class="nav-number">4.6.</span> <span class="nav-text">4.6 视图层级和动画</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-7-一些建议"><span class="nav-number">4.7.</span> <span class="nav-text">4.7 一些建议</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lijiankun24</span>
+  
+</div>
+
+
+<div>
+  <span id="busuanzi_container_site_pv">
+    Total views <span id="busuanzi_value_site_pv">   </span>
+  </span>
+
+  <span id="busuanzi_container_site_uv">
+    |   Total visitors <span id="busuanzi_value_site_uv"/>
+  </span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("tWG63sCRtLhi5NFeaXtWqtnv-gzGzoHsz", "lPLcNFpeOoNc6wr9PVX8XdbI");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+
+  
+
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+          bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+      } else {
+          bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+</body>
+</html>
