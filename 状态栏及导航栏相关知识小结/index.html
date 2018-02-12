@@ -1,0 +1,1073 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,View," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="在开发应用的过程中，会遇见一些状态栏和导航栏相关的问题，在此记录一下。本文主要目的是记录我在开发中遇到的状态栏和导航栏相关的问题，以便日后查看方便，如果可以帮到你，真是再好不过了。
+本文主要分为以下几个部分：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="状态栏及导航栏相关知识小结">
+<meta property="og:url" content="http://www.lijiankun24.com/状态栏及导航栏相关知识小结/index.html">
+<meta property="og:site_name" content="一些无处安放的代码和故事">
+<meta property="og:description" content="在开发应用的过程中，会遇见一些状态栏和导航栏相关的问题，在此记录一下。本文主要目的是记录我在开发中遇到的状态栏和导航栏相关的问题，以便日后查看方便，如果可以帮到你，真是再好不过了。
+本文主要分为以下几个部分：">
+<meta property="og:image" content="http://www.lijiankun24.com/状态栏及导航栏相关知识小结/catalog.png">
+<meta property="og:image" content="http://www.lijiankun24.com/状态栏及导航栏相关知识小结/statusbar&navigationbar.png">
+<meta property="og:image" content="http://www.lijiankun24.com/状态栏及导航栏相关知识小结/aiqiyi.png">
+<meta property="og:image" content="http://www.lijiankun24.com/状态栏及导航栏相关知识小结/transparentstatusbar.png">
+<meta property="og:image" content="http://www.lijiankun24.com/状态栏及导航栏相关知识小结/dimming.gif">
+<meta property="og:image" content="http://www.lijiankun24.com/状态栏及导航栏相关知识小结/hidestatusbar.gif">
+<meta property="og:image" content="http://www.lijiankun24.com/状态栏及导航栏相关知识小结/hidestatusbar1.gif">
+<meta property="og:image" content="http://www.lijiankun24.com/状态栏及导航栏相关知识小结/fitsSystemWindows2.png">
+<meta property="og:image" content="http://www.lijiankun24.com/状态栏及导航栏相关知识小结/hidenavigationbar.gif">
+<meta property="og:image" content="http://www.lijiankun24.com/状态栏及导航栏相关知识小结/immersive.gif">
+<meta property="og:image" content="http://www.lijiankun24.com/状态栏及导航栏相关知识小结/immersive1.gif">
+<meta property="og:image" content="http://www.lijiankun24.com/状态栏及导航栏相关知识小结/transparent.gif">
+<meta property="og:updated_time" content="2018-02-12T15:10:46.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="状态栏及导航栏相关知识小结">
+<meta name="twitter:description" content="在开发应用的过程中，会遇见一些状态栏和导航栏相关的问题，在此记录一下。本文主要目的是记录我在开发中遇到的状态栏和导航栏相关的问题，以便日后查看方便，如果可以帮到你，真是再好不过了。
+本文主要分为以下几个部分：">
+<meta name="twitter:image" content="http://www.lijiankun24.com/状态栏及导航栏相关知识小结/catalog.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.lijiankun24.com/状态栏及导航栏相关知识小结/"/>
+
+
+
+
+
+  <title> 状态栏及导航栏相关知识小结 | 一些无处安放的代码和故事 </title>
+<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">一些无处安放的代码和故事</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://www.lijiankun24.com/状态栏及导航栏相关知识小结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="lijiankun24">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一些无处安放的代码和故事">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                状态栏及导航栏相关知识小结
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-01-30T22:10:39+08:00">
+                2018-01-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/状态栏及导航栏相关知识小结/" class="leancloud_visitors" data-flag-title="状态栏及导航栏相关知识小结">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Views </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在开发应用的过程中，会遇见一些状态栏和导航栏相关的问题，在此记录一下。本文主要目的是记录我在开发中遇到的状态栏和导航栏相关的问题，以便日后查看方便，如果可以帮到你，真是再好不过了。</p>
+<p>本文主要分为以下几个部分：</p>
+<div align="center"><br>      <img src="/状态栏及导航栏相关知识小结/catalog.png" width="664" height="361"><br></div>
+
+<a id="more"></a>
+<h2 id="1-基本概念"><a href="#1-基本概念" class="headerlink" title="1. 基本概念"></a>1. 基本概念</h2><p>首先需要明白几个概念：</p>
+<ul>
+<li>状态栏（StatusBar）：指屏幕最顶端，显示时间、电量、推送图标那一栏，每个手机都有状态栏。</li>
+<li>标题栏（TitleBar）：指状态栏下，显示“返回键”、“标题文字”那一栏，根据需求而定是否有标题栏，标题栏可以使用 <code>Toolbar</code> 或者 <code>ActionBar</code> 控件实现</li>
+<li><p>导航栏（NavigationBar)：指屏幕最下端，有“返回键”、“Home键”、”菜单键“那一栏。导航栏是虚拟的，不是每个手机都有的。<br>状态栏、标题栏、导航栏可以参照下图：</p>
+<div align="center"><br>    <img src="/状态栏及导航栏相关知识小结/statusbar&navigationbar.png" width="240" height="427"><br></div>
+</li>
+<li><p>沉浸式模式（Immersive Mode）：沉浸式就是要给用户提供完全沉浸的体验，使用户有一种置身于虚拟世界之中的感觉。  —-  <a href="http://blog.csdn.net/guolin_blog/article/details/51763825" target="_blank" rel="external">Android状态栏微技巧，带你真正理解沉浸式模式</a></p>
+<p>沉浸式模式本质上就是把状态栏、导航栏隐藏，将应用界面全屏化。</p>
+<p>最常见的沉浸式模式应用在游戏和视频类应用中，比如爱奇艺的全屏播放，如下图所示：</p>
+<div align="center"><br>      <img src="/状态栏及导航栏相关知识小结/aiqiyi.png" width="427" height="240"><br></div>
+</li>
+<li><p>透明状态栏：如下图所示，透明状态栏就是让应用界面背景利用系统状态栏空间，让应用界面背景和系统状态栏融为一体。</p>
+</li>
+</ul>
+<div align="center"><br>      <img src="/状态栏及导航栏相关知识小结/transparentstatusbar.png" width="240" height="427"><br></div>
+
+<blockquote>
+<p>需要注意的是，并<strong>没有沉浸式状态栏</strong>这一概念，只有<strong>沉浸式模式</strong>和<strong>透明状态栏</strong>的概念。</p>
+</blockquote>
+<h2 id="2-实践效果"><a href="#2-实践效果" class="headerlink" title="2. 实践效果"></a>2. 实践效果</h2><h3 id="2-1-淡化状态栏和导航栏"><a href="#2-1-淡化状态栏和导航栏" class="headerlink" title="2.1 淡化状态栏和导航栏"></a>2.1 淡化状态栏和导航栏</h3><p>在 <strong>Android 4.0（API level 14）及之后</strong> 的版本中，可以实现使状态栏和导航栏淡化的效果（Dimming the System Bars）</p>
+<p>效果：</p>
+<div align="center"><br>    <img src="/状态栏及导航栏相关知识小结/dimming.gif" width="300" height="400"><br></div>
+
+<blockquote>
+<p>注意观察状态栏和导航栏的变化。</p>
+</blockquote>
+<p>代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 淡化状态栏和导航栏</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">private</span> fun <span class="title">dimmingStatusBar</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (Build.VERSION.SDK_INT &gt; Build.VERSION_CODES.ICE_CREAM_SANDWICH) &#123;</div><div class="line">        <span class="comment">// This example uses decor view, but you can use any visible view.</span></div><div class="line">        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LOW_PROFILE</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>说明：</p>
+<ul>
+<li>此 <code>SYSTEM_UI_FLAG_LOW_PROFILE</code> 标志并不会重新分配界面中 UI 的大小，只是 StatusBar 和 NavigationBar 的相关图标会被弱化</li>
+<li>一旦用户触摸 StatusBar 和 NavigationBar 相关区域，系统便清除掉了 <code>SYSTEM_UI_FLAG_LOW_PROFILE</code> 标志</li>
+<li>此 <code>SYSTEM_UI_FLAG_LOW_PROFILE</code> 标志只可以在 <strong>Android 4.0（API level 14）</strong> 及之后的版本中使用</li>
+<li>可以使用代码手动清除 <code>SYSTEM_UI_FLAG_LOW_PROFILE</code> 标志，代码如下所示：<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> fun <span class="title">clearSystemUIFlag</span><span class="params">()</span> </span>&#123;</div><div class="line">    window.decorView.systemUiVisibility = <span class="number">0</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="2-2-隐藏状态栏"><a href="#2-2-隐藏状态栏" class="headerlink" title="2.2 隐藏状态栏"></a>2.2 隐藏状态栏</h3><p>隐藏状态栏分为两种情况：</p>
+<ul>
+<li>在 Android 4.0(API level 14)  及之下的版本中隐藏状态栏</li>
+<li>在 Android 4.0(API level 14)  之上的版本中隐藏状态栏</li>
+</ul>
+<h4 id="2-2-1-在-Android-4-0-及之下"><a href="#2-2-1-在-Android-4-0-及之下" class="headerlink" title="2.2.1 在 Android 4.0 及之下"></a>2.2.1 在 Android 4.0 及之下</h4><p>在 Android 4.0 及之下的版本中，可以通过设置 <code>WindowManager</code> 的 flag 实现隐藏状态栏的效果，设置 <code>WindowManager</code> 的 flag 有两种方式：</p>
+<p>代码：</p>
+<ul>
+<li><p>通过编写代码设置 <code>WindowManager</code> 的 flag</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">        <span class="comment">// If the Android version is lower than Jellybean, use this call to hide</span></div><div class="line">        <span class="comment">// the status bar.</span></div><div class="line">        <span class="keyword">if</span> (Build.VERSION.SDK_INT &lt; <span class="number">16</span>) &#123;</div><div class="line">            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,</div><div class="line">                    WindowManager.LayoutParams.FLAG_FULLSCREEN);</div><div class="line">        &#125;</div><div class="line">        setContentView(R.layout.activity_main);</div><div class="line">    &#125;</div><div class="line">    ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>通过设置 <code>AndroidManifest.xml</code> 中 Activity 的 <code>theme</code> 设置  <code>WindowManager</code> 的 flag</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- style.xml --&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">resources</span>&gt;</span></div><div class="line"></div><div class="line">  <span class="comment">&lt;!-- Base application theme. --&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">style</span> <span class="attr">name</span>=<span class="string">"BaseAppTheme"</span> <span class="attr">parent</span>=<span class="string">"Theme.AppCompat.Light.NoActionBar"</span>&gt;</span><span class="xml"></span></div><div class="line">      <span class="comment">&lt;!-- Customize your theme here. --&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"colorPrimary"</span>&gt;</span>@color/colorPrimary<span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"colorPrimaryDark"</span>&gt;</span>@color/colorPrimaryDark<span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"colorAccent"</span>&gt;</span>@color/colorAccent<span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">style</span>&gt;</span></div><div class="line"></div><div class="line">  <span class="tag">&lt;<span class="name">style</span> <span class="attr">name</span>=<span class="string">"FullScreenTheme"</span> <span class="attr">parent</span>=<span class="string">"BaseAppTheme"</span>&gt;</span><span class="xml"></span></div><div class="line">      <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">"android:windowFullscreen"</span>&gt;</span>true<span class="tag">&lt;/<span class="name">item</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">style</span>&gt;</span></div><div class="line"></div><div class="line">  ...</div><div class="line"></div><div class="line"><span class="tag">&lt;/<span class="name">resources</span>&gt;</span></div></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="comment">&lt;!-- AndroidManifest.xml --&gt;</span></div><div class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">manifest</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></div><div class="line">        <span class="attr">package</span>=<span class="string">"com.lijiankun24.statusbarpractice"</span>&gt;</div><div class="line"></div><div class="line">  <span class="tag">&lt;<span class="name">application</span></span></div><div class="line">      <span class="attr">android:icon</span>=<span class="string">"@mipmap/ic_launcher"</span></div><div class="line">      <span class="attr">android:label</span>=<span class="string">"@string/app_name"</span></div><div class="line">      <span class="attr">android:theme</span>=<span class="string">"@style/BaseAppTheme"</span></div><div class="line">      <span class="attr">...</span> &gt;</div><div class="line"></div><div class="line">      <span class="tag">&lt;<span class="name">activity</span></span></div><div class="line">          <span class="attr">android:name</span>=<span class="string">".activity.MainActivity"</span></div><div class="line">          <span class="attr">android:theme</span>=<span class="string">"@style/FullScreenTheme"</span>&gt;</div><div class="line">      <span class="tag">&lt;/<span class="name">activity</span>&gt;</span></div><div class="line"></div><div class="line">      ...</div><div class="line">  <span class="tag">&lt;/<span class="name">application</span>&gt;</span></div><div class="line"></div><div class="line"><span class="tag">&lt;/<span class="name">manifest</span>&gt;</span></div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>说明：</p>
+<ul>
+<li>通过设置 Activity 的 Theme实现隐藏状态栏有如下优点：<ul>
+<li>简单而且不易出错</li>
+<li>UI 切换更流畅，因为系统在实例化 Activity 对象之前就已经获得了渲染 UI 界面的相关信息</li>
+</ul>
+</li>
+<li>通过编写代码设置 <code>WindowManager</code> 的 flag 的方式更容易控制系统 UI 的显示和隐藏</li>
+<li>现在市场上 Android 4.0 之下的手机已经很少了，而且很多应用最低版本都在 Android 4.0 之上，所以这点可以依情况而定</li>
+</ul>
+<h4 id="2-2-2-在-Android-4-0-之上"><a href="#2-2-2-在-Android-4-0-之上" class="headerlink" title="2.2.2 在 Android 4.0 之上"></a>2.2.2 在 Android 4.0 之上</h4><p>效果：</p>
+<div align="center"><br>    <img src="/状态栏及导航栏相关知识小结/hidestatusbar.gif" width="300" height="400"><br></div>
+
+<p>代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> fun <span class="title">hideStatusBar</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (Build.VERSION.SDK_INT &lt; Build.VERSION_CODES.JELLY_BEAN) &#123;</div><div class="line">        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,</div><div class="line">                WindowManager.LayoutParams.FLAG_FULLSCREEN)</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN or</div><div class="line">                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or</div><div class="line">                View.SYSTEM_UI_FLAG_LAYOUT_STABLE</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>说明：</p>
+<ul>
+<li><p>如果只使用 <code>SYSTEM_UI_FLAG_FULLSCREEN</code> 标志，在状态栏区域向下滑动出现状态栏的时候，内容区域会出现一个挤压的效果，如下图所示：</p>
+<div align="center"><br>  <img src="/状态栏及导航栏相关知识小结/hidestatusbar1.gif" width="300" height="400"><br></div>
+</li>
+<li><p>可以使用 <code>SYSTEM_UI_FLAG_LAYOUT_FULLSCREE</code> 标志，让应用的内容区域显示在状态栏的后面，还可以配合 <code>SYSTEM_UI_FLAG_LAYOUT_STABLE</code> 标志使用，让布局保持稳定</p>
+</li>
+<li>一旦这些标志位被清除，则需要重新设置让状态栏隐藏，可以通过监听状态栏和导航栏的可见性，判断状态栏和导航栏是否可见</li>
+<li>在不同的位置设置 UI flag 是有区别的。比如，如果在 <code>onCreate()</code> 方法中隐藏状态栏，那当用户按下 <code>Home</code> 键的时候，状态栏重新显示，再打开应用重新回到这个 Activity 的时候，用户可以看到状态栏，因为这时不会调用 <code>onCreate()</code> 方法。如果在 <code>onResume()</code> 或者 <code>onWindowFocusChanged()</code> 就可以避免上面这种情况</li>
+<li>只有当调用 <code>setSystemUiVisibility()</code> 的 <code>View</code> 是可见的时候，<code>setSystemUiVisibility()</code> 方法才会起作用</li>
+<li>界面的切换会导致 <code>setSystemUiVisibility()</code> 的设置失效</li>
+<li><p>如果设置内容区域在状态栏的背后，那当状态栏显示的时候会遮挡住一部分内容区域，为防止这种情况发生，只需要在布局文件中添加 <code>android:fitsSystemWindows</code> 属性（值为true）,就可以解决这种问题，效果如下图所示：</p>
+<div align="center"><br>  <img src="/状态栏及导航栏相关知识小结/fitsSystemWindows2.png" width="600" height="582"><br></div>
+
+<p>代码如下所示：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">android.support.constraint.ConstraintLayout</span></span></div><div class="line">  <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></div><div class="line">  <span class="attr">xmlns:tools</span>=<span class="string">"http://schemas.android.com/tools"</span></div><div class="line">  <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">  <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></div><div class="line">  <span class="attr">tools:context</span>=<span class="string">"com.lijiankun24.statusbarpractice.activity.FitsSystemWindowsActivity"</span>&gt;</div><div class="line"></div><div class="line">  <span class="tag">&lt;<span class="name">TextView</span></span></div><div class="line">      <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></div><div class="line">      <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></div><div class="line">      <span class="attr">android:background</span>=<span class="string">"@android:color/holo_blue_light"</span></div><div class="line">      <span class="attr">android:fitsSystemWindows</span>=<span class="string">"true"</span></div><div class="line">      <span class="attr">android:text</span>=<span class="string">"@string/app_name"</span></div><div class="line">      <span class="attr">android:textColor</span>=<span class="string">"@android:color/white"</span></div><div class="line">      <span class="attr">android:textSize</span>=<span class="string">"28sp"</span>/&gt;</div><div class="line"><span class="tag">&lt;/<span class="name">android.support.constraint.ConstraintLayout</span>&gt;</span></div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="2-3-隐藏导航栏"><a href="#2-3-隐藏导航栏" class="headerlink" title="2.3 隐藏导航栏"></a>2.3 隐藏导航栏</h3><p>效果：</p>
+<div align="center"><br>    <img src="/状态栏及导航栏相关知识小结/hidenavigationbar.gif" width="300" height="400"><br></div>
+
+<p>代码：<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">class HideNavigationbarActivity : AppCompatActivity() &#123;</div><div class="line"></div><div class="line">    override fun onCreate(savedInstanceState: Bundle?) &#123;</div><div class="line">        super.onCreate(savedInstanceState)</div><div class="line">        hideNavigationBar()</div><div class="line">        setContentView(R.layout.activity_hide_navigationbar)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    private fun hideNavigationBar() &#123;</div><div class="line">        if (Build.VERSION.SDK_INT &gt; Build.VERSION_CODES.JELLY_BEAN) &#123;</div><div class="line">            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or</div><div class="line">                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or</div><div class="line">                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or</div><div class="line">                    View.SYSTEM_UI_FLAG_FULLSCREEN or</div><div class="line">                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>说明：</p>
+<ul>
+<li>按照一个通用的规则，在隐藏导航栏的时候，一般也需要隐藏状态栏</li>
+<li>通过这种方式隐藏导航栏和状态栏之后，触摸屏幕的任何区域，导航栏和状态栏都会重新出现且不会再消失，如果想让导航栏和状态栏消失，则需要手动重新设置 UI flag</li>
+<li>如果想让内容区域出现在导航栏的后面，则需要配合使用 <code>SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION</code> 标志，并且最好配合使用 <code>SYSTEM_UI_FLAG_LAYOUT_STABLE</code> 使布局保持稳定</li>
+<li><code>SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION</code> 和 <code>SYSTEM_UI_FLAG_HIDE_NAVIGATION</code> 可以在 Android 4.1 （API level 15）使用</li>
+</ul>
+<h3 id="2-4-沉浸式模式"><a href="#2-4-沉浸式模式" class="headerlink" title="2.4 沉浸式模式"></a>2.4 沉浸式模式</h3><p>效果：</p>
+<p><code>SYSTEM_UI_FLAG_IMMERSIVE</code> :</p>
+<div align="center"><br>    <img src="/状态栏及导航栏相关知识小结/immersive.gif" width="300" height="400"><br></div>
+
+<p><code>SYSTEM_UI_FLAG_IMMERSIVE_STICKY</code> :</p>
+<div align="center"><br>    <img src="/状态栏及导航栏相关知识小结/immersive1.gif" width="300" height="400"><br></div>
+
+<p>代码：<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">class ImmersiveActivity : AppCompatActivity() &#123;</div><div class="line"></div><div class="line">    override fun onCreate(savedInstanceState: Bundle?) &#123;</div><div class="line">        super.onCreate(savedInstanceState)</div><div class="line">        hideSystemUI()</div><div class="line">        setContentView(R.layout.activity_immersive)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    private fun hideSystemUI() &#123;</div><div class="line">        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or</div><div class="line">                View.SYSTEM_UI_FLAG_FULLSCREEN or</div><div class="line">                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or</div><div class="line">                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or</div><div class="line">                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or</div><div class="line">                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY</div><div class="line">//                or View.SYSTEM_UI_FLAG_IMMERSIVE</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>说明：</p>
+<ul>
+<li>真正的沉浸式模式如上面两个图所示，Activity 可以接收到所有的触摸事件</li>
+<li>当使用 <code>SYSTEM_UI_FLAG_IMMERSIVE</code> 标志时，用户滑动状态栏和导航栏边缘的时候，状态栏和导航栏会出现，并且不会再消失，</li>
+<li>当使用 <code>SYSTEM_UI_FLAG_IMMERSIVE_STICKY</code> 标志时，用户滑动状态栏和导航栏边缘的时候，状态栏和导航栏会出现，但是和 <code>SYSTEM_UI_FLAG_IMMERSIVE</code> 不同的是，过一会儿状态栏和导航栏会自动消失</li>
+<li>如果设置了 <code>View.OnSystemUiVisibilityChangeListener</code> 监听器，<code>SYSTEM_UI_FLAG_IMMERSIVE</code> 会触发 <code>OnSystemUiVisibilityChangeListener</code> 监听器，但是 <code>SYSTEM_UI_FLAG_IMMERSIVE_STICKY</code> 不会触发 <code>OnSystemUiVisibilityChangeListener</code> 监听器</li>
+</ul>
+<h3 id="2-5-监听状态栏和导航栏可见性"><a href="#2-5-监听状态栏和导航栏可见性" class="headerlink" title="2.5 监听状态栏和导航栏可见性"></a>2.5 监听状态栏和导航栏可见性</h3><p>可以通过 <code>View.OnSystemUiVisibilityChangeListener</code> 为该 <code>View</code> 设置状态栏和导航栏可见性的监听器，代码如下所示：<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">class RespondingActivity : AppCompatActivity() &#123;</div><div class="line"></div><div class="line">    override fun onCreate(savedInstanceState: Bundle?) &#123;</div><div class="line">        super.onCreate(savedInstanceState)</div><div class="line">        respondingSystemUI()</div><div class="line">        setContentView(R.layout.activity_responding)</div><div class="line">        window.decorView.setOnSystemUiVisibilityChangeListener &#123;</div><div class="line">            L.i("visibility is " + it)</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    private fun respondingSystemUI() &#123;</div><div class="line">        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN or</div><div class="line">                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or</div><div class="line">                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or</div><div class="line">                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or</div><div class="line">                View.SYSTEM_UI_FLAG_IMMERSIVE</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="2-6-透明状态栏和导航栏"><a href="#2-6-透明状态栏和导航栏" class="headerlink" title="2.6 透明状态栏和导航栏"></a>2.6 透明状态栏和导航栏</h3><p>效果：</p>
+<div align="center"><br>    <img src="/状态栏及导航栏相关知识小结/transparent.gif" width="300" height="400"><br></div>
+
+<p>代码:<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">class TransparentNavigationbarActivity : AppCompatActivity() &#123;</div><div class="line"></div><div class="line">    override fun onCreate(savedInstanceState: Bundle?) &#123;</div><div class="line">        super.onCreate(savedInstanceState)</div><div class="line">        transparentingNavigationbar()</div><div class="line">        setContentView(R.layout.activity_transparent_navigationbar)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    private fun transparentingNavigationbar() &#123;</div><div class="line">        var uiFlag = 0</div><div class="line">        if (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.JELLY_BEAN) &#123;</div><div class="line">            uiFlag = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or</div><div class="line">                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or</div><div class="line">                    View.SYSTEM_UI_FLAG_FULLSCREEN or</div><div class="line">                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN</div><div class="line">        &#125;</div><div class="line">        if (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.KITKAT) &#123;</div><div class="line">            uiFlag = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or uiFlag</div><div class="line">        &#125;</div><div class="line">        window.decorView.systemUiVisibility = uiFlag</div><div class="line">        if (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.LOLLIPOP) &#123;</div><div class="line">            window.statusBarColor = Color.TRANSPARENT</div><div class="line">            window.navigationBarColor = Color.TRANSPARENT</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>说明：</p>
+<ul>
+<li>除了可以设置状态栏和导航栏为透明，还可以设置为其他颜色</li>
+<li>只可以在 Android 5.0（API level 21）及以上的 Android 版本中设置状态栏和导航栏的颜色</li>
+</ul>
+<h2 id="3-总结"><a href="#3-总结" class="headerlink" title="3 总结"></a>3 总结</h2><p>本文主要介绍了状态栏、导航栏、标题栏、沉浸式模式和透明状态栏的概念，以及实现隐藏状态栏、隐藏导航栏、沉浸式模式和透明状态栏的方式。</p>
+<h3 id="3-1-版本要求"><a href="#3-1-版本要求" class="headerlink" title="3.1 版本要求"></a>3.1 版本要求</h3><p>实现的主要方式是通过设置 <code>window.decorView.systemUiVisibility</code> 的属性值实现的，但是不是所有的 Android 版本都可以实现上述那些效果的，实现上述效果的版本要求如下图所示：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">效果</th>
+<th style="text-align:center">版本要求</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">淡化状态栏和导航栏</td>
+<td style="text-align:center">Version &gt;= 14</td>
+</tr>
+<tr>
+<td style="text-align:center">隐藏状态栏</td>
+<td style="text-align:center">全部版本</td>
+</tr>
+<tr>
+<td style="text-align:center">隐藏导航栏</td>
+<td style="text-align:center">Version &gt;= 16</td>
+</tr>
+<tr>
+<td style="text-align:center">沉浸式模式</td>
+<td style="text-align:center">Version &gt;= 19</td>
+</tr>
+<tr>
+<td style="text-align:center">透明状态栏</td>
+<td style="text-align:center">Version &gt;= 21</td>
+</tr>
+</tbody>
+</table>
+<h3 id="3-2-相关文章"><a href="#3-2-相关文章" class="headerlink" title="3.2 相关文章"></a>3.2 相关文章</h3><p>本文中涉及到的代码在 Github 上面  <a href="https://github.com/lijiankun24/StatusBarPractice" target="_blank" rel="external">StatusBarPractice</a></p>
+<p>本文中只涉及到我在实现开屏广告全屏过程中遇到的一些问题，但是还有其他很多相关的问题没有涉及到，下面有一些相关文章，讲的都很详细：</p>
+<p><a href="https://juejin.im/post/5a25f6146fb9a0452405ad5b" target="_blank" rel="external">随手记Android沉浸式状态栏的踩坑之路</a>  —-  刘玲</p>
+<p><a href="https://www.jianshu.com/p/e27e7f09d1f7" target="_blank" rel="external">管理System UI (状态栏 + 导航栏)</a>  —-  <a href="https://www.jianshu.com/u/5a578d8312b1" target="_blank" rel="external">ShenJC</a></p>
+<p><a href="https://www.jianshu.com/p/34a8b40b9308" target="_blank" rel="external">Android 系统状态栏沉浸式/透明化完整解决方案</a>  —-  <a href="https://www.jianshu.com/u/2656a3d4ac55" target="_blank" rel="external">btman</a></p>
+<p><a href="https://www.jianshu.com/p/a44c119d6ef7" target="_blank" rel="external">Android 沉浸式 (透明) 状态栏适配</a>  —-  <a href="https://www.jianshu.com/u/25c3b13f87ce" target="_blank" rel="external">xiaoyanger</a></p>
+<p><a href="http://blog.csdn.net/guolin_blog/article/details/51763825" target="_blank" rel="external">Android状态栏微技巧，带你真正理解沉浸式模式</a>  —- 郭霖</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/View/" rel="tag"># View</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/属性动画2/" rel="next" title="属性动画（二）">
+                <i class="fa fa-chevron-left"></i> 属性动画（二）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="lijiankun24" />
+          <p class="site-author-name" itemprop="name">lijiankun24</p>
+           
+              <p class="site-description motion-element" itemprop="description">守得云开见月明。</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/lijiankun24" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/lijiankun24" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.jianshu.com/u/1abe21b7ff5f" target="_blank" title="Jianshu">
+                  
+                    <i class="fa fa-fw fa-jianshu"></i>
+                  
+                  Jianshu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://gank.io/post/published" title="匠心写作" target="_blank">匠心写作</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/lmj623565791" title="Hongyang" target="_blank">Hongyang</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.liaohuqiu.net/cn/" title="Huqiu Liao" target="_blank">Huqiu Liao</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://drakeet.me/" title="drakeet" target="_blank">drakeet</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.jianshu.com/u/df40282480b4" title="小鄧子" target="_blank">小鄧子</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://yuweiguocn.github.io/" title="于卫国" target="_blank">于卫国</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-基本概念"><span class="nav-number">1.</span> <span class="nav-text">1. 基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-实践效果"><span class="nav-number">2.</span> <span class="nav-text">2. 实践效果</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-淡化状态栏和导航栏"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 淡化状态栏和导航栏</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-隐藏状态栏"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 隐藏状态栏</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-1-在-Android-4-0-及之下"><span class="nav-number">2.2.1.</span> <span class="nav-text">2.2.1 在 Android 4.0 及之下</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-2-在-Android-4-0-之上"><span class="nav-number">2.2.2.</span> <span class="nav-text">2.2.2 在 Android 4.0 之上</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-隐藏导航栏"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 隐藏导航栏</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-沉浸式模式"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 沉浸式模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-监听状态栏和导航栏可见性"><span class="nav-number">2.5.</span> <span class="nav-text">2.5 监听状态栏和导航栏可见性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-6-透明状态栏和导航栏"><span class="nav-number">2.6.</span> <span class="nav-text">2.6 透明状态栏和导航栏</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-总结"><span class="nav-number">3.</span> <span class="nav-text">3 总结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-版本要求"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 版本要求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-相关文章"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 相关文章</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lijiankun24</span>
+  
+</div>
+
+
+<div>
+  <span id="busuanzi_container_site_pv">
+    Total views <span id="busuanzi_value_site_pv">   </span>
+  </span>
+
+  <span id="busuanzi_container_site_uv">
+    |   Total visitors <span id="busuanzi_value_site_uv"/>
+  </span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("tWG63sCRtLhi5NFeaXtWqtnv-gzGzoHsz", "lPLcNFpeOoNc6wr9PVX8XdbI");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+
+  
+
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+          bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+      } else {
+          bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+</body>
+</html>
