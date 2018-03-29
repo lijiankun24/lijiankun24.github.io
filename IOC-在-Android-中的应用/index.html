@@ -1,0 +1,990 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,IoC," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="控制反转 IoC(Inversion of Control) 意思是把创建对象的权利交给框架，是框架的重要特性，并非面向对象编程的专业术语。—-百度百科
+在 Java 开发中最著名的 IoC 框架莫过于 Spring，在 Android 开发中，IoC 框架也有很多，比如：ButterKnife、EventBus、Dagger、Dagger2 等框架都运用了 IoC 的思想。本篇文章即介绍 IoC">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IoC 在 Android 中的应用">
+<meta property="og:url" content="http://www.lijiankun24.com/IOC-在-Android-中的应用/index.html">
+<meta property="og:site_name" content="一些无处安放的代码和故事">
+<meta property="og:description" content="控制反转 IoC(Inversion of Control) 意思是把创建对象的权利交给框架，是框架的重要特性，并非面向对象编程的专业术语。—-百度百科
+在 Java 开发中最著名的 IoC 框架莫过于 Spring，在 Android 开发中，IoC 框架也有很多，比如：ButterKnife、EventBus、Dagger、Dagger2 等框架都运用了 IoC 的思想。本篇文章即介绍 IoC">
+<meta property="og:image" content="http://www.lijiankun24.com/IOC-在-Android-中的应用/catalog.png">
+<meta property="og:image" content="http://www.lijiankun24.com/IOC-在-Android-中的应用/dynamic_proxy.png">
+<meta property="og:updated_time" content="2018-03-28T14:35:51.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="IoC 在 Android 中的应用">
+<meta name="twitter:description" content="控制反转 IoC(Inversion of Control) 意思是把创建对象的权利交给框架，是框架的重要特性，并非面向对象编程的专业术语。—-百度百科
+在 Java 开发中最著名的 IoC 框架莫过于 Spring，在 Android 开发中，IoC 框架也有很多，比如：ButterKnife、EventBus、Dagger、Dagger2 等框架都运用了 IoC 的思想。本篇文章即介绍 IoC">
+<meta name="twitter:image" content="http://www.lijiankun24.com/IOC-在-Android-中的应用/catalog.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.lijiankun24.com/IOC-在-Android-中的应用/"/>
+
+
+
+
+
+  <title> IoC 在 Android 中的应用 | 一些无处安放的代码和故事 </title>
+<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">一些无处安放的代码和故事</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://www.lijiankun24.com/IOC-在-Android-中的应用/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="lijiankun24">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一些无处安放的代码和故事">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                IoC 在 Android 中的应用
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-03-23T08:31:24+08:00">
+                2018-03-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/IOC-在-Android-中的应用/" class="leancloud_visitors" data-flag-title="IoC 在 Android 中的应用">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Views </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>控制反转 IoC(Inversion of Control) 意思是把创建对象的权利交给框架，是框架的重要特性，并非面向对象编程的专业术语。—-<a href="https://baike.baidu.com/item/%E6%8E%A7%E5%88%B6%E5%8F%8D%E8%BD%AC/1158025?fr=aladdin&amp;fromid=4853&amp;fromtitle=ioc" target="_blank" rel="external">百度百科</a></p>
+<p>在 Java 开发中最著名的 IoC 框架莫过于 Spring，在 Android 开发中，IoC 框架也有很多，比如：ButterKnife、EventBus、Dagger、Dagger2 等框架都运用了 IoC 的思想。本篇文章即介绍 IoC 在 Android 中的使用，通过开发一个简单的 IoC 框架帮助你更加深刻的理解 IoC 的思想及其相关知识。本篇中涉及到的代码均在 Github 上面<a href="https://github.com/lijiankun24/IOCPractice" target="_blank" rel="external">IOCPractice</a>。</p>
+<div align="center"><br>      <img src="/IOC-在-Android-中的应用/catalog.png" width="616" height="335"><br></div>
+
+<a id="more"></a>
+<h2 id="1-IoC-简介"><a href="#1-IoC-简介" class="headerlink" title="1. IoC 简介"></a>1. IoC 简介</h2><p>IoC 控制反转不是一种技术，而是一种编程思想，体现着“不要找我们，我们找你”的思想。</p>
+<p>在传统的编程写法中，大多都是在类内部通过关键字 <code>new</code> 主动创建类的实例对象并赋给引用，但是这样写会造成类和类之间耦合度过高的后果，难于测试。有了 IoC 容器之后，创建对象和查找依赖的工作就交给框架完成，并由容器注入对象，这样通过 IoC 容器实现了类和类之间的解耦。</p>
+<p>IoC对编程带来的最大改变不是从代码上，而是从思想上，发生了“主从换位”的变化。应用程序原本是老大，要获取什么资源都是主动出击，但是在IoC/DI思想中，应用程序就变成被动的了，被动的等待IoC容器来创建并注入它所需要的资源。 —- <a href="https://blog.csdn.net/qq_22654611/article/details/52606960" target="_blank" rel="external">谈谈对Spring IOC的理解</a></p>
+<p>提到 IoC 就不得不提到另一个概念：依赖注入（Dependence Injection，简称DI），DI 的概念是指组件之间的依赖关系由容器在运行期间决定。看完对 DI 的定义也许觉得很模糊，不清楚到底讲了什么意思。其实 IoC 和 DI 表达的是同一个意思，只不过是从不同的角度去描述。</p>
+<h3 id="1-1-IoC"><a href="#1-1-IoC" class="headerlink" title="1.1 IoC"></a>1.1 IoC</h3><p>在传统程序的编写过程中，在一个类中如果需要另外一个对象，就需要通过关键字 <code>new</code> 出另一个类的对象，然后才可以开始使用这个对象，使用完成之后，再将这个对象销毁，在这个过程中对象和对象之间耦合度很高。</p>
+<p>有了 IoC 容器之后，所有的类都会在 IoC 容器中注册，并告诉 IoC 容器我是什么类，我需要什么对象，并且在运行到适当的时刻，将需要的对象创建并赋给我的引用，在适当的时刻再将该对象进行销毁。同时也会将创建我的对象，并赋给需要我的对象的类中。</p>
+<p>在使用 IoC 容器框架编程时，对象的创建、销毁都是由 IoC 容器控制，而不是由引用它的对象控制。对于某个对象来说，以前是由它控制某个对象，现在是所有的对象都由 IoC 容器控制，所以叫控制反转。</p>
+<h3 id="1-2-DI"><a href="#1-2-DI" class="headerlink" title="1.2 DI"></a>1.2 DI</h3><p>IoC 是指在程序运行期间，动态地向某个对象提供它所需要的对象，而 DI 就是实现这个思想的方法。比如，在 User 对象中需要使用到 Address 对象，我只需要告诉 IoC 容器，我需要一个 Address 对象，然后 IoC 容器会创建一个 Address 对象，然后像打针一样注入到 User 对象中，依赖注入就是这样来的。</p>
+<p>在 Java 1.3 之后，可以通过反射在运行期间动态的创建对象、调用对象的方法、改变对象的属性，DI 就是通过反射实现注入的。</p>
+<h2 id="2-IoC-相关知识"><a href="#2-IoC-相关知识" class="headerlink" title="2. IoC 相关知识"></a>2. IoC 相关知识</h2><p>在学习 IoC 之前，需要具备几点基础的 Java 知识，分别是注解、反射和动态代理，下面分别介绍。</p>
+<h3 id="2-1-注解"><a href="#2-1-注解" class="headerlink" title="2.1 注解"></a>2.1 注解</h3><p>在平时写代码的时候，多多少少都会接触到注解，比如：<code>@Override</code>、<code>@Deprecated</code> 等等，还有一些第三方库中也会有，比如 ButterKnife、EventBus、Dagger2 等。</p>
+<p>用完之后只有一个感受：真是太方便了，其实注解并没有多么复杂，和写普通的类（Class）、接口（Interface）差不了多少。</p>
+<p>首先，看一下我们平时使用注解的时候的代码，比如使用 ButterKnife 绑定一个控件或为一个控件添加点击事件的代码如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ExampleActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;</div><div class="line">  <span class="meta">@BindView</span>(R.id.user) EditText username;</div><div class="line">  <span class="meta">@BindView</span>(R.id.pass) EditText password;</div><div class="line"></div><div class="line">  <span class="meta">@BindString</span>(R.string.login_error) String loginErrorMessage;</div><div class="line"></div><div class="line">  <span class="meta">@OnClick</span>(R.id.submit) <span class="function"><span class="keyword">void</span> <span class="title">submit</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="comment">// TODO call server...</span></div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">    <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">    setContentView(R.layout.simple_activity);</div><div class="line">    ButterKnife.bind(<span class="keyword">this</span>);</div><div class="line">    <span class="comment">// TODO Use fields...</span></div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>那如果我们自己想写一个这样的注解，该怎么写呢？代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Target</span>(ElementType.FIELD)</div><div class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</div><div class="line"><span class="keyword">public</span> <span class="meta">@interface</span> BindView &#123;</div><div class="line">    <span class="function"><span class="keyword">int</span> <span class="title">value</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>如果对注解不熟悉，看见上面的代码可能会感觉到懵逼，没关系，我们一一介绍其中的含义：</p>
+<ul>
+<li><p><code>@Target(ElementType.FIELD)</code>：表示该注解的作用域，其取值有以下几个：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">enum</span> ElementType &#123;</div><div class="line">  TYPE,               <span class="comment">// 类、接口（包括注解类型）、枚举类，</span></div><div class="line">  FIELD,              <span class="comment">// 属性</span></div><div class="line">  METHOD,             <span class="comment">// 方法</span></div><div class="line">  PARAMETER,          <span class="comment">// 参数</span></div><div class="line">  CONSTRUCTOR,        <span class="comment">// 构造方法</span></div><div class="line">  LOCAL_VARIABLE,     <span class="comment">// 局部变量</span></div><div class="line">  ANNOTATION_TYPE,    <span class="comment">// 注解</span></div><div class="line">  PACKAGE,            <span class="comment">// 包</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p><code>@Retention(RetentionPolicy.RUNTIME)</code>：表示在什么级别保留此信息：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">enum</span> RetentionPolicy &#123;</div><div class="line">    SOURCE,          <span class="comment">// 源码注解，注解仅存在源码级别，在编译的时候丢弃该注解</span></div><div class="line"></div><div class="line">    CLASS,           <span class="comment">// 编译时注解，注解会在 class 文件中存在，但是在运行时会被丢弃</span></div><div class="line"></div><div class="line">    RUNTIME          <span class="comment">// 运行时注解，注解会被记录在 class 文件中，在 VM 运行时也会保留该注解，所以可以通过反射获得该注解</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p><code>@interface</code>：表示此文件是一个注解，和 <code>Class</code>、<code>Interface</code> 一个级别</p>
+</li>
+<li><p><code>int value();</code>：表示此注解的一个方法，可以通过注解的这个方法得到一个 <code>int</code> 注解值</p>
+</li>
+</ul>
+<h3 id="2-2-反射"><a href="#2-2-反射" class="headerlink" title="2.2 反射"></a>2.2 反射</h3><p>通俗的讲，反射就是把一个类、类的属性和类的方法当做对象一样来操作，在运行态的时候可以动态地创建对象、调用对象的方法、修改对象的属性。</p>
+<p>比如现在有一个类，如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.lijiankun24.iocpractice;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> String name;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">int</span> age;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">User</span><span class="params">(String name, <span class="keyword">int</span> age)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.name = name;</div><div class="line">        <span class="keyword">this</span>.age = age;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> name;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.name = name;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getAge</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> age;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setAge</span><span class="params">(<span class="keyword">int</span> age)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.age = age;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>通过普通的 <code>new</code> 的方式创建一个 User 的对象，并使用它，这种方式应该都非常熟悉了，但是用反射的方式该怎么实现呢？可以通过如下代码实现：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Main</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        User user = newInstanceUser();</div><div class="line">        invokeMethod(user);</div><div class="line">        setField(user);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 通过反射创建一个 User 对象</div><div class="line">     *</div><div class="line">     * <span class="doctag">@return</span> 返回该 User 对象</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> User <span class="title">newInstanceUser</span><span class="params">()</span> </span>&#123;</div><div class="line">        Class&lt;?&gt; clazz = User.class;</div><div class="line">        User user = <span class="keyword">null</span>;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            Constructor&lt;?&gt;[] constructors = clazz.getConstructors();</div><div class="line">            user = (User) constructors[<span class="number">0</span>].newInstance(<span class="string">"lijiankun"</span>, <span class="number">20</span>);</div><div class="line">            System.out.println(<span class="string">"The name is "</span> + user.getName());</div><div class="line">        &#125; <span class="keyword">catch</span> (SecurityException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125; <span class="keyword">catch</span> (InstantiationException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125; <span class="keyword">catch</span> (IllegalAccessException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125; <span class="keyword">catch</span> (InvocationTargetException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> user;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 通过反射调用 User 中的方法</div><div class="line">     *</div><div class="line">     * <span class="doctag">@param</span> user User 对象</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">invokeMethod</span><span class="params">(User user)</span> </span>&#123;</div><div class="line">        Class&lt;?&gt; clazz = user.getClass();</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            Method method = clazz.getDeclaredMethod(<span class="string">"setName"</span>, String.class);</div><div class="line">            method.invoke(user, <span class="string">"24"</span>);</div><div class="line">            System.out.println(<span class="string">"The name is "</span> + user.getName());</div><div class="line">        &#125; <span class="keyword">catch</span> (NoSuchMethodException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125; <span class="keyword">catch</span> (IllegalAccessException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125; <span class="keyword">catch</span> (InvocationTargetException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 通过反射修改 User 对象中的私有属性</div><div class="line">     *</div><div class="line">     * <span class="doctag">@param</span> user User 对象</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setField</span><span class="params">(User user)</span> </span>&#123;</div><div class="line">        Class&lt;?&gt; clazz = user.getClass();</div><div class="line">        <span class="keyword">try</span> &#123;S</div><div class="line">            Field field = clazz.getDeclaredField(<span class="string">"name"</span>);</div><div class="line">            field.setAccessible(<span class="keyword">true</span>);  <span class="comment">// 如果方法或者属性是私有的，则需要设置它的访问性为 true</span></div><div class="line">            field.set(user, <span class="string">"newName"</span>);</div><div class="line">            System.out.println(<span class="string">"The name is "</span> + user.getName());</div><div class="line">        &#125; <span class="keyword">catch</span> (IllegalAccessException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125; <span class="keyword">catch</span> (NoSuchFieldException e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>上述代码简单讲了下通过反射怎么动态地创建对象、调用对象的方法、修改对象的属性，至于更详细的反射则需要看书去学习。</p>
+<h3 id="2-3-动态代理"><a href="#2-3-动态代理" class="headerlink" title="2.3 动态代理"></a>2.3 动态代理</h3><p>代理模式的概念就是：为原对象提供一个代理对象，原对象和代理对象对外提供相同的 API 方法，客户通过代理对象间接地操作原对象，但是客户并不知道它操作的是代理对象。</p>
+<div align="center"><br>      <img src="/IOC-在-Android-中的应用/dynamic_proxy.png" width="474" height="372"><br></div>
+
+<p>如上图所示，简单示意了代理模式的概念，其中</p>
+<ul>
+<li>Subject：表示一个接口类，有一个公共的方法 <code>request()</code></li>
+<li>RealObject：实现了 <code>Subject</code> 接口，向外提供 <code>request()</code> 方法，是原对象（我们把它称之为委托对象）</li>
+<li>ProxyObject：也实现了 <code>Subject</code> 接口，向外提供 <code>request()</code> 方法，是代理对象</li>
+<li>Client：表示一个客户对象，想要调用 <code>RealObject</code> 的 <code>request()</code> 方法，但是并不是直接调用 <code>RealObject</code> 的 <code>request()</code> 方法，而是通过 <code>ProxyObject</code> 的 <code>request()</code> 方法间接地调用 <code>RealObject</code> 的 <code>request()</code> 方法</li>
+</ul>
+<p>代理的概念如上所述，但是有不同的实现方式，分为静态代理和动态代理：</p>
+<ul>
+<li>静态代理：代理类在编译后就已经实现好了，也就是在编译之后，代理类就是一个 class 文件</li>
+<li>动态代理：代理类是在运行期间生成的。也就是说，在编译之后，并没有代理类对应的 class 文件，而是在运行期间动态的生成字节码文件，并加载到虚拟机中的。</li>
+</ul>
+<h4 id="动态代理"><a href="#动态代理" class="headerlink" title="动态代理"></a>动态代理</h4><p>在 IoC 中会用到 Java 的动态代理，所以在这里也是重点讲一个 Java 动态代理。</p>
+<p>在 Java 的动态代理中一定会涉及到一个接口和一个类，分别是：<code>InvocationHandler(Interface)</code>和 <code>Proxy(Class)</code>。下面我们通过一个例子，更加形象地学习 Java 的动态代理。</p>
+<p>首先定义一个接口如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Subject</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">request</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">int</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>接着定义一个类实现这个接口，这个类就是我们的委托对象，代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RealObject</span> <span class="keyword">implements</span> <span class="title">Subject</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">request</span><span class="params">()</span> </span>&#123;</div><div class="line">      System.out.println(<span class="string">"RealObject request invoked"</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> a + b;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>然后有一个调用处理器的类，这个调用处理器的类需要实现 <code>InvocationHandler</code> 接口，代码如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ProxyHandler</span> <span class="keyword">implements</span> <span class="title">InvocationHandler</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> Subject mRealObject = <span class="keyword">null</span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ProxyHandler</span><span class="params">(Subject realObject)</span> </span>&#123;</div><div class="line">        mRealObject = realObject;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span> <span class="keyword">throws</span> Throwable </span>&#123;</div><div class="line">        System.out.println(<span class="string">"ProxyHandler PreProcess"</span>);</div><div class="line">        method.invoke(mRealObject, args);</div><div class="line">        System.out.println(<span class="string">"ProxyHandler PostProcess"</span>);</div><div class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>最后就是一个 Client 类<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Client</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        Subject realObject = <span class="keyword">new</span> RealObject();</div><div class="line">        InvocationHandler handler = <span class="keyword">new</span> ProxyHandler(realObject);</div><div class="line"></div><div class="line">        Subject proxyObject = (Subject) Proxy.newProxyInstance(handler.getClass().getClassLoader(),</div><div class="line">                realObject.getClass().getInterfaces(), handler);</div><div class="line">        proxyObject.request();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>通过上面的例子，我想大家对 Java 中的动态代理心里大概已经有概念，其实也不难，可以分为以下几个步骤：</p>
+<ul>
+<li>首先需要有一个接口，其中定义了委托类和代理类都会实现的方法</li>
+<li>定义委托类，实现该接口</li>
+<li><p>定义调用处理器的类，实现 <code>InvocationHandler</code> 接口，<code>InvocationHandler</code> 的源码如下所示，其中只有一个方法，这个方法非常重要：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">InvocationHandler</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     *</div><div class="line">     * <span class="doctag">@param</span>   proxy  指委托对象</div><div class="line">     * <span class="doctag">@param</span>   method 指调用的委托对象的方法的对象</div><div class="line">     * <span class="doctag">@param</span>   args   指调用的委托对象的方法的参数</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span></span></div><div class="line">        <span class="keyword">throws</span> Throwable;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>通过 <code>Proxy.newProxyInstance(ClassLoader loader, Class&lt;?&gt;[] interfaces, InvocationHandler h)</code> 方法创建一个代理对象，就可以调用代理对象的方法了，如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Subject proxyObject = (Subject) Proxy.newProxyInstance(handler.getClass().getClassLoader(),</div><div class="line">                realObject.getClass().getInterfaces(), handler);</div><div class="line">proxyObject.request();</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>好了，以上就介绍了 IoC 在 Android 中应用所需要用到的 Java 知识，下面就通过实现一个简单的 IoC 框架，更加深入地理解 IoC 在 Android 中的应用吧。</p>
+<h2 id="3-IoC-在-Android-中的应用"><a href="#3-IoC-在-Android-中的应用" class="headerlink" title="3. IoC 在 Android 中的应用"></a>3. IoC 在 Android 中的应用</h2><p>如果大家接触过 ButterKnife 框架的话，对下面这样的代码一定不陌生，<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ExampleActivity</span> <span class="keyword">extends</span> <span class="title">Activity</span> </span>&#123;</div><div class="line">  <span class="meta">@BindView</span>(R.id.user) EditText username;</div><div class="line">  <span class="meta">@BindView</span>(R.id.pass) EditText password;</div><div class="line"></div><div class="line">  <span class="meta">@BindString</span>(R.string.login_error) String loginErrorMessage;</div><div class="line"></div><div class="line">  <span class="meta">@OnClick</span>(R.id.submit) <span class="function"><span class="keyword">void</span> <span class="title">submit</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="comment">// TODO call server...</span></div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">    <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">    setContentView(R.layout.simple_activity);</div><div class="line">    ButterKnife.bind(<span class="keyword">this</span>);</div><div class="line">    <span class="comment">// TODO Use fields...</span></div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>在传统的写法中，我们要向获得在 xml 文件中声明的控件实例，需要通过 <code>findViewById</code> 来实现，但是 ButterKnife 只是用 <code>@BindView(R.id.xxx)</code> 就实现了同样的效果。同样的，ButterKnife 也用 <code>OnClick(R.id.xxx)</code> 为某个控件设置了监听回调事件，用 <code>BindString(R.string.xxx)</code> 实现了为某个 String 对象赋值，那我们也尝试着用 IoC 实现这样的一个框架。</p>
+<h3 id="3-1-注入布局文件"><a href="#3-1-注入布局文件" class="headerlink" title="3.1 注入布局文件"></a>3.1 注入布局文件</h3><p>首先编写一个注解文件<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Target</span>(ElementType.TYPE)</div><div class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</div><div class="line"><span class="keyword">public</span> <span class="meta">@interface</span> ContentView &#123;</div><div class="line">    <span class="function"><span class="keyword">int</span> <span class="title">value</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>然后编写 ButterKnife 管理文件，如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ButterKnife</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String METHOD_SET_CONTENTVIEW = <span class="string">"setContentView"</span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">inject</span><span class="params">(Activity activity)</span> </span>&#123;</div><div class="line">        injectContentView(activity);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">injectContentView</span><span class="params">(Activity activity)</span> </span>&#123;</div><div class="line">        Class&lt;? extends Activity&gt; clazz = activity.getClass();</div><div class="line">        <span class="comment">// 在 Activity 类上查找 ContentView.class 的注解</span></div><div class="line">        ContentView contentView = clazz.getAnnotation(ContentView.class);</div><div class="line">        <span class="keyword">if</span> (contentView != <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="comment">// 得到 布局文件的 Id 值</span></div><div class="line">            <span class="keyword">int</span> layoutId = contentView.value();</div><div class="line">            <span class="keyword">if</span> (layoutId != -<span class="number">1</span>) &#123;</div><div class="line">                <span class="keyword">try</span> &#123;</div><div class="line">                    <span class="comment">// 通过反射调用 Activity 的 setContentView(int layoutId) 方法</span></div><div class="line">                    Method method = clazz.getMethod(METHOD_SET_CONTENTVIEW, <span class="keyword">int</span>.class);</div><div class="line">                    method.setAccessible(<span class="keyword">true</span>);</div><div class="line">                    method.invoke(activity, layoutId);</div><div class="line">                &#125; <span class="keyword">catch</span> (NoSuchMethodException e) &#123;</div><div class="line">                    e.printStackTrace();</div><div class="line">                &#125; <span class="keyword">catch</span> (IllegalAccessException e) &#123;</div><div class="line">                    e.printStackTrace();</div><div class="line">                &#125; <span class="keyword">catch</span> (InvocationTargetException e) &#123;</div><div class="line">                    e.printStackTrace();</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;  </div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>在 <code>Activity</code> 中就可以使用它注入布局文件了<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@ContentView</span>(R.layout.activity_main)</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">        ButterKnife.inject(<span class="keyword">this</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="3-2-注入-Views"><a href="#3-2-注入-Views" class="headerlink" title="3.2 注入 Views"></a>3.2 注入 Views</h3><p>首先编写注入 Views 的注解文件<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Target</span>(ElementType.FIELD)</div><div class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</div><div class="line"><span class="keyword">public</span> <span class="meta">@interface</span> BindView &#123;</div><div class="line">    <span class="function"><span class="keyword">int</span> <span class="title">value</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>在 <code>ButterKnife</code> 中同样的去实现这个注解<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ButterKnife</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String METHOD_SET_CONTENTVIEW = <span class="string">"setContentView"</span>;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String METHOD_FIND_VIEW_BY_ID = <span class="string">"findViewById"</span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">inject</span><span class="params">(Activity activity)</span> </span>&#123;</div><div class="line">        injectContentView(activity);</div><div class="line">        injectView(activity);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    ......</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">injectView</span><span class="params">(Activity activity)</span> </span>&#123;</div><div class="line">        Class&lt;? extends Activity&gt; clazz = activity.getClass();</div><div class="line">        <span class="comment">// 首先获取到 Activity 中所有的属性</span></div><div class="line">        Field[] fields = clazz.getDeclaredFields();</div><div class="line">        <span class="keyword">for</span> (Field field : fields) &#123;</div><div class="line">            <span class="comment">// 遍历查找每个属性上是否存在 BindView.class 注解</span></div><div class="line">            BindView viewInject = field.getAnnotation(BindView.class);</div><div class="line">            <span class="keyword">if</span> (viewInject != <span class="keyword">null</span>) &#123;</div><div class="line">                <span class="comment">// 得到控件的 id 值</span></div><div class="line">                <span class="keyword">int</span> viewId = viewInject.value();</div><div class="line">                <span class="keyword">if</span> (viewId != -<span class="number">1</span>) &#123;</div><div class="line">                    <span class="keyword">try</span> &#123;</div><div class="line">                        <span class="comment">// 通过反射调用 Activity 的 findViewById(int id) 方法</span></div><div class="line">                        Method method = clazz.getMethod(METHOD_FIND_VIEW_BY_ID, <span class="keyword">int</span>.class);</div><div class="line">                        Object resView = method.invoke(activity, viewId);</div><div class="line">                        <span class="comment">// 并将得到的控件对象赋予 Activity 中的该属性</span></div><div class="line">                        field.setAccessible(<span class="keyword">true</span>);</div><div class="line">                        field.set(activity, resView);</div><div class="line">                    &#125; <span class="keyword">catch</span> (NoSuchMethodException e) &#123;</div><div class="line">                        e.printStackTrace();</div><div class="line">                    &#125; <span class="keyword">catch</span> (IllegalAccessException e) &#123;</div><div class="line">                        e.printStackTrace();</div><div class="line">                    &#125; <span class="keyword">catch</span> (InvocationTargetException e) &#123;</div><div class="line">                        e.printStackTrace();</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>然后在 <code>Activity</code> 中也可以使用这个注解<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@ContentView</span>(R.layout.activity_main)</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@BindView</span>(R.id.tv1)</div><div class="line">    <span class="keyword">private</span> TextView TV1;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">        ButterKnife.inject(<span class="keyword">this</span>);</div><div class="line">        TV1.setText(<span class="string">"Change the text"</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="3-3-注入-Views-的事件监听"><a href="#3-3-注入-Views-的事件监听" class="headerlink" title="3.3 注入 Views 的事件监听"></a>3.3 注入 Views 的事件监听</h3><p>和上面有点不同的是，为了扩展的方便，需要为监听注解编写一个注解，如下所示<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Target</span>(ElementType.ANNOTATION_TYPE)</div><div class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</div><div class="line"><span class="keyword">public</span> <span class="meta">@interface</span> EventType &#123;</div><div class="line">    Class&lt;?&gt; listenerType();  <span class="comment">// 监听接口的类型</span></div><div class="line"></div><div class="line">    <span class="function">String <span class="title">listenerSetter</span><span class="params">()</span></span>;  <span class="comment">// 设置监听接口的 set 方法</span></div><div class="line"></div><div class="line">    <span class="function">String <span class="title">methodName</span><span class="params">()</span></span>;      <span class="comment">// 监听接口中的回调方法名称</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>然后就是编写事件监听注解<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Target</span>(ElementType.METHOD)</div><div class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</div><div class="line"><span class="meta">@EventType</span>(listenerType = View.OnClickListener.class, listenerSetter = <span class="string">"setOnClickListener"</span>,</div><div class="line">        methodName = <span class="string">"onClick"</span>)</div><div class="line"><span class="keyword">public</span> <span class="meta">@interface</span> OnClick &#123;</div><div class="line">    <span class="keyword">int</span>[] value();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>编写在 ButterKnife 中的使用<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ButterKnife</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String METHOD_SET_CONTENTVIEW = <span class="string">"setContentView"</span>;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String METHOD_FIND_VIEW_BY_ID = <span class="string">"findViewById"</span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">inject</span><span class="params">(Activity activity)</span> </span>&#123;</div><div class="line">        injectContentView(activity);</div><div class="line">        injectView(activity);</div><div class="line">        injectEvent(activity);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    ......</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">injectEvent</span><span class="params">(Activity activity)</span> </span>&#123;</div><div class="line">        Class&lt;? extends Activity&gt; clazz = activity.getClass();</div><div class="line">        <span class="comment">// 得到 Activity 中所有的方法</span></div><div class="line">        Method[] methods = clazz.getMethods();</div><div class="line">        <span class="keyword">for</span> (Method method : methods) &#123;</div><div class="line">            <span class="comment">// 遍历所有的方法，并得到方法上所有的注解对象</span></div><div class="line">            Annotation[] annotations = method.getAnnotations();</div><div class="line">            <span class="keyword">for</span> (Annotation annotation : annotations) &#123;</div><div class="line">                <span class="comment">// 遍历每一个方法的所有注解</span></div><div class="line">                Class&lt;? extends Annotation&gt; annotationType = annotation.annotationType();</div><div class="line">                EventType eventBase = annotationType.getAnnotation(EventType.class);</div><div class="line">                <span class="comment">// 查找是否存在 EventType.class 注解</span></div><div class="line">                <span class="keyword">if</span> (eventBase != <span class="keyword">null</span>) &#123;</div><div class="line">                    String listenerSetter = eventBase.listenerSetter();</div><div class="line">                    String methodName = eventBase.methodName();</div><div class="line">                    Class listenerType = eventBase.listenerType();</div><div class="line">                    <span class="keyword">try</span> &#123;</div><div class="line">                        <span class="comment">// 通过反射调用注解的 value() 方法得到 viewIds 值</span></div><div class="line">                        Method method1 = annotationType.getDeclaredMethod(<span class="string">"value"</span>);</div><div class="line">                        <span class="keyword">int</span>[] viewIds = (<span class="keyword">int</span>[]) method1.invoke(annotation, <span class="keyword">null</span>);</div><div class="line">                        <span class="comment">// 通过 Java 动态代理的方式为每个 View 设置监听器</span></div><div class="line">                        DynamicHandler handler = <span class="keyword">new</span> DynamicHandler(activity);</div><div class="line">                        handler.addMethod(methodName, method);</div><div class="line">                        Object listener = Proxy.newProxyInstance(listenerType.getClassLoader()</div><div class="line">                                , <span class="keyword">new</span> Class[]&#123;listenerType&#125;, handler);</div><div class="line">                        <span class="keyword">for</span> (<span class="keyword">int</span> viewId : viewIds) &#123;</div><div class="line">                            View view = activity.findViewById(viewId);</div><div class="line">                            Method method2 = view.getClass().getMethod(listenerSetter, listenerType);</div><div class="line">                            method2.invoke(view, listener);</div><div class="line">                        &#125;</div><div class="line">                    &#125; <span class="keyword">catch</span> (NoSuchMethodException e) &#123;</div><div class="line">                        e.printStackTrace();</div><div class="line">                    &#125; <span class="keyword">catch</span> (IllegalAccessException e) &#123;</div><div class="line">                        e.printStackTrace();</div><div class="line">                    &#125; <span class="keyword">catch</span> (InvocationTargetException e) &#123;</div><div class="line">                        e.printStackTrace();</div><div class="line">                    &#125;</div><div class="line"></div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>在上述注入事件监听的过程中，用到了 Java 的动态代理，所以需要额外的编写一个 <code>InvocationHandler</code> 调用处理器类，如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ButterKnifeDynamicHandler</span> <span class="keyword">implements</span> <span class="title">InvocationHandler</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> WeakReference&lt;Object&gt; mObjectWR = <span class="keyword">null</span>;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> HashMap&lt;String, Method&gt; mMethodHashMap = <span class="keyword">new</span> HashMap&lt;&gt;();</div><div class="line"></div><div class="line">    ButterKnifeDynamicHandler(Object object) &#123;</div><div class="line">        mObjectWR = <span class="keyword">new</span> WeakReference&lt;&gt;(object);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">addMethod</span><span class="params">(String methodName, Method method)</span> </span>&#123;</div><div class="line">        mMethodHashMap.put(methodName, method);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span> <span class="keyword">throws</span> Throwable </span>&#123;</div><div class="line">        Object handler = mObjectWR.get();</div><div class="line">        String name = method.getName();</div><div class="line">        method = mMethodHashMap.get(name);</div><div class="line">        <span class="keyword">if</span> (handler != <span class="keyword">null</span> &amp;&amp; method != <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">return</span> method.invoke(mObjectWR.get(), args);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>最后在 <code>Activity</code> 中使用它即可：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@ContentView</span>(R.layout.activity_main)</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@BindView</span>(R.id.tv1)</div><div class="line">    <span class="keyword">private</span> TextView TV1;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</div><div class="line">        ButterKnife.inject(<span class="keyword">this</span>);</div><div class="line">        TV1.setText(<span class="string">"Change the text"</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@OnClick</span>(&#123;R.id.tv1, R.id.tv2&#125;)</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View view)</span> </span>&#123;</div><div class="line">        <span class="keyword">switch</span> (view.getId()) &#123;</div><div class="line">            <span class="keyword">case</span> R.id.tv1:</div><div class="line">                Toast.makeText(MainActivity.<span class="keyword">this</span>, <span class="string">"IOC For Test tv1"</span>, Toast.LENGTH_SHORT).show();</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            <span class="keyword">case</span> R.id.tv2:</div><div class="line">                Toast.makeText(MainActivity.<span class="keyword">this</span>, <span class="string">"IOC For Test tv2"</span>, Toast.LENGTH_SHORT).show();</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这样，一个使用 IoC 思想实现的仿 ButterKnife 框架就实现了，上面涉及到的代码都在 Github 上面：<a href="https://github.com/lijiankun24/IOCPractice" target="_blank" rel="external">IoCPractice</a>.</p>
+<hr>
+<p><strong>参考资料：</strong></p>
+<p><a href="https://blog.csdn.net/qq_22654611/article/details/52606960" target="_blank" rel="external">谈谈对Spring IOC的理解</a>  – <a href="https://blog.csdn.net/qq_22654611" target="_blank" rel="external">Acrash</a></p>
+<p><a href="https://blog.csdn.net/lmj623565791/article/details/39269193" target="_blank" rel="external">Android 进阶 教你打造 Android 中的 IOC 框架 【ViewInject】 （上）</a> – <a href="https://blog.csdn.net/lmj623565791" target="_blank" rel="external">Hongyang</a></p>
+<p><a href="https://blog.csdn.net/lmj623565791/article/details/39269193" target="_blank" rel="external">Android 进阶 教你打造 Android 中的 IOC 框架 【ViewInject】 （下）</a> – <a href="https://blog.csdn.net/lmj623565791" target="_blank" rel="external">Hongyang</a></p>
+<p><a href="https://www.jianshu.com/p/44ea03482da9" target="_blank" rel="external">如何实现自定义Java运行时注解功能</a> – <a href="https://www.jianshu.com/u/470afcb80dc2?order_by=commented_at" target="_blank" rel="external">r17171709</a></p>
+<p><a href="https://www.jianshu.com/p/6f6bb2f0ece9" target="_blank" rel="external">代理模式及Java实现动态代理</a> – <a href="https://www.jianshu.com/u/71dc075b6521" target="_blank" rel="external">xiazdong</a></p>
+<p><a href="http://www.cnblogs.com/xiaoluo501395377/p/3383130.html" target="_blank" rel="external">java的动态代理机制详解</a> – <a href="http://www.cnblogs.com/xiaoluo501395377/" target="_blank" rel="external">xiaoluo501395377</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/IoC/" rel="tag"># IoC</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/ConstraintLayout-的使用/" rel="next" title="ConstraintLayout 的使用">
+                <i class="fa fa-chevron-left"></i> ConstraintLayout 的使用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="lijiankun24" />
+          <p class="site-author-name" itemprop="name">lijiankun24</p>
+           
+              <p class="site-description motion-element" itemprop="description">守得云开见月明。</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">26</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/lijiankun24" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/lijiankun24" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.jianshu.com/u/1abe21b7ff5f" target="_blank" title="Jianshu">
+                  
+                    <i class="fa fa-fw fa-jianshu"></i>
+                  
+                  Jianshu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://gank.io/post/published" title="匠心写作" target="_blank">匠心写作</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/lmj623565791" title="Hongyang" target="_blank">Hongyang</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.liaohuqiu.net/cn/" title="Huqiu Liao" target="_blank">Huqiu Liao</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://drakeet.me/" title="drakeet" target="_blank">drakeet</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.jianshu.com/u/df40282480b4" title="小鄧子" target="_blank">小鄧子</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://yuweiguocn.github.io/" title="于卫国" target="_blank">于卫国</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-IoC-简介"><span class="nav-number">1.</span> <span class="nav-text">1. IoC 简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-IoC"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 IoC</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-DI"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 DI</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-IoC-相关知识"><span class="nav-number">2.</span> <span class="nav-text">2. IoC 相关知识</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-注解"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 注解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-反射"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 反射</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-动态代理"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 动态代理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#动态代理"><span class="nav-number">2.3.1.</span> <span class="nav-text">动态代理</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-IoC-在-Android-中的应用"><span class="nav-number">3.</span> <span class="nav-text">3. IoC 在 Android 中的应用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-注入布局文件"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 注入布局文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-注入-Views"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 注入 Views</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-注入-Views-的事件监听"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 注入 Views 的事件监听</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lijiankun24</span>
+  
+</div>
+
+
+<div>
+  <span id="busuanzi_container_site_pv">
+    Total views <span id="busuanzi_value_site_pv">   </span>
+  </span>
+
+  <span id="busuanzi_container_site_uv">
+    |   Total visitors <span id="busuanzi_value_site_uv"/>
+  </span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("tWG63sCRtLhi5NFeaXtWqtnv-gzGzoHsz", "lPLcNFpeOoNc6wr9PVX8XdbI");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+
+  
+
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+          bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+      } else {
+          bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+</body>
+</html>
