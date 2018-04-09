@@ -1,0 +1,971 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,Java,Hotfix," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="热修复已经出来很久了，正好公司的项目最近接入的腾讯的 Tinker 热修复，所以研究了一下热修复的原理，现在将其梳理成一系列文章，总共大概会有5~6篇文章，现在带来第一篇文章，简单介绍一下热修复的原理：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="热修复原理初窥（一）">
+<meta property="og:url" content="http://www.lijiankun24.com/热修复原理初窥（一）/index.html">
+<meta property="og:site_name" content="一些无处安放的代码和故事">
+<meta property="og:description" content="热修复已经出来很久了，正好公司的项目最近接入的腾讯的 Tinker 热修复，所以研究了一下热修复的原理，现在将其梳理成一系列文章，总共大概会有5~6篇文章，现在带来第一篇文章，简单介绍一下热修复的原理：">
+<meta property="og:image" content="http://www.lijiankun24.com/热修复原理初窥（一）/catalog.png">
+<meta property="og:image" content="http://www.lijiankun24.com/热修复原理初窥（一）/classloader.png">
+<meta property="og:image" content="http://www.lijiankun24.com/热修复原理初窥（一）/dex.png">
+<meta property="og:image" content="http://www.lijiankun24.com/热修复原理初窥（一）/dex1.png">
+<meta property="og:updated_time" content="2018-04-09T14:55:49.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="热修复原理初窥（一）">
+<meta name="twitter:description" content="热修复已经出来很久了，正好公司的项目最近接入的腾讯的 Tinker 热修复，所以研究了一下热修复的原理，现在将其梳理成一系列文章，总共大概会有5~6篇文章，现在带来第一篇文章，简单介绍一下热修复的原理：">
+<meta name="twitter:image" content="http://www.lijiankun24.com/热修复原理初窥（一）/catalog.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.lijiankun24.com/热修复原理初窥（一）/"/>
+
+
+
+
+
+  <title> 热修复原理初窥（一） | 一些无处安放的代码和故事 </title>
+<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">一些无处安放的代码和故事</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://www.lijiankun24.com/热修复原理初窥（一）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="lijiankun24">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一些无处安放的代码和故事">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                热修复原理初窥（一）
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-04-09T08:16:20+08:00">
+                2018-04-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/热修复原理初窥（一）/" class="leancloud_visitors" data-flag-title="热修复原理初窥（一）">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Views </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>热修复已经出来很久了，正好公司的项目最近接入的腾讯的 Tinker 热修复，所以研究了一下热修复的原理，现在将其梳理成一系列文章，总共大概会有5~6篇文章，现在带来第一篇文章，简单介绍一下热修复的原理：</p>
+<div align="center"><br>    <img src="/热修复原理初窥（一）/catalog.png" width="684" height="220"><br></div>
+
+<a id="more"></a>
+<h2 id="1-热修复"><a href="#1-热修复" class="headerlink" title="1. 热修复"></a>1. 热修复</h2><h3 id="1-1-背景介绍"><a href="#1-1-背景介绍" class="headerlink" title="1.1 背景介绍"></a>1.1 背景介绍</h3><p>在 App 发版之后，如果发现线上有严重 Bug，需要紧急修复，按照传统的做法就是：修复 Bug、重新打包 App、测试、向各个应用市场和渠道换包、提示用户升级、用户下载、覆盖安装，有时候可能只是为了修改一两行代码，却需要如此复杂的一个过程，效率低且周期长，非常影响用户的体验。</p>
+<p>针对这样的问题，目前已经有了相对完善成熟的解决办法 —- 热修复。热修复就是通过动态下载补丁的方式，修复线上紧急 Bug，不需要用户下载新版 App 重新安装。</p>
+<p>2015 年 QQ 空间开发团队首先提出了热补丁动态修复技术的思想：<a href="https://mp.weixin.qq.com/s?__biz=MzI1MTA1MzM2Nw==&amp;mid=400118620&amp;idx=1&amp;sn=b4fdd5055731290eef12ad0d17f39d4a&amp;scene=1&amp;srcid=1106Imu9ZgwybID13e7y2nEi#wechat_redirect" target="_blank" rel="external">安卓App热补丁动态修复技术介绍</a>。之后也出现了其他热修复框架，现在比较完善的有：</p>
+<ul>
+<li><a href="https://github.com/Tencent/tinker" target="_blank" rel="external">微信 Tinker</a></li>
+<li><a href="https://github.com/alibaba/AndFix" target="_blank" rel="external">阿里 AndFix</a></li>
+<li><a href="https://tech.meituan.com/android_robust.html" target="_blank" rel="external">美团 Android 热更新方案 Robust</a></li>
+</ul>
+<h3 id="1-2-dex-分包方案"><a href="#1-2-dex-分包方案" class="headerlink" title="1.2 dex 分包方案"></a>1.2 dex 分包方案</h3><p>当一个 Android 应用非常复杂庞大的时候，会引入很多的依赖包，同时本身应用的代码也很多，这个时候就会出现两个问题：</p>
+<ul>
+<li>编译失败，会报 <code>com.android.dex.DexIndexOverflowException：method ID not in[0,0xffff]:65536</code> 这样的错误</li>
+<li>编译器正常完成编译工作，但是在低版本系统的手机上无法安装，会提示 <code>Optimization failed</code> 异常信息</li>
+</ul>
+<p>这两个问题都和一个叫做 DexOpt 应用程序有关。DexOpt 会在 Android 系统第一次安装应用的时候，对 Dex 文件做优化生成一个 ODex（Optimised Dex） 文件，执行 ODex 文件的效率会比直接执行 Dex 文件的效率高很多。</p>
+<ul>
+<li>早期的 Android 系统中，DexOpt 有一个问题，DexOpt 会把每一个类的方法id检索起来，存在一个链表结构里面。但是这个链表的长度是用一个 short 类型来保存的，导致了方法 id 的数目不能够超过65536个。</li>
+<li>在 DexOpt 优化 Dex 的过程中，DexOpt 会采用一个固定大小的缓冲区来存储应用中所有方法的信息，这个缓冲区就是 LinearAlloc。LinearAlloc 在新版本的 Android 系统中其大小是 8MB 或者 16MB，但是在 Android 2.2 或 Android 2.3 中却只有 5MB，当待安装的 apk 中的方法比较多的时候，尽管它还没有达到 65536 的限制，但是它的存储空间仍然有可能超过 5MB，这种情况就会报 <code>Optimization failed</code> 的异常</li>
+</ul>
+<p>针对上面的两种问题，Google 在 2014 年提出了 multidex 的解决方案，通过 multidex 可以很好地解决方法数越界的问题。</p>
+<p>假设在 Apk 中有两个 dex 文件，<code>主 dex 文件</code> 和 <code>从 dex 文件</code>。在 Applicaion 实例化之后，在 <code>onCreate()</code> 方法中将 <code>从 dex 文件</code> 通过反射注入到当前的 Classloader<br>中。</p>
+<h2 id="2-热修复原理"><a href="#2-热修复原理" class="headerlink" title="2. 热修复原理"></a>2. 热修复原理</h2><h3 id="2-1-类加载器"><a href="#2-1-类加载器" class="headerlink" title="2.1 类加载器"></a>2.1 类加载器</h3><ul>
+<li><p><strong>PathClassLoader &amp;&amp; DexClassLoader</strong></p>
+<p>Android 采用的也是 Java 语言，和 Java 应用不同的是，Java 应用是基于 JVM 的，而 Android 应用是基于 Dalvik/ART VM 的。不论是哪种虚拟机都是用 ClassLoader 加载类的，JVM 加载的是 .class 文件，而 Dalvik/ART VM 加载的是 .dex 文件。</p>
+<p>在 Android 中，ClassLoader 分为两种：PathClassLoader 和 DexClassLoader，两者都是继承自 BaseDexClassLoader 的，关系图如下所示：</p>
+<div align="center"><br>      <img src="/热修复原理初窥（一）/classloader.png" width="537" height="361"><br></div>
+
+<p>看下两个类的源码及注释：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PathClassLoader</span> <span class="keyword">extends</span> <span class="title">BaseDexClassLoader</span> </span>&#123;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="title">PathClassLoader</span><span class="params">(String dexPath, ClassLoader parent)</span> </span>&#123;</div><div class="line">      <span class="keyword">super</span>(dexPath, <span class="keyword">null</span>, <span class="keyword">null</span>, parent);</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="title">PathClassLoader</span><span class="params">(String dexPath, String libraryPath,</span></span></div><div class="line">          ClassLoader parent) &#123;</div><div class="line">      <span class="keyword">super</span>(dexPath, <span class="keyword">null</span>, libraryPath, parent);</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DexClassLoader</span> <span class="keyword">extends</span> <span class="title">BaseDexClassLoader</span> </span>&#123;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="title">DexClassLoader</span><span class="params">(String dexPath, String optimizedDirectory,</span></span></div><div class="line">          String libraryPath, ClassLoader parent) &#123;</div><div class="line">      <span class="keyword">super</span>(dexPath, <span class="keyword">new</span> File(optimizedDirectory), libraryPath, parent);</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>从注释中可以了解到，PathClassLoader 和 DexClassLoader 的区别主要有：</p>
+<ul>
+<li>PathClassLoader：只能加载已经安装到 Android 系统中的 apk 文件（/data/app目录），是 Android 默认使用的类加载器。</li>
+<li>DexClassLoader：可以加载任意目录下的 dex/jar/apk/zip 文件，比 PathClassLoader 更灵活，是实现热修复的重点。</li>
+</ul>
+<p>从代码中可见，PathClassLoader 和 DexClassLoader 都是继承自 BaseDexClassLoader，并且在它们的构造方法中都调用的父类的构造方法。不同的是，在 DexClassLoader 中调用父类构造方法时传入了optimizedDirectory 参数。</p>
+</li>
+<li><p><strong>BaseDexClassLoader</strong></p>
+<p>在 PathClassLoader 和 DexClassLoader 中都调用了父类（即：BaseDexClassLoader） 的构造方法，BaseDexClassLoader 的构造方法如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">  <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BaseDexClassLoader</span> <span class="keyword">extends</span> <span class="title">ClassLoader</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> DexPathList pathList;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * Constructs an instance.</div><div class="line">     *</div><div class="line">     * <span class="doctag">@param</span> dexPath 要加载的程序文件（一般是dex文件，也可以是jar/apk/zip文件）所在目录</div><div class="line">     * <span class="doctag">@param</span> optimizedDirectory dex文件的输出目录（因为在加载jar/apk/zip等压缩格式的程序文件时会解压出其中的dex文件，该目录就是专门用于存放这些被解压出来的dex文件的）</div><div class="line">     * <span class="doctag">@param</span> 加载程序文件时需要用到的库路径。</div><div class="line">     * <span class="doctag">@param</span> 父加载器</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">BaseDexClassLoader</span><span class="params">(String dexPath, File optimizedDirectory,</span></span></div><div class="line">            String libraryPath, ClassLoader parent) &#123;</div><div class="line">        <span class="keyword">super</span>(parent);</div><div class="line">        <span class="keyword">this</span>.pathList = <span class="keyword">new</span> DexPathList(<span class="keyword">this</span>, dexPath, libraryPath, optimizedDirectory);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    ......</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>在 BaseDexClassLoader 中有一个非常重要的方法 findClass(String name)，此方法供外部类调用以找到所加载的 class， 代码如下所示<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BaseDexClassLoader</span> <span class="keyword">extends</span> <span class="title">ClassLoader</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> DexPathList pathList;</div><div class="line"></div><div class="line">      ......</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="keyword">protected</span> Class&lt;?&gt; findClass(String name) <span class="keyword">throws</span> ClassNotFoundException &#123;</div><div class="line">        List&lt;Throwable&gt; suppressedExceptions = <span class="keyword">new</span> ArrayList&lt;Throwable&gt;();</div><div class="line">        Class c = pathList.findClass(name, suppressedExceptions);</div><div class="line">        <span class="keyword">if</span> (c == <span class="keyword">null</span>) &#123;</div><div class="line">            ClassNotFoundException cnfe = <span class="keyword">new</span> ClassNotFoundException(<span class="string">"Didn't find class \""</span> + name + <span class="string">"\" on path: "</span> + pathList);</div><div class="line">            <span class="keyword">for</span> (Throwable t : suppressedExceptions) &#123;</div><div class="line">                cnfe.addSuppressed(t);</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">throw</span> cnfe;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> c;</div><div class="line">    &#125;</div></pre></td></tr></table></figure></p>
+<p>分析 findClass(String name) 可以知道，在 findClass(String name) 中主要通过调用 DexPathList.findClass(String name, List<throwable> suppressed) 方法查找 Class 对象，那接下来分析一下 DexPathList 类的源码</throwable></p>
+<ul>
+<li><p><strong>DexPathList</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">DexPathList</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String DEX_SUFFIX = <span class="string">".dex"</span>;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ClassLoader definingContext;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Element[] dexElements;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     *</div><div class="line">     * 在构造方法中，保存当前类的类加载器，并且通过调用 makeDexElements(ArrayList&lt;File&gt; files, File optimizedDirectory,ArrayList&lt;IOException&gt; suppressedExceptions)</div><div class="line">     * 生成 Element[] 数组</div><div class="line">     **/</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">DexPathList</span><span class="params">(ClassLoader definingContext, String dexPath,</span></span></div><div class="line">            String libraryPath, File optimizedDirectory) &#123;</div><div class="line"></div><div class="line">        ......</div><div class="line">        <span class="keyword">this</span>.definingContext = definingContext;</div><div class="line">        <span class="keyword">this</span>.dexElements = makeDexElements(splitDexPath(dexPath), optimizedDirectory, suppressedExceptions);</div><div class="line">        ......</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+  <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"></div><div class="line"> * Makes an array of dex/resource path elements, one per element of</div><div class="line"> * the given array.</div><div class="line"> */</div><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> Element[] makeDexElements(ArrayList&lt;File&gt; files, File optimizedDirectory,</div><div class="line">                                         ArrayList&lt;IOException&gt; suppressedExceptions) &#123;</div><div class="line">    ArrayList&lt;Element&gt; elements = <span class="keyword">new</span> ArrayList&lt;Element&gt;();</div><div class="line"></div><div class="line">    <span class="comment">// 打开所有的文件并加载 dex 文件</span></div><div class="line">    <span class="keyword">for</span> (File file : files) &#123;</div><div class="line">        File zip = <span class="keyword">null</span>;</div><div class="line">        DexFile dex = <span class="keyword">null</span>;</div><div class="line">        String name = file.getName();</div><div class="line"></div><div class="line">        ......</div><div class="line">        <span class="keyword">if</span> (name.endsWith(DEX_SUFFIX)) &#123;</div><div class="line">            <span class="comment">// 如果是以 .dex 结尾的文件则加载为一个 DexFile 对象</span></div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">                dex = loadDexFile(file, optimizedDirectory);</div><div class="line">            &#125; <span class="keyword">catch</span> (IOException ex) &#123;</div><div class="line">                 System.logE(<span class="string">"Unable to load dex file: "</span> + file, ex);</div><div class="line">            &#125;</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="comment">// 如果是apk、jar、zip文件，则将文件赋予 File 对象，并尝试去加载它</span></div><div class="line">            zip = file;</div><div class="line">            <span class="keyword">try</span> &#123;</div><div class="line">                 dex = loadDexFile(file, optimizedDirectory);</div><div class="line">            &#125; <span class="keyword">catch</span> (IOException suppressed) &#123;</div><div class="line">                 suppressedExceptions.add(suppressed);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        ......</div><div class="line">        <span class="comment">// 如果 zip 或者 dex 不为空，则用该对象生成一个 Element 对象并加入到 elements 数组中</span></div><div class="line">        <span class="keyword">if</span> ((zip != <span class="keyword">null</span>) || (dex != <span class="keyword">null</span>)) &#123;</div><div class="line">            elements.add(<span class="keyword">new</span> Element(file, <span class="keyword">false</span>, zip, dex));</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> elements.toArray(<span class="keyword">new</span> Element[elements.size()]);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> Class <span class="title">findClass</span><span class="params">(String name, List&lt;Throwable&gt; suppressed)</span> </span>&#123;</div><div class="line">    <span class="comment">// 遍历每一个 dexElements 中的每一个 Element 对象</span></div><div class="line">    <span class="keyword">for</span> (Element element : dexElements) &#123;</div><div class="line">        DexFile dex = element.dexFile;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (dex != <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="comment">// 在 dex 文件中，通过 name 查找该类名对应的 Class 对象并返回</span></div><div class="line">            Class clazz = dex.loadClassBinaryName(name, definingContext, suppressed);</div><div class="line">            <span class="keyword">if</span> (clazz != <span class="keyword">null</span>) &#123;</div><div class="line">                <span class="keyword">return</span> clazz;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (dexElementsSuppressedExceptions != <span class="keyword">null</span>) &#123;</div><div class="line">        suppressed.addAll(Arrays.asList(dexElementsSuppressedExceptions));</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="2-2-热修复原理"><a href="#2-2-热修复原理" class="headerlink" title="2.2 热修复原理"></a>2.2 热修复原理</h3><p>可以注意到，在 DexPathList 中的 <code>findClass(String name, List&lt;Throwable&gt; suppressed)</code> 中，是通过遍历 dexElements 数组，调用 <code>DexFile.loadClassBinaryName(String name，ClassLoader loader，List&lt;Throwable&gt; suppressed)</code> 方法寻找某个 Class 对象，如果找到则直接返回，遍历结束。</p>
+<p>那么，试想一下，如果在 dexElements 数组中的两个 DexFile 对象中存在两个相同的 Class 实例，首先会从第一个 DexFile 文件中找到第一个 Class 实例之后就会将其返回，遍历结束，而第二个 DexFile 中相同的另一个 Class 实例则永远不会被找到了，如下图所示：</p>
+<p><div align="center"><br>      <img src="/热修复原理初窥（一）/dex.png" width="603" height="257"><br></div></p>
+<blockquote>
+<p>图片来源：<a href="https://mp.weixin.qq.com/s?__biz=MzI1MTA1MzM2Nw==&amp;mid=400118620&amp;idx=1&amp;sn=b4fdd5055731290eef12ad0d17f39d4a&amp;scene=1&amp;srcid=1106Imu9ZgwybID13e7y2nEi#wechat_redirect" target="_blank" rel="external">安卓App热补丁动态修复技术介绍</a></p>
+</blockquote>
+<p>热修复技术的原理也是基于此特性的。假如线上包出现 bug，可以将出现 bug 的那个类修复，并重新编译打包成 dex 补丁文件，并将该 dex 补丁文件插入到 dexElements 数组的前面，那么 ClassLoader 加载到虚拟机中的就是修复 bug 之后的类，有 bug 的类则永远不会被加载进来了，如下图所示：</p>
+<p><div align="center"><br>      <img src="/热修复原理初窥（一）/dex1.png" width="609" height="259"><br></div></p>
+<blockquote>
+<p>图片来源：<a href="https://mp.weixin.qq.com/s?__biz=MzI1MTA1MzM2Nw==&amp;mid=400118620&amp;idx=1&amp;sn=b4fdd5055731290eef12ad0d17f39d4a&amp;scene=1&amp;srcid=1106Imu9ZgwybID13e7y2nEi#wechat_redirect" target="_blank" rel="external">安卓App热补丁动态修复技术介绍</a></p>
+</blockquote>
+<hr>
+<p><strong>参考资料：</strong></p>
+<p><a href="https://blog.csdn.net/u010386612/article/details/50885320" target="_blank" rel="external">Android热补丁动态修复技术（一）：从Dex分包原理到热补丁</a>  – <a href="https://blog.csdn.net/u010386612" target="_blank" rel="external">Altsuki的博客</a></p>
+<p><a href="https://www.2cto.com/kf/201509/441907.html" target="_blank" rel="external">Android分包MultiDex原理详解</a></p>
+<p><a href="https://developer.android.com/studio/build/multidex.html#about" target="_blank" rel="external">配置方法数超过 64K 的应用</a></p>
+<p><a href="https://mp.weixin.qq.com/s?__biz=MzI1MTA1MzM2Nw==&amp;mid=400118620&amp;idx=1&amp;sn=b4fdd5055731290eef12ad0d17f39d4a&amp;scene=1&amp;srcid=1106Imu9ZgwybID13e7y2nEi#wechat_redirect" target="_blank" rel="external">安卓App热补丁动态修复技术介绍</a></p>
+<p>Android 开发艺术探索</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/Hotfix/" rel="tag"># Hotfix</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/IOC-在-Android-中的应用/" rel="next" title="IoC 在 Android 中的应用">
+                <i class="fa fa-chevron-left"></i> IoC 在 Android 中的应用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="lijiankun24" />
+          <p class="site-author-name" itemprop="name">lijiankun24</p>
+           
+              <p class="site-description motion-element" itemprop="description">守得云开见月明。</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">27</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/lijiankun24" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/lijiankun24" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.jianshu.com/u/1abe21b7ff5f" target="_blank" title="Jianshu">
+                  
+                    <i class="fa fa-fw fa-jianshu"></i>
+                  
+                  Jianshu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://gank.io/post/published" title="匠心写作" target="_blank">匠心写作</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/lmj623565791" title="Hongyang" target="_blank">Hongyang</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.liaohuqiu.net/cn/" title="Huqiu Liao" target="_blank">Huqiu Liao</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://drakeet.me/" title="drakeet" target="_blank">drakeet</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.jianshu.com/u/df40282480b4" title="小鄧子" target="_blank">小鄧子</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://yuweiguocn.github.io/" title="于卫国" target="_blank">于卫国</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-热修复"><span class="nav-number">1.</span> <span class="nav-text">1. 热修复</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-背景介绍"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 背景介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-dex-分包方案"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 dex 分包方案</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-热修复原理"><span class="nav-number">2.</span> <span class="nav-text">2. 热修复原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-类加载器"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 类加载器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-热修复原理"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 热修复原理</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lijiankun24</span>
+  
+</div>
+
+
+<div>
+  <span id="busuanzi_container_site_pv">
+    Total views <span id="busuanzi_value_site_pv">   </span>
+  </span>
+
+  <span id="busuanzi_container_site_uv">
+    |   Total visitors <span id="busuanzi_value_site_uv"/>
+  </span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("tWG63sCRtLhi5NFeaXtWqtnv-gzGzoHsz", "lPLcNFpeOoNc6wr9PVX8XdbI");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+
+  
+
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+          bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+      } else {
+          bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+</body>
+</html>

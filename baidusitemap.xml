@@ -4,8 +4,29 @@
 
     
   <url>
+    <loc>http://www.lijiankun24.com/%E7%83%AD%E4%BF%AE%E5%A4%8D%E5%8E%9F%E7%90%86%E5%88%9D%E7%AA%A5%EF%BC%88%E4%B8%80%EF%BC%89/</loc>
+    <lastmod>2018-04-09T14:55:49.000Z</lastmod>
+    <data>
+        <display>
+        <title>热修复原理初窥（一）</title>
+        <pubTime>2018-04-09T00:16:20.000Z</pubTime>
+        
+        <tag>Android</tag>
+         
+        <tag>Java</tag>
+         
+        <tag>Hotfix</tag>
+         
+         
+           
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://www.lijiankun24.com/IOC-%E5%9C%A8-Android-%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8/</loc>
-    <lastmod>2018-03-28T14:35:51.000Z</lastmod>
+    <lastmod>2018-04-07T15:10:51.000Z</lastmod>
     <data>
         <display>
         <title>IoC 在 Android 中的应用</title>
@@ -165,9 +186,9 @@
         <title>OKHttp3 源码解析之拦截器（二）</title>
         <pubTime>2017-09-23T01:31:18.000Z</pubTime>
         
-        <tag>Network</tag>
-         
         <tag>Android</tag>
+         
+        <tag>Network</tag>
          
         <tag>OKHttp</tag>
          
@@ -186,9 +207,9 @@
         <title>OKHttp3 源码解析之整体流程（一）</title>
         <pubTime>2017-09-19T15:28:10.000Z</pubTime>
         
-        <tag>Network</tag>
-         
         <tag>Android</tag>
+         
+        <tag>Network</tag>
          
         <tag>OKHttp</tag>
          
@@ -300,9 +321,9 @@
         <title>Volley源码解析及对Volley的扩展（三）</title>
         <pubTime>2017-06-25T03:03:02.000Z</pubTime>
         
-        <tag>Network</tag>
-         
         <tag>Android</tag>
+         
+        <tag>Network</tag>
          
         <tag>OKHttp</tag>
          
@@ -340,9 +361,9 @@
         <title>Volley 源码解析及对 Volley 的扩展（二）</title>
         <pubTime>2017-06-20T13:03:32.000Z</pubTime>
         
-        <tag>Network</tag>
-         
         <tag>Android</tag>
+         
+        <tag>Network</tag>
          
         <tag>OKHttp</tag>
          
@@ -363,9 +384,9 @@
         <title>Volley 源码解析及对 Volley 的扩展（一）</title>
         <pubTime>2017-06-13T13:54:09.000Z</pubTime>
         
-        <tag>Network</tag>
-         
         <tag>Android</tag>
+         
+        <tag>Network</tag>
          
         <tag>OKHttp</tag>
          
