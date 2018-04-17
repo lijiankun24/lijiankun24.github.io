@@ -4,12 +4,12 @@
 
     
   <url>
-    <loc>http://www.lijiankun24.com/%E7%83%AD%E4%BF%AE%E5%A4%8D%E5%8E%9F%E7%90%86%E5%88%9D%E7%AA%A5%EF%BC%88%E4%B8%80%EF%BC%89/</loc>
-    <lastmod>2018-04-12T13:52:07.000Z</lastmod>
+    <loc>http://www.lijiankun24.com/%E7%83%AD%E4%BF%AE%E5%A4%8D%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A1%86%E6%9E%B6%E9%9B%8F%E5%BD%A2%EF%BC%88%E4%B8%89%EF%BC%89/</loc>
+    <lastmod>2018-04-17T00:34:43.000Z</lastmod>
     <data>
         <display>
-        <title>热修复原理初窥（一）</title>
-        <pubTime>2018-04-09T00:16:20.000Z</pubTime>
+        <title>热修复之自定义热修复框架雏形（三）</title>
+        <pubTime>2018-04-13T00:29:08.000Z</pubTime>
         
         <tag>Android</tag>
          
@@ -26,11 +26,32 @@
     
   <url>
     <loc>http://www.lijiankun24.com/%E7%83%AD%E4%BF%AE%E5%A4%8D-CLASS-ISPREVERIFIED-%E9%97%AE%E9%A2%98%EF%BC%88%E4%BA%8C%EF%BC%89/</loc>
-    <lastmod>2018-04-11T15:26:04.000Z</lastmod>
+    <lastmod>2018-04-16T15:51:13.000Z</lastmod>
     <data>
         <display>
         <title>热修复 CLASS_ISPREVERIFIED 问题（二）</title>
         <pubTime>2018-04-10T00:56:19.000Z</pubTime>
+        
+        <tag>Android</tag>
+         
+        <tag>Java</tag>
+         
+        <tag>Hotfix</tag>
+         
+         
+           
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://www.lijiankun24.com/%E7%83%AD%E4%BF%AE%E5%A4%8D%E5%8E%9F%E7%90%86%E5%88%9D%E7%AA%A5%EF%BC%88%E4%B8%80%EF%BC%89/</loc>
+    <lastmod>2018-04-12T13:52:07.000Z</lastmod>
+    <data>
+        <display>
+        <title>热修复原理初窥（一）</title>
+        <pubTime>2018-04-09T00:16:20.000Z</pubTime>
         
         <tag>Android</tag>
          
@@ -209,9 +230,9 @@
         
         <tag>Android</tag>
          
-        <tag>Network</tag>
-         
         <tag>OKHttp</tag>
+         
+        <tag>Network</tag>
          
          
            
@@ -230,9 +251,9 @@
         
         <tag>Android</tag>
          
-        <tag>Network</tag>
-         
         <tag>OKHttp</tag>
+         
+        <tag>Network</tag>
          
          
            
@@ -344,9 +365,9 @@
         
         <tag>Android</tag>
          
-        <tag>Network</tag>
-         
         <tag>OKHttp</tag>
+         
+        <tag>Network</tag>
          
         <tag>Volley</tag>
          
@@ -384,9 +405,9 @@
         
         <tag>Android</tag>
          
-        <tag>Network</tag>
-         
         <tag>OKHttp</tag>
+         
+        <tag>Network</tag>
          
         <tag>Volley</tag>
          
@@ -407,9 +428,9 @@
         
         <tag>Android</tag>
          
-        <tag>Network</tag>
-         
         <tag>OKHttp</tag>
+         
+        <tag>Network</tag>
          
         <tag>Volley</tag>
          

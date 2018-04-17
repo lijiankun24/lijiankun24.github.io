@@ -1,0 +1,1055 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,Java,Hotfix," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="在上篇最后提出了两个问题：
+
+在 Android Studio 中，.java 文件 —-&amp;gt; .class 文件 —-&amp;gt; .dex 文件都是自动化的过程，如何在 .class 文件 —-&amp;gt; .dex 文件的过程中修改 .class 文件呢，可以借助gradle 构建脚本实现
+如何修改类的字节码文件，在字节码层面的类中的构造方法中插入对其他 dex 文件中的类的引用，可以使用 ja">
+<meta property="og:type" content="article">
+<meta property="og:title" content="热修复之自定义热修复框架雏形（三）">
+<meta property="og:url" content="http://www.lijiankun24.com/热修复自定义框架雏形（三）/index.html">
+<meta property="og:site_name" content="一些无处安放的代码和故事">
+<meta property="og:description" content="在上篇最后提出了两个问题：
+
+在 Android Studio 中，.java 文件 —-&amp;gt; .class 文件 —-&amp;gt; .dex 文件都是自动化的过程，如何在 .class 文件 —-&amp;gt; .dex 文件的过程中修改 .class 文件呢，可以借助gradle 构建脚本实现
+如何修改类的字节码文件，在字节码层面的类中的构造方法中插入对其他 dex 文件中的类的引用，可以使用 ja">
+<meta property="og:image" content="http://www.lijiankun24.com/热修复自定义框架雏形（三）/catalog.png">
+<meta property="og:image" content="http://www.lijiankun24.com/热修复自定义框架雏形（三）/AppPlugin.png">
+<meta property="og:image" content="http://www.lijiankun24.com/热修复自定义框架雏形（三）/RegisterGroovy.png">
+<meta property="og:image" content="http://www.lijiankun24.com/热修复自定义框架雏形（三）/HotfixPlugin.png">
+<meta property="og:image" content="http://www.lijiankun24.com/热修复自定义框架雏形（三）/SExtention.png">
+<meta property="og:image" content="http://www.lijiankun24.com/热修复自定义框架雏形（三）/Transform.jpg">
+<meta property="og:image" content="http://www.lijiankun24.com/热修复自定义框架雏形（三）/Transform.png">
+<meta property="og:image" content="http://www.lijiankun24.com/热修复自定义框架雏形（三）/AppBuildGradle.png">
+<meta property="og:image" content="http://www.lijiankun24.com/热修复自定义框架雏形（三）/AntilazyLoad.png">
+<meta property="og:image" content="http://www.lijiankun24.com/热修复自定义框架雏形（三）/AntilazyLoad1.png">
+<meta property="og:updated_time" content="2018-04-17T00:34:43.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="热修复之自定义热修复框架雏形（三）">
+<meta name="twitter:description" content="在上篇最后提出了两个问题：
+
+在 Android Studio 中，.java 文件 —-&amp;gt; .class 文件 —-&amp;gt; .dex 文件都是自动化的过程，如何在 .class 文件 —-&amp;gt; .dex 文件的过程中修改 .class 文件呢，可以借助gradle 构建脚本实现
+如何修改类的字节码文件，在字节码层面的类中的构造方法中插入对其他 dex 文件中的类的引用，可以使用 ja">
+<meta name="twitter:image" content="http://www.lijiankun24.com/热修复自定义框架雏形（三）/catalog.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.lijiankun24.com/热修复自定义框架雏形（三）/"/>
+
+
+
+
+
+  <title> 热修复之自定义热修复框架雏形（三） | 一些无处安放的代码和故事 </title>
+<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">一些无处安放的代码和故事</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://www.lijiankun24.com/热修复自定义框架雏形（三）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="lijiankun24">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一些无处安放的代码和故事">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                热修复之自定义热修复框架雏形（三）
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-04-13T08:29:08+08:00">
+                2018-04-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/热修复自定义框架雏形（三）/" class="leancloud_visitors" data-flag-title="热修复之自定义热修复框架雏形（三）">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Views </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在上篇最后提出了两个问题：</p>
+<ol>
+<li>在 Android Studio 中，.java 文件 —-&gt; .class 文件 —-&gt; .dex 文件都是自动化的过程，如何在 .class 文件 —-&gt; .dex 文件的过程中修改 .class 文件呢，可以借助<br>gradle 构建脚本实现</li>
+<li>如何修改类的字节码文件，在字节码层面的类中的构造方法中插入对其他 dex 文件中的类的引用，可以使用 javaassist 工具实现</li>
+</ol>
+<p>好，接下来就通过实例介绍如何解决上面两个问题</p>
+<div align="center"><br>    <img src="/热修复自定义框架雏形（三）/catalog.png" width="912" height="360"><br></div>
+
+<a id="more"></a>
+<h2 id="1-自定义-Gradle-Plugin"><a href="#1-自定义-Gradle-Plugin" class="headerlink" title="1. 自定义 Gradle Plugin"></a>1. 自定义 Gradle Plugin</h2><h3 id="1-1-Gradle-Plugin-概述"><a href="#1-1-Gradle-Plugin-概述" class="headerlink" title="1.1 Gradle Plugin 概述"></a>1.1 Gradle Plugin 概述</h3><p>说起 Gradle Plugin 插件，其实在 Android Studio 中很常见。创建完一个新工程之后，在 <code>/app/build.gradle</code> 中就有对 Gradle Plugin 的引用，如下图所示：</p>
+<div align="center"><br>    <img src="/热修复自定义框架雏形（三）/AppPlugin.png" width="1440" height="308"><br></div>
+
+<p>Gradle Plugin 是采用 groovy 语言编写的，groovy 是基于 JVM 的敏捷脚本语言，groovy 最后会被编译为标准的 java 类字节码文件，然后通过 JVM 加载这个字节码文件并执行。groovy 最核心的应该是闭包，Java8 中引入的 Lambda 表达式即是一个闭包，更多关于 groovy 语言的知识请参考相关资料 <a href="https://blog.csdn.net/zhaoyanjun6/article/details/70313790" target="_blank" rel="external">Groovy 使用完全解析</a>。</p>
+<p>共有三种方法自定义的 Gradle Plugin：</p>
+<ol>
+<li>直接在构建文件 <code>build.gralde</code> 中编写 Plugin，使用这种方式自定义的 Plugin，无法在其他构建文件中使用</li>
+<li>单独编写 Gradle Plugin 文件，放在 <code>rootProjectPath/buildSrc/src/main/groovy/</code> 目录下，同一工程中其他所有的构建文件即可使用这个 Plugin，但是其他工程无法使用此 Plugin</li>
+<li>单独的工程中自定义的 Gradle Plugin 文件，可以上传到远程的 maven 仓库，其他工程通过添加对这个 Plugin 的依赖即可使用这个插件</li>
+</ol>
+<h3 id="1-2-自定义-Gradle-Plugin-步骤详解"><a href="#1-2-自定义-Gradle-Plugin-步骤详解" class="headerlink" title="1.2 自定义 Gradle Plugin 步骤详解"></a>1.2 自定义 Gradle Plugin 步骤详解</h3><p>在本篇文章中使用第二种方式创建 Gradle Plugin 插件，创建步骤有以下几步：</p>
+<ol>
+<li><p>创建一个 Module，Module 类型随便选一个即可（无论是 Android Library 或者 Java Library 都行），并将该 Module 命名为 <code>buildSrc</code></p>
+<blockquote>
+<p><strong>注意: 该 Module 必须命名为 <code>buidlSrc</code></strong></p>
+</blockquote>
+</li>
+<li><p>将 <code>buildSrc</code> 目录下的所有文件删除，除了 <code>src</code> 目录下的文件和 <code>build.gradle</code> 文件</p>
+</li>
+<li>在 <code>buildSrc/src/main/</code> 目录下创建 <code>groovy</code> 文件，并将 <code>buildSrc/src/main/</code> 目录下的 <code>java</code> 文件夹删除</li>
+<li>在 <code>buildSrc/src/main/groovy/</code> 文件下创建包文件，如 <code>com.lijiankun24.plugin</code>，这样在 <code>buildSrc/src/main/groovy/com/lijiankun24/plugin/</code> 目录下创建 <code>groovy</code> 文件了</li>
+<li><p>修改 <code>buildSrc/build.gradle</code> 文件中的内容，如下所示</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">apply <span class="string">plugin:</span> <span class="string">'groovy'</span></div><div class="line"></div><div class="line">repositories &#123;</div><div class="line">    jcenter()</div><div class="line">&#125;</div><div class="line"></div><div class="line">dependencies &#123;</div><div class="line">    compile gradleApi()</div><div class="line">    compile <span class="string">'com.android.tools.build:gradle:2.3.3'</span></div><div class="line">    compile <span class="string">'org.javassist:javassist:3.20.0-GA'</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>在 <code>buildSrc/src/main/groovy/com/lijiankun24/plugin/</code> 目录下，创建 groovy 文件，如下图所示：</p>
+<div align="center"><br> <img src="/热修复自定义框架雏形（三）/RegisterGroovy.png" width="1400" height="610"><br></div>
+
+<blockquote>
+<p>注意创建 groovy 时，填写文件名称时，需要带有 .groovy 扩展名，比如创建一个 <code>Hotfix.groovy</code> 文件</p>
+</blockquote>
+</li>
+<li><p>创建 <code>Hotfix.groovy</code> 文件，并添加如下代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">package com.lijiankun24.plugin</div><div class="line"></div><div class="line">import org.gradle.api.Plugin</div><div class="line">import org.gradle.api.Project</div><div class="line">import org.gradle.api.logging.LogLevel</div><div class="line"></div><div class="line">/**</div><div class="line"> * Hotfix.java</div><div class="line"> * &lt;p&gt;</div><div class="line"> * Created by lijiankun on 18/4/14.</div><div class="line"> */</div><div class="line">public class Hotfix implements Plugin&lt;Project&gt; &#123;</div><div class="line">    @Override</div><div class="line">    public void apply(Project project) &#123;</div><div class="line">        project.logger.error(&quot;====== Hello Gradle Plugin =======&quot;)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>在 <code>app/build.gradle</code> 文件中添加对此插件的依赖，并 <code>Sync Project with Gradle Files</code>，在 <code>Gradle Console</code> 中即可即可看到输出的信息，如下图所示：</p>
+<div align="center"><br> <img src="/热修复自定义框架雏形（三）/HotfixPlugin.png" width="960" height="600"><br></div>
+
+</li>
+</ol>
+<p>这样，一个自定义的 Gradle Plugin 即完成了</p>
+<h3 id="1-3-Gradle-Plugin-的使用"><a href="#1-3-Gradle-Plugin-的使用" class="headerlink" title="1.3 Gradle Plugin 的使用"></a>1.3 Gradle Plugin 的使用</h3><p>在上面创建的 <code>Hotfix.groovy</code> 文件中的内容如下所示：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.lijiankun24.plugin</div><div class="line"></div><div class="line"><span class="keyword">import</span> org.gradle.api.Plugin</div><div class="line"><span class="keyword">import</span> org.gradle.api.Project</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * Hotfix.java</div><div class="line"> * &lt;p&gt;</div><div class="line"> * Created by lijiankun on 18/4/14.</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Hotfix</span> <span class="keyword">implements</span> <span class="title">Plugin</span>&lt;<span class="title">Project</span>&gt; &#123;</span></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="keyword">public</span> <span class="keyword">void</span> apply(Project project) &#123;</div><div class="line">        project.logger.error(<span class="string">"====== Hello Gradle Plugin ======="</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>Hotfix</code> 插件是实现了 <code>org.gradle.api.Plugin</code> 接口，并且重写了其中的 <code>apply(Project project)</code> 方法，那 <code>org.gradle.api.Project</code> 接口是什么呢？</p>
+<p>根据 <a href="https://docs.gradle.org/current/javadoc/org/gradle/api/Project.html" target="_blank" rel="external">Gradle官网</a> 的介绍，<code>Project</code> 是构建文件和 Gradle 文件交互的主要 API，通过 <code>Project</code> 接口的对象，可以动态地获取 Gradle 的属性。一句话就是，在构建文件中是通过 <code>Project</code> API 获取 Gradle 属性的。</p>
+<p>比如，<code>app/build.gradle</code> 的内容如下：<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">android &#123;</div><div class="line">    compileSdkVersion <span class="number">24</span></div><div class="line">    buildToolsVersion <span class="string">"24.0.0"</span></div><div class="line"></div><div class="line">    defaultConfig &#123;</div><div class="line">        applicationId <span class="string">"com.hc.hcplugin"</span></div><div class="line">        minSdkVersion <span class="number">15</span></div><div class="line">        targetSdkVersion <span class="number">24</span></div><div class="line">        versionCode <span class="number">1</span></div><div class="line">        versionName <span class="string">"1.0"</span></div><div class="line">    &#125;</div><div class="line">    buildTypes &#123;</div><div class="line">        release &#123;</div><div class="line">            minifyEnabled <span class="literal">false</span></div><div class="line">            proguardFiles getDefaultProguardFile(<span class="string">'proguard-android.txt'</span>), <span class="string">'proguard-rules.pro'</span></div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>其中的 <code>compileSdkVersion</code>、<code>defaultConfig</code> 等属性就是通过 <code>Project</code> 接口的 <code>Extension</code> 获取得到的。</p>
+<p>下面，通过自定义一个 <code>Extension</code> 更深入的理解一下 <code>Project</code>。</p>
+<ol>
+<li><p>在 <code>buildSrc/src/main/groovy/com/lijiankun24/plugin/</code> 目录下定义两个类，如下所示：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">SExtension</span> &#123;</span></div><div class="line">    String myName = <span class="literal">null</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Student</span> &#123;</span></div><div class="line">    String name=<span class="literal">null</span></div><div class="line">    String phone=<span class="literal">null</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>修改 <code>Hotfix.groovy</code> 中的内容，如下所示：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.lijiankun24.plugin</div><div class="line"><span class="keyword">import</span> org.gradle.api.Plugin</div><div class="line"><span class="keyword">import</span> org.gradle.api.Project</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * Hotfix.java</div><div class="line"> * &lt;p&gt;</div><div class="line"> * Created by lijiankun on 18/4/14.</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Hotfix</span> <span class="keyword">implements</span> <span class="title">Plugin</span>&lt;<span class="title">Project</span>&gt; &#123;</span></div><div class="line">  <span class="meta">@Override</span></div><div class="line">  <span class="keyword">public</span> <span class="keyword">void</span> apply(Project project) &#123;</div><div class="line">      project.logger.error(<span class="string">"================ Hello Gradle Plugin =========="</span>)</div><div class="line"></div><div class="line">      <span class="comment">// 创建一个 SExtension 的对象</span></div><div class="line">      project.extensions.create(<span class="string">'se'</span>, SExtension)</div><div class="line">      <span class="comment">// 创建一个 Student 的对象</span></div><div class="line">      project.extensions.create(<span class="string">'student'</span>, Student)</div><div class="line"></div><div class="line">      <span class="comment">// 定义一个 task 读取 build.gradle 文件中 'se' 和 'studeng' 的属性的内容</span></div><div class="line">      project.task(<span class="string">'readExtension'</span>) &lt;&lt; &#123;</div><div class="line">          <span class="keyword">def</span> se = project[<span class="string">'se'</span>]</div><div class="line">          <span class="keyword">def</span> student = project[<span class="string">'student'</span>]</div><div class="line"></div><div class="line">          println <span class="string">"The SExtension's myName is "</span> + se.myName</div><div class="line">          println <span class="string">"The student's name is  "</span> + student.name</div><div class="line">          println <span class="string">"The student's phone is "</span> + student.phone</div><div class="line">      &#125;</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>在 <code>app/build.gradle</code> 文件中添加对 <code>com.lijiankun24.plugin.Hotfix</code> 引用，并添加对 <code>se</code> 和 <code>sdutent</code> 属性的定义，如下所示：</p>
+<div align="center"><br> <img src="/热修复自定义框架雏形（三）/SExtention.png" width="960" height="600"><br></div>
+
+</li>
+</ol>
+<p>通过上面这个例子，相信对自定义 Gradle Plugin 有了更加深刻的理解。</p>
+<h2 id="2-自定义-Transform"><a href="#2-自定义-Transform" class="headerlink" title="2. 自定义 Transform"></a>2. 自定义 Transform</h2><h3 id="2-1-Transform-概述"><a href="#2-1-Transform-概述" class="headerlink" title="2.1 Transform 概述"></a>2.1 Transform 概述</h3><p>从 Android Gradle 1.5.0-beta1 开始，引入了 <code>com.android.build.api.transform.Transform</code>，其实 <code>Transform</code> 也是一个 task，每新建一个 <code>Transform</code>，都有一个新的 <code>task</code> 和它对应。</p>
+<p>在 .java 文件 —-&gt; .class 文件 —-&gt; .dex 文件的过程中，是通过一个一个的 task 执行完成其中的每一个步骤的。<code>Trasnform</code> 注册之后，其执行的时机是在项目被打包成 dex 文件之前，正是操纵字节码的时机，多个 <code>Transform</code> 之间是串行执行的，执行流程如下图所示：</p>
+<div align="center"><br>    <img src="/热修复自定义框架雏形（三）/Transform.jpg" width="562" height="78"><br></div>
+
+<blockquote>
+<p>图片来源：<a href="https://blog.csdn.net/huachao1001/article/details/51819972" target="_blank" rel="external">通过自定义Gradle插件修改编译后的class文件</a></p>
+</blockquote>
+<p>每一个 <code>Transform</code> 都一个输入（<code>input</code>） 和一个输出（<code>output</code>），上一个 <code>Transform</code> 的输出（<code>output</code>）是下一个 <code>Transform</code> 的输入（<code>input</code>）。比如：一个 <code>Transform</code> 的作用是将 .java 文件编译成 .class 文件，那么该 <code>Transform</code> 的输入就是 .java 文件的保存目录，而它的输出就是 .class 文件的保存目录，该 <code>Transform</code> 的下一个 <code>Transform</code> 的输入就是 .class 文件的保存目录。</p>
+<h3 id="2-2-自定义-Transform"><a href="#2-2-自定义-Transform" class="headerlink" title="2.2 自定义 Transform"></a>2.2 自定义 Transform</h3><p>接下来，我们则自定义一个 <code>Transform</code>。</p>
+<ol>
+<li><code>Transform</code> 是 <code>com.android.build.api.transform.Transform</code> 包下的，所以需要导入 <code>com.android.tools.build:gradle</code> 包才可以<blockquote>
+<p>注意：<code>Transform</code> 是 <code>com.android.tools.build:gradle:1.5.0-beta1</code> 之后才引入的，所以 <code>com.android.tools.build:gradle</code> 版本需要 <code>1.5.0-beta1</code> 之上才可以</p>
+</blockquote>
+</li>
+<li><p>定义一个 <code>PreDex</code>，代码如下所示：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div></pre></td><td class="code"><pre><div class="line">  <span class="keyword">package</span> com.lijiankun24.plugin</div><div class="line"></div><div class="line">  <span class="keyword">import</span> com.android.build.api.transform.*</div><div class="line">  <span class="keyword">import</span> com.android.build.gradle.internal.pipeline.TransformManager</div><div class="line">  <span class="keyword">import</span> org.gradle.api.Project</div><div class="line"></div><div class="line">  <span class="comment">/**</span></div><div class="line">   * PreDex.java</div><div class="line">   * &lt;p&gt;</div><div class="line">   * Created by lijiankun on 18/4/14.</div><div class="line">   */</div><div class="line">  <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PreDex</span> <span class="keyword">extends</span> <span class="title">Transform</span> &#123;</span></div><div class="line"></div><div class="line">      Project project</div><div class="line">      <span class="comment">// 添加构造，为了方便从plugin中拿到project对象，待会有用</span></div><div class="line">      <span class="keyword">public</span> PreDexTransform(Project project) &#123;</div><div class="line">          <span class="keyword">this</span>.project = project</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      <span class="comment">// Transfrom在Task列表中的名字</span></div><div class="line">      <span class="comment">// TransfromClassesWithPreDexForXXXX</span></div><div class="line">      <span class="meta">@Override</span></div><div class="line">      String getName() &#123;</div><div class="line">          <span class="keyword">return</span> <span class="string">"preDex"</span></div><div class="line">      &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 指定input的类型</span></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    Set&lt;QualifiedContent.ContentType&gt; getInputTypes() &#123;</div><div class="line">        <span class="keyword">return</span> TransformManager.CONTENT_CLASS</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 指定Transfrom的作用范围</span></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    Set&lt;QualifiedContent.Scope&gt; getScopes() &#123;</div><div class="line">        <span class="keyword">return</span> TransformManager.SCOPE_FULL_PROJECT</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="keyword">boolean</span> isIncremental() &#123;</div><div class="line">        <span class="keyword">return</span> <span class="literal">false</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="keyword">void</span> transform(Context context, Collection&lt;TransformInput&gt; inputs,</div><div class="line">                   Collection&lt;TransformInput&gt; referencedInputs,</div><div class="line">                   TransformOutputProvider outputProvider, <span class="keyword">boolean</span> isIncremental)</div><div class="line">            <span class="keyword">throws</span> IOException, TransformException, InterruptedException &#123;</div><div class="line"></div><div class="line">        <span class="comment">// inputs就是输入文件的集合</span></div><div class="line">        <span class="comment">// outputProvider可以获取outputs的路径</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>在 <code>Hotfix.groovy</code> 中注册 <code>PreDex.groovy</code> Transform，代码如下所示：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Hotfix</span> <span class="keyword">implements</span> <span class="title">Plugin</span>&lt;<span class="title">Project</span>&gt; &#123;</span></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="keyword">public</span> <span class="keyword">void</span> apply(Project project) &#123;</div><div class="line">        project.logger.error(<span class="string">"================ Hello Gradle Plugin =========="</span>)</div><div class="line">        <span class="keyword">def</span> android = project.extensions.findByType(AppExtension.<span class="keyword">class</span>)</div><div class="line">        android.registerTransform(<span class="keyword">new</span> PreDex(project))</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>此时运行一下项目，会报如下的错误：<br><div align="center"><br> <img src="/热修复自定义框架雏形（三）/Transform.png" width="948" height="263"><br></div></p>
+<blockquote>
+<p>原因是：<code>PreDex</code> 中的方法 <code>void transform(Context context, Collection&lt;TransformInput&gt; inputs, Collection&lt;TransformInput&gt; referencedInputs, TransformOutputProvider outputProvider, boolean isIncremental)</code> 还没有实现，<code>PreDex</code> 的下一个 <code>Transform</code> 接收到的 <code>input</code> 是空的。</p>
+</blockquote>
+<p>实现 <code>void transform(Context context, Collection&lt;TransformInput&gt; inputs, Collection&lt;TransformInput&gt; referencedInputs, TransformOutputProvider outputProvider, boolean isIncremental)</code> 方法，将 <code>input</code> 的文件复制到 <code>output</code> 的路径下即可，代码如下所示：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Transfrom的inputs有两种类型，一种是目录，一种是jar包，要分开遍历</span></div><div class="line"></div><div class="line">      inputs.each &#123;TransformInput input -&gt;</div><div class="line"></div><div class="line">          input.directoryInputs.each &#123;DirectoryInput directoryInput-&gt;</div><div class="line"></div><div class="line">              <span class="comment">//TODO 这里可以对input的文件做处理，比如代码注入！</span></div><div class="line"></div><div class="line">              <span class="comment">// 获取output目录</span></div><div class="line">              <span class="keyword">def</span> dest = outputProvider.getContentLocation(directoryInput.name,</div><div class="line">                      directoryInput.contentTypes, directoryInput.scopes, Format.DIRECTORY)</div><div class="line"></div><div class="line">              <span class="comment">// 将input的目录复制到output指定目录</span></div><div class="line">              FileUtils.copyDirectory(directoryInput.file, dest)</div><div class="line">          &#125;</div><div class="line">      &#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>查看 <code>Transform</code> 的输入（<code>input</code>）和输出（<code>output</code>）。在 app module 的 <code>build.gradle</code> 文件中的 <code>android{}</code> 下添加如下代码：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">applicationVariants.all &#123; variant-&gt;</div><div class="line">      <span class="keyword">def</span> dexTask = project.tasks.findByName(<span class="string">"transformClassesWithDexForDebug"</span>)</div><div class="line">      <span class="keyword">def</span> preDexTask = project.tasks.findByName(<span class="string">"transformClassesWithPreDexForDebug"</span>)</div><div class="line">      <span class="keyword">if</span>(preDexTask) &#123;</div><div class="line">          project.logger.error <span class="string">"======preDexTask======"</span></div><div class="line">          preDexTask.inputs.files.files.each &#123;file -&gt;</div><div class="line">              project.logger.error <span class="string">"inputs =$file.absolutePath"</span></div><div class="line">          &#125;</div><div class="line"></div><div class="line">          preDexTask.outputs.files.files.each &#123;file -&gt;</div><div class="line">              project.logger.error <span class="string">"outputs =$file.absolutePath"</span></div><div class="line">          &#125;</div><div class="line">      &#125;</div><div class="line">      <span class="keyword">if</span>(dexTask) &#123;</div><div class="line">          project.logger.error <span class="string">"======dexTask======"</span></div><div class="line">          dexTask.inputs.files.files.each &#123;file -&gt;</div><div class="line">              project.logger.error <span class="string">"inputs =$file.absolutePath"</span></div><div class="line">          &#125;</div><div class="line"></div><div class="line">          dexTask.outputs.files.files.each &#123;file -&gt;</div><div class="line">              project.logger.error <span class="string">"outputs =$file.absolutePath"</span></div><div class="line">          &#125;</div><div class="line">      &#125;</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<p>输出如下所示：</p>
+<div align="center"><br>   <img src="/热修复自定义框架雏形（三）/AppBuildGradle.png" width="960" height="600"><br></div>
+
+</li>
+</ol>
+<h2 id="3-修改-class-字节码文件"><a href="#3-修改-class-字节码文件" class="headerlink" title="3. 修改 .class 字节码文件"></a>3. 修改 .class 字节码文件</h2><p>按照上一篇博客最后的结论，需要在一个类的构造方法中引用另外一个 .dex 文件中的类，这个类则不会被打上 <code>CLASS_ISPREVERIFIED</code> 的标志，这个类就可以通过之前介绍的热修复方式修复了，接下来就介绍如何通过 Gradle Plugin 和 Transform 实现修改 .class 字节码文件。</p>
+<p>假设在 classes.dex 中的每一个类的构造方法中添加一句打印语句 <code>System.out.println(AntilazyLoad.class);</code>，而 <code>AntilazyLoad.class</code> 则是另一个 hack.dex 文件中的类，这样 classes.dex 文件中的类就不会被打上 <code>CLASS_ISPREVERIFIED</code> 标志了。</p>
+<h3 id="3-1-定义-Gradle-Plugin"><a href="#3-1-定义-Gradle-Plugin" class="headerlink" title="3.1 定义 Gradle Plugin"></a>3.1 定义 Gradle Plugin</h3><p>按照第一节中的方式定义一个 <code>Hotfix.groovy</code> 插件，代码如下所示：<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.lijiankun24.plugin</div><div class="line"></div><div class="line"><span class="keyword">import</span> com.android.build.gradle.AppExtension</div><div class="line"><span class="keyword">import</span> org.gradle.api.Plugin</div><div class="line"><span class="keyword">import</span> org.gradle.api.Project</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * Hotfix.java</div><div class="line"> * &lt;p&gt;</div><div class="line"> * Created by lijiankun on 18/4/14.</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Hotfix</span> <span class="keyword">implements</span> <span class="title">Plugin</span>&lt;<span class="title">Project</span>&gt; &#123;</span></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="keyword">public</span> <span class="keyword">void</span> apply(Project project) &#123;</div><div class="line">        project.logger.error(<span class="string">"================ Hello Gradle Plugin =========="</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="3-2-定义-Transform"><a href="#3-2-定义-Transform" class="headerlink" title="3.2 定义 Transform"></a>3.2 定义 Transform</h3><p>按照第二节介绍的方式定义一个名为 <code>PreDex</code> 的 Transform，代码如下所示：<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.lijiankun24.plugin</div><div class="line"></div><div class="line"><span class="keyword">import</span> com.android.build.api.transform.*</div><div class="line"><span class="keyword">import</span> com.android.build.gradle.internal.pipeline.TransformManager</div><div class="line"><span class="keyword">import</span> org.gradle.api.Project</div><div class="line"><span class="keyword">import</span> org.apache.commons.codec.digest.DigestUtils</div><div class="line"><span class="keyword">import</span> org.apache.commons.io.FileUtils</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * PreDex.java</div><div class="line"> * &lt;p&gt;</div><div class="line"> * Created by lijiankun on 18/4/14.</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PreDex</span> <span class="keyword">extends</span> <span class="title">Transform</span> &#123;</span></div><div class="line"></div><div class="line">    Project project</div><div class="line">    <span class="comment">// 添加构造，为了方便从plugin中拿到project对象，待会有用</span></div><div class="line">    <span class="keyword">public</span> PreDex(Project project) &#123;</div><div class="line">        <span class="keyword">this</span>.project = project</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// Transfrom在Task列表中的名字</span></div><div class="line">    <span class="comment">// TransfromClassesWithPreDexForXXXX</span></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    String getName() &#123;</div><div class="line">        <span class="keyword">return</span> <span class="string">"preDex"</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 指定input的类型</span></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    Set&lt;QualifiedContent.ContentType&gt; getInputTypes() &#123;</div><div class="line">        <span class="keyword">return</span> TransformManager.CONTENT_CLASS</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 指定Transfrom的作用范围</span></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    Set&lt;QualifiedContent.Scope&gt; getScopes() &#123;</div><div class="line">        <span class="keyword">return</span> TransformManager.SCOPE_FULL_PROJECT</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="keyword">boolean</span> isIncremental() &#123;</div><div class="line">        <span class="keyword">return</span> <span class="literal">false</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="keyword">void</span> transform(Context context, Collection&lt;TransformInput&gt; inputs,</div><div class="line">                   Collection&lt;TransformInput&gt; referencedInputs,</div><div class="line">                   TransformOutputProvider outputProvider, <span class="keyword">boolean</span> isIncremental)</div><div class="line">            <span class="keyword">throws</span> IOException, TransformException, InterruptedException &#123;</div><div class="line"></div><div class="line">        <span class="comment">// inputs就是输入文件的集合</span></div><div class="line">        <span class="comment">// outputProvider可以获取outputs的路径</span></div><div class="line">        <span class="comment">// Transfrom的inputs有两种类型，一种是目录，一种是jar包，要分开遍历</span></div><div class="line"></div><div class="line">        inputs.each &#123;TransformInput input -&gt;</div><div class="line"></div><div class="line">            input.directoryInputs.each &#123;DirectoryInput directoryInput-&gt;</div><div class="line"></div><div class="line">                <span class="comment">//TODO 这里可以对input的文件做处理，比如代码注入！</span></div><div class="line"></div><div class="line">                <span class="comment">// 获取output目录</span></div><div class="line">                <span class="keyword">def</span> dest = outputProvider.getContentLocation(directoryInput.name,</div><div class="line">                        directoryInput.contentTypes, directoryInput.scopes, Format.DIRECTORY)</div><div class="line"></div><div class="line">                <span class="comment">// 将input的目录复制到output指定目录</span></div><div class="line">                FileUtils.copyDirectory(directoryInput.file, dest)</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="3-3-制作-hack-jar"><a href="#3-3-制作-hack-jar" class="headerlink" title="3.3 制作 hack.jar"></a>3.3 制作 hack.jar</h3><ol>
+<li><p>创建一个名为 hack 的 Module，并创建一个 <code>AntilazyLoad.java</code>，如下所示：</p>
+<div align="center"><br> <img src="/热修复自定义框架雏形（三）/AntilazyLoad.png" width="960" height="507"><br></div>
+</li>
+<li><p>将 <code>AntilazyLoad.class</code> 拷贝到同包名的文件下，并通过如下命令生成 <code>hack.jar</code> 文件</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">jar -cvf hackTemp.jar com</div><div class="line">dx --dex --output=hack.jar hackTemp.jar</div></pre></td></tr></table></figure>
+<div align="center"><br>   <img src="/热修复自定义框架雏形（三）/AntilazyLoad1.png" width="960" height="507"><br></div>
+</li>
+<li><p>将 <code>hack.jar</code> 包放到 app module 中的 assets 文件夹中</p>
+</li>
+</ol>
+<h3 id="3-4-加载-hack-jar"><a href="#3-4-加载-hack-jar" class="headerlink" title="3.4 加载 hack.jar"></a>3.4 加载 hack.jar</h3><p>在应用启动的时候，首先需要将 <code>hack.jar</code> 加载到 ClassLoader 中，否则在 <code>classes.dex</code> 中的类的构造方法中引用的 <code>AntilazyLoad.class</code> 就会找不到，加载 <code>hack.jar</code> 的代码如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyApplication</span> <span class="keyword">extends</span> <span class="title">Application</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">super</span>.onCreate();</div><div class="line"></div><div class="line">        <span class="comment">// 将 /assets/hack.jar 拷贝至 App 私有目录下</span></div><div class="line">        File hackDexPath = <span class="keyword">new</span> File(getDir(<span class="string">"dex"</span>, Context.MODE_PRIVATE), <span class="string">"hack.jar"</span>);</div><div class="line">        Utils.prepareDex(<span class="keyword">this</span>.getApplicationContext(), hackDexPath, <span class="string">"hack.jar"</span>);</div><div class="line">        <span class="comment">// 加载 hack.jar，避免 CLASS_ISPREVERIFIED 异常</span></div><div class="line">        <span class="keyword">if</span> (hackDexPath.exists()) &#123;</div><div class="line">            inject(hackDexPath.getAbsolutePath());</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">// 获取补丁，如果存在就执行注入操作</span></div><div class="line">        String dexPath = Environment.getExternalStorageDirectory().getAbsolutePath().concat(<span class="string">"/patch_dex.jar"</span>);</div><div class="line">        File file = <span class="keyword">new</span> File(dexPath);</div><div class="line">        <span class="keyword">if</span> (file.exists()) &#123;</div><div class="line">            inject(dexPath);</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            Log.e(<span class="string">"BugFixApplication"</span>, dexPath + <span class="string">"不存在"</span>);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    ......</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="3-5-修改-class-文件"><a href="#3-5-修改-class-文件" class="headerlink" title="3.5 修改 .class 文件"></a>3.5 修改 .class 文件</h3><p>在 Android Studio 编译过程中，app module 编译后的 .class 文件保存在 debug 目录下，直接遍历这个目录，使用 javassist 注入 <code>System.out.println(AntilazyLoad.class);</code> 代码即可。</p>
+<ol>
+<li><p>专门写一个使用 javassist 操作 .class 文件的 <code>Inject.groovy</code> 类</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.lijiankun24.plugin</div><div class="line"></div><div class="line"><span class="keyword">import</span> javassist.ClassPool</div><div class="line"><span class="keyword">import</span> javassist.CtClass</div><div class="line"><span class="keyword">import</span> javassist.CtConstructor</div><div class="line"><span class="keyword">import</span> org.apache.commons.io.FileUtils</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * Created by AItsuki on 2016/4/7.</div><div class="line"> * 注入代码需要遍历里面的 .class 进行注入</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Inject</span> &#123;</span></div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> ClassPool pool= ClassPool.getDefault()</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 添加classPath到ClassPool</div><div class="line">     * <span class="doctag">@param</span> libPath</div><div class="line">     */</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> appendClassPath(String libPath) &#123;</div><div class="line">        pool.appendClassPath(libPath)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 遍历该目录下的所有 .class，对所有 .class 进行代码注入。</div><div class="line">     * 其中以下class是不需要注入代码的：</div><div class="line">     * --- 1. R文件相关</div><div class="line">     * --- 2. 配置文件相关（BuildConfig）</div><div class="line">     * --- 3. Application</div><div class="line">     * <span class="doctag">@param</span> path 目录的路径</div><div class="line">     */</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> injectDir(String path) &#123;</div><div class="line">        pool.appendClassPath(path)</div><div class="line">        File dir = <span class="keyword">new</span> File(path)</div><div class="line">        <span class="keyword">if</span> (dir.isDirectory()) &#123;</div><div class="line">            dir.eachFileRecurse &#123; File file -&gt;</div><div class="line"></div><div class="line">                String filePath = file.absolutePath</div><div class="line">                <span class="keyword">if</span> (filePath.endsWith(<span class="string">".class"</span>)</div><div class="line">                      &amp;&amp; !filePath.contains(<span class="string">'R$'</span>)</div><div class="line">                      &amp;&amp; !filePath.contains(<span class="string">'R.class'</span>)</div><div class="line">                      &amp;&amp; !filePath.contains(<span class="string">"BuildConfig.class"</span>)</div><div class="line">                      <span class="comment">// 这里是application的名字，可以通过解析清单文件获得，先写死了</span></div><div class="line">                      &amp;&amp; !filePath.contains(<span class="string">"HotPatchApplication.class"</span>)) &#123;</div><div class="line">                  <span class="comment">// 这里是应用包名，也能从清单文件中获取，先写死</span></div><div class="line">                  <span class="keyword">int</span> index = filePath.indexOf(<span class="string">"com\\aitsuki\\hotpatchdemo"</span>)</div><div class="line">                  <span class="keyword">if</span> (index != <span class="number">-1</span>) &#123;</div><div class="line">                      <span class="keyword">int</span> end = filePath.length() - <span class="number">6</span> <span class="comment">// .class = 6</span></div><div class="line">                      String className = filePath.substring(index, end).replace(<span class="string">'\\'</span>, <span class="string">'.'</span>).replace(<span class="string">'/'</span>, <span class="string">'.'</span>)</div><div class="line">                      injectClass(className, path)</div><div class="line">                  &#125;</div><div class="line">              &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> injectClass(String className, String path) &#123;</div><div class="line">        CtClass c = pool.getCtClass(className)</div><div class="line">        <span class="keyword">if</span> (c.isFrozen()) &#123;</div><div class="line">            c.defrost()</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        CtConstructor[] cts = c.getDeclaredConstructors()</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (cts == <span class="literal">null</span> || cts.length == <span class="number">0</span>) &#123;</div><div class="line">            insertNewConstructor(c)</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            cts[<span class="number">0</span>].insertBeforeBody(<span class="string">"System.out.println(com.lijiankun24.hack.AntilazyLoad.class);"</span>)</div><div class="line">        &#125;</div><div class="line">        c.writeFile(path)</div><div class="line">        c.detach()</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> insertNewConstructor(CtClass c) &#123;</div><div class="line">        CtConstructor constructor = <span class="keyword">new</span> CtConstructor(<span class="keyword">new</span> CtClass[<span class="number">0</span>], c)</div><div class="line">        constructor.insertBeforeBody(<span class="string">"System.out.println(com.lijiankun24.hack.AntilazyLoad.class);"</span>)</div><div class="line">        c.addConstructor(constructor)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>在 <code>PreDex.groovy</code> 中使用 <code>Inject.groovy</code> 修改 .class 字节码文件</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="keyword">void</span> transform(Context context, Collection&lt;TransformInput&gt; inputs,</div><div class="line">               Collection&lt;TransformInput&gt; referencedInputs,</div><div class="line">               TransformOutputProvider outputProvider, <span class="keyword">boolean</span> isIncremental)</div><div class="line">        <span class="keyword">throws</span> IOException, TransformException, InterruptedException &#123;</div><div class="line"></div><div class="line">    <span class="comment">// inputs就是输入文件的集合</span></div><div class="line">    <span class="comment">// outputProvider可以获取outputs的路径</span></div><div class="line"></div><div class="line">    inputs.each &#123;TransformInput input -&gt;</div><div class="line"></div><div class="line">        input.directoryInputs.each &#123;DirectoryInput directoryInput-&gt;</div><div class="line"></div><div class="line">            <span class="comment">// 注入代码</span></div><div class="line">            Inject.injectDir(directoryInput.file.absolutePath)</div><div class="line"></div><div class="line">            <span class="keyword">def</span> dest = outputProvider.getContentLocation(directoryInput.name,</div><div class="line">                    directoryInput.contentTypes, directoryInput.scopes, Format.DIRECTORY)</div><div class="line">            <span class="comment">// 将input的目录复制到output指定目录</span></div><div class="line">            FileUtils.copyDirectory(directoryInput.file, dest)</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>好了，这篇文章也算是完结了。经过这三篇文章的介绍，一个简单的自定义热修复框架已经基本完成，虽然还存在一些其他的问题，比如资源的热修复、so 库的热修复、混淆等还没有考虑，但是热修复的基本原理就是这样的。</p>
+<p>接下来会分析一下 Tinker 的源码，看看 Tinker 是如何实现热修复的。</p>
+<hr>
+<p><strong>参考资料：</strong></p>
+<p><a href="https://blog.csdn.net/u010386612/article/details/51131642" target="_blank" rel="external">Android热补丁动态修复技术（三）—— 使用Javassist注入字节码，完成热补丁框架雏形（可使用）</a>  – <a href="https://blog.csdn.net/u010386612" target="_blank" rel="external">Altsuki的博客</a></p>
+<p><a href="https://blog.csdn.net/lmj623565791/article/details/49883661" target="_blank" rel="external">Android 热补丁动态修复框架小结</a>  – <a href="https://blog.csdn.net/lmj623565791" target="_blank" rel="external">Hongyang</a></p>
+<p><a href="https://blog.csdn.net/huachao1001/article/details/51819972" target="_blank" rel="external">通过自定义Gradle插件修改编译后的class文件</a>  – <a href="https://blog.csdn.net/huachao1001" target="_blank" rel="external">huachao1001</a></p>
+<p><a href="http://google.github.io/android-gradle-dsl/javadoc/1.5/" target="_blank" rel="external">Transform 官方文档</a></p>
+<p><a href="https://blog.csdn.net/wangqiubo2010/article/details/76590556" target="_blank" rel="external">Gradle自定义插件详解</a> – <a href="https://blog.csdn.net/wangqiubo2010" target="_blank" rel="external">wangqiubo2010的博客</a></p>
+<p><a href="https://www.jianshu.com/p/d53399cd507b" target="_blank" rel="external">在AndroidStudio中自定义Gradle插件</a> – <a href="https://blog.csdn.net/huachao1001" target="_blank" rel="external">huachao1001</a></p>
+<p><a href="https://juejin.im/post/5951d5265188250d8f602225" target="_blank" rel="external">DexClassLoader热修复的入门到放弃</a> – <a href="https://juejin.im/user/58d21f3cac502e0058b253f9" target="_blank" rel="external">cuieney</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/Hotfix/" rel="tag"># Hotfix</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/热修复-CLASS-ISPREVERIFIED-问题（二）/" rel="next" title="热修复 CLASS_ISPREVERIFIED 问题（二）">
+                <i class="fa fa-chevron-left"></i> 热修复 CLASS_ISPREVERIFIED 问题（二）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="lijiankun24" />
+          <p class="site-author-name" itemprop="name">lijiankun24</p>
+           
+              <p class="site-description motion-element" itemprop="description">守得云开见月明。</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">29</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/lijiankun24" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/lijiankun24" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.jianshu.com/u/1abe21b7ff5f" target="_blank" title="Jianshu">
+                  
+                    <i class="fa fa-fw fa-jianshu"></i>
+                  
+                  Jianshu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://gank.io/post/published" title="匠心写作" target="_blank">匠心写作</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/lmj623565791" title="Hongyang" target="_blank">Hongyang</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.liaohuqiu.net/cn/" title="Huqiu Liao" target="_blank">Huqiu Liao</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://drakeet.me/" title="drakeet" target="_blank">drakeet</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.jianshu.com/u/df40282480b4" title="小鄧子" target="_blank">小鄧子</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://yuweiguocn.github.io/" title="于卫国" target="_blank">于卫国</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-自定义-Gradle-Plugin"><span class="nav-number">1.</span> <span class="nav-text">1. 自定义 Gradle Plugin</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-Gradle-Plugin-概述"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 Gradle Plugin 概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-自定义-Gradle-Plugin-步骤详解"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 自定义 Gradle Plugin 步骤详解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-Gradle-Plugin-的使用"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 Gradle Plugin 的使用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-自定义-Transform"><span class="nav-number">2.</span> <span class="nav-text">2. 自定义 Transform</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-Transform-概述"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 Transform 概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-自定义-Transform"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 自定义 Transform</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-修改-class-字节码文件"><span class="nav-number">3.</span> <span class="nav-text">3. 修改 .class 字节码文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-定义-Gradle-Plugin"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 定义 Gradle Plugin</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-定义-Transform"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 定义 Transform</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-制作-hack-jar"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 制作 hack.jar</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-加载-hack-jar"><span class="nav-number">3.4.</span> <span class="nav-text">3.4 加载 hack.jar</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-5-修改-class-文件"><span class="nav-number">3.5.</span> <span class="nav-text">3.5 修改 .class 文件</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lijiankun24</span>
+  
+</div>
+
+
+<div>
+  <span id="busuanzi_container_site_pv">
+    Total views <span id="busuanzi_value_site_pv">   </span>
+  </span>
+
+  <span id="busuanzi_container_site_uv">
+    |   Total visitors <span id="busuanzi_value_site_uv"/>
+  </span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("tWG63sCRtLhi5NFeaXtWqtnv-gzGzoHsz", "lPLcNFpeOoNc6wr9PVX8XdbI");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+
+  
+
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+          bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+      } else {
+          bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+</body>
+</html>
