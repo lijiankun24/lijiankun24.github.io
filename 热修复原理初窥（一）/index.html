@@ -97,7 +97,7 @@
 <meta property="og:image" content="http://www.lijiankun24.com/热修复原理初窥（一）/classloader.png">
 <meta property="og:image" content="http://www.lijiankun24.com/热修复原理初窥（一）/dex.png">
 <meta property="og:image" content="http://www.lijiankun24.com/热修复原理初窥（一）/dex1.png">
-<meta property="og:updated_time" content="2018-04-18T14:55:31.000Z">
+<meta property="og:updated_time" content="2018-04-25T15:18:07.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="热修复原理初窥（一）">
 <meta name="twitter:description" content="热修复已经出来很久了，正好公司的项目最近接入的腾讯的 Tinker 热修复，所以研究了一下热修复的原理，现在将其梳理成一系列文章，总共大概会有5~6篇文章，现在带来第一篇文章，简单介绍一下热修复的原理：">
@@ -366,7 +366,7 @@
 </ul>
 <p>这两个问题都和一个叫做 DexOpt 应用程序有关。DexOpt 会在 Android 系统第一次安装应用的时候，对 Dex 文件做优化生成一个 ODex（Optimised Dex） 文件，执行 ODex 文件的效率会比直接执行 Dex 文件的效率高很多。</p>
 <ul>
-<li>早期的 Android 系统中，DexOpt 有一个问题，DexOpt 会把每一个类的方法id检索起来，存在一个链表结构里面。但是这个链表的长度是用一个 short 类型来保存的，导致了方法 id 的数目不能够超过65536个。</li>
+<li>Dalvik 中调用各类方法的指令 <code>invoke-kind {vC, vD, vE, vF, vG}, meth@BBBB</code> 中，方法引用索引数是 16 位的，也就是最多调用 2^16 = 65536 个方法</li>
 <li>在 DexOpt 优化 Dex 的过程中，DexOpt 会采用一个固定大小的缓冲区来存储应用中所有方法的信息，这个缓冲区就是 LinearAlloc。LinearAlloc 在新版本的 Android 系统中其大小是 8MB 或者 16MB，但是在 Android 2.2 或 Android 2.3 中却只有 5MB，当待安装的 apk 中的方法比较多的时候，尽管它还没有达到 65536 的限制，但是它的存储空间仍然有可能超过 5MB，这种情况就会报 <code>Optimization failed</code> 的异常</li>
 </ul>
 <p>针对上面的两种问题，Google 在 2014 年提出了 multidex 的解决方案，通过 multidex 可以很好地解决方法数越界的问题。</p>
