@@ -1,0 +1,1080 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="JavaScript," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="最近，需要学习一下 React Native，所以先学习一下 JavaScript 作为知识储备。JavaScript 的学习主要分为 2~3 篇，这是第一篇，主要分为以下几个方面。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JavaScript 入门（一）">
+<meta property="og:url" content="http://www.lijiankun24.com/JavaScript-入门（一）/index.html">
+<meta property="og:site_name" content="一些无处安放的代码和故事">
+<meta property="og:description" content="最近，需要学习一下 React Native，所以先学习一下 JavaScript 作为知识储备。JavaScript 的学习主要分为 2~3 篇，这是第一篇，主要分为以下几个方面。">
+<meta property="og:image" content="http://www.lijiankun24.com/JavaScript-入门（一）/catalog.png">
+<meta property="og:updated_time" content="2018-05-27T15:14:54.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JavaScript 入门（一）">
+<meta name="twitter:description" content="最近，需要学习一下 React Native，所以先学习一下 JavaScript 作为知识储备。JavaScript 的学习主要分为 2~3 篇，这是第一篇，主要分为以下几个方面。">
+<meta name="twitter:image" content="http://www.lijiankun24.com/JavaScript-入门（一）/catalog.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.lijiankun24.com/JavaScript-入门（一）/"/>
+
+
+
+
+
+  <title> JavaScript 入门（一） | 一些无处安放的代码和故事 </title>
+<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">一些无处安放的代码和故事</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://www.lijiankun24.com/JavaScript-入门（一）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="lijiankun24">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一些无处安放的代码和故事">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                JavaScript 入门（一）
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-27T21:36:32+08:00">
+                2018-05-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/JavaScript-入门（一）/" class="leancloud_visitors" data-flag-title="JavaScript 入门（一）">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Views </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近，需要学习一下 React Native，所以先学习一下 JavaScript 作为知识储备。JavaScript 的学习主要分为 2~3 篇，这是第一篇，主要分为以下几个方面。</p>
+<div align="center"><br>    <img src="/JavaScript-入门（一）/catalog.png" width="703" height="627"><br></div>
+
+<a id="more"></a>
+<h3 id="1-简介"><a href="#1-简介" class="headerlink" title="1. 简介"></a>1. 简介</h3><ul>
+<li><p>1995年是由网景公司的 Brendan Eich 在两周之内设计出来的。</p>
+</li>
+<li><p>因为网景开发了JavaScript，一年后微软又模仿 JavaScript 开发了 JScript，为了让 JavaScript 成为全球标准，几个公司联合 ECMA（European Computer Manufacturers Association）组织定制了JavaScript语言的标准，被称为 ECMAScript 标准</p>
+</li>
+<li><p>简单说来就是，ECMAScript 是一种语言标准，而 JavaScript 是网景公司对 ECMAScript 标准的一种实现。</p>
+</li>
+<li><p>JavaScript 是在10天之内设计出来的，Bug 较多。由于JavaScript的标准——ECMAScript在不断发展，最新版ECMAScript 6标准（简称ES6）已经在2015年6月正式发布了，所以，讲到JavaScript的版本，实际上就是说它实现了ECMAScript标准的哪个版本</p>
+</li>
+</ul>
+<h3 id="2-基本语法"><a href="#2-基本语法" class="headerlink" title="2. 基本语法"></a>2. 基本语法</h3><ul>
+<li><p>在 JavaScript 中每个语句之后可以有 <code>;</code>(分号) 也可以没有 <code>;</code>(分号)，如下两个语句都是正确的</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 正确，JavaScript 并不强制要求在每个语句的结尾加;，浏览器中负责执行 JavaScript 代码的引擎会自动在每个语句的结尾补上;。</span></div><div class="line"><span class="built_in">console</span>.log(<span class="string">"Hello World!"</span>)</div><div class="line"></div><div class="line"><span class="comment">// 正确</span></div><div class="line"><span class="built_in">console</span>.log(<span class="string">"Hello World!"</span>);</div></pre></td></tr></table></figure>
+</li>
+<li><p>大小写敏感。JavaScript严格区分大小写，如果弄错了大小写，程序将报错或者运行不正常</p>
+</li>
+</ul>
+<h3 id="3-基本数据类型"><a href="#3-基本数据类型" class="headerlink" title="3. 基本数据类型"></a>3. 基本数据类型</h3><ul>
+<li><p>Number：JavaScript不区分整数和浮点数，统一用Number表示，以下都是合法的Number类型</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="number">123</span>;        <span class="comment">// 整数123</span></div><div class="line"><span class="number">0.456</span>;      <span class="comment">// 浮点数0.456</span></div><div class="line"><span class="number">1.2345e3</span>;   <span class="comment">// 科学计数法表示1.2345x1000，等同于1234.5</span></div><div class="line"><span class="number">-99</span>;        <span class="comment">// 负数</span></div><div class="line"><span class="literal">NaN</span>;        <span class="comment">// NaN表示Not a Number，当无法计算结果时用NaN表示</span></div><div class="line"><span class="literal">Infinity</span>;   <span class="comment">// Infinity表示无限大，当数值超过了JavaScript的Number所能表示的最大值时，就表示为Infinity</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>字符串：字符串是以单引号’或双引号”括起来的任意文本，比如’abc’，”xyz”等等</p>
+</li>
+<li>布尔值：JavaScript把null、undefined、0、NaN和空字符串’’视为false，其他值一概视为true</li>
+<li>比较运算符：<ul>
+<li>在 JavaScript 中有两种比较运算符，分别是：<ol>
+<li>第一种是：== 它会自动转换数据类型再比较，很多时候，会得到非常诡异的结果；</li>
+<li>第二种是：=== 它不会自动转换数据类型，如果数据类型不一致，返回false，如果一致，再比较</li>
+<li>由于JavaScript这个设计缺陷，不要使用==比较，始终坚持使用===比较</li>
+</ol>
+</li>
+<li>另一个例外是 NaN 这个特殊的 Number 与所有其他值都不相等，包括它自己：<ol>
+<li>NaN === NaN;  // false</li>
+<li>isNaN(NaN);     // true，唯一能判断NaN的方法是通过isNaN()函数  </li>
+</ol>
+</li>
+<li>最后要注意浮点数的相等比较：<ol>
+<li>1 / 3 === (1 - 2 / 3);                 // false</li>
+<li>Math.abs(1 / 3 - (1 - 2 / 3)) &lt; 0.0000001; // true 浮点数在运算过程中会产生误差，因为计算机无法精确表示无限循环小数。要比较两个浮点数是否相等，只能计算它们之差的绝对值，看是否小于某个阈值</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>null 和 undefined<ul>
+<li>null: null表示一个“空”的值，它和0以及空字符串’’不同，0是一个数值，’’表示长度为0的字符串，而null表示“空”</li>
+<li>大多数情况下，我们都应该用null。undefined仅仅在判断函数参数是否传递的情况下有用    </li>
+</ul>
+</li>
+</ul>
+<h3 id="4-变量和常量"><a href="#4-变量和常量" class="headerlink" title="4. 变量和常量"></a>4. 变量和常量</h3><h4 id="4-1-变量"><a href="#4-1-变量" class="headerlink" title="4.1 变量"></a>4.1 变量</h4><ul>
+<li>变量在JavaScript中就是用一个变量名表示，变量名是大小写英文、数字、$和_的组合，且不能用数字开头。变量名也可以用中文，但是，请不要给自己找麻烦。</li>
+<li><p>在JavaScript中，使用等号=对变量进行赋值。可以把任意数据类型赋值给变量，同一个变量可以反复赋值，而且可以是不同类型的变量，但是要注意只能用var申明一次，例如：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> a = <span class="number">123</span>; <span class="comment">// a的值是整数123</span></div><div class="line">a = <span class="string">'ABC'</span>; <span class="comment">// a变为字符串</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>这种变量本身类型不固定的语言称之为动态语言，与之对应的是静态语言。静态语言在定义变量时必须指定变量类型，如果赋值的时候类型不匹配，就会报错。例如Java是静态语言，赋值语句如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">int a = <span class="number">123</span>; <span class="comment">// a是整数类型变量，类型用int申明</span></div><div class="line">a = <span class="string">"ABC"</span>; <span class="comment">// 错误：不能把字符串赋给整型变量</span></div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="4-2-常量"><a href="#4-2-常量" class="headerlink" title="4.2 常量"></a>4.2 常量</h4><ul>
+<li><p>在 ES6 标准中引入了关键字 const 定义常量，const 与 let 都具有块级作用域</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">'use strict'</span>;</div><div class="line"></div><div class="line"><span class="keyword">const</span> PI = <span class="number">3.14</span>;</div><div class="line">PI = <span class="number">3</span>; <span class="comment">// 某些浏览器不报错，但是无效果！</span></div><div class="line">PI; <span class="comment">// 3.14</span></div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="5-数组和对象"><a href="#5-数组和对象" class="headerlink" title="5. 数组和对象"></a>5. 数组和对象</h3><h4 id="5-1-数组"><a href="#5-1-数组" class="headerlink" title="5.1 数组"></a>5.1 数组</h4><ul>
+<li><p>JavaScript 的数组可以包括任意数据类型，如下所示：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> arrays = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3.14</span>, <span class="string">'Hello'</span>, <span class="literal">null</span>, <span class="literal">true</span>];</div><div class="line"><span class="keyword">var</span> arrays1 = <span class="keyword">new</span> <span class="built_in">Array</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>); <span class="comment">// 创建了数组[1, 2, 3]</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>数组的元素可以通过索引来访问。请注意，索引的起始值为0：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> arr = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3.14</span>, <span class="string">'Hello'</span>, <span class="literal">null</span>, <span class="literal">true</span>];</div><div class="line">arr[<span class="number">0</span>]; <span class="comment">// 返回索引为0的元素，即1</span></div><div class="line">arr[<span class="number">5</span>]; <span class="comment">// 返回索引为5的元素，即true</span></div><div class="line">arr[<span class="number">6</span>]; <span class="comment">// 索引超出了范围，返回undefined</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>也可以通过数组的索引改变该位置的值</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> arr1 = [<span class="string">"A"</span>, <span class="string">"B"</span>, <span class="string">"C"</span>];</div><div class="line">arr1[<span class="number">0</span>] = <span class="number">99</span>;</div><div class="line">arr1[<span class="number">4</span>] = <span class="number">4</span>;</div></pre></td></tr></table></figure>
+</li>
+<li><p>可以动态地改变数组的大小</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> arr = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</div><div class="line">arr.length;</div><div class="line">arr.length = <span class="number">6</span>;</div><div class="line">arr.length = <span class="number">2</span>;</div></pre></td></tr></table></figure>
+</li>
+<li><p>在 JavaScript 中也提供了许多操纵数组的方法：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> arr2 = [<span class="number">10</span>, <span class="number">20</span>, <span class="string">'30'</span>, <span class="string">'xyz'</span>];</div><div class="line"><span class="comment">// indexOf 方法</span></div><div class="line">arr.indexOf(<span class="number">10</span>); <span class="comment">// 元素10的索引为0</span></div><div class="line">arr.indexOf(<span class="number">30</span>); <span class="comment">// 元素30没有找到，返回-1</span></div><div class="line">arr.indexOf(<span class="string">'30'</span>); <span class="comment">// 元素'30'的索引为2</span></div><div class="line"><span class="comment">// slice()就是对应String的substring()版本，它截取Array的部分元素，然后返回一个新的Array</span></div><div class="line"><span class="keyword">var</span> arr3 = [<span class="string">'A'</span>, <span class="string">'B'</span>, <span class="string">'C'</span>, <span class="string">'D'</span>, <span class="string">'E'</span>, <span class="string">'F'</span>, <span class="string">'G'</span>];</div><div class="line">arr3.slice(<span class="number">0</span>, <span class="number">3</span>); <span class="comment">// 从索引0开始，到索引3结束，但不包括索引3: ['A', 'B', 'C']</span></div><div class="line">arr3.slice(<span class="number">3</span>);    <span class="comment">// 从索引3开始到结束：['D', 'E', 'F', 'G']</span></div><div class="line"><span class="keyword">var</span> arr4 = arr3.slice();</div><div class="line">arr4 === arr3;</div><div class="line"><span class="comment">// push()向Array的末尾添加若干元素，pop()则把Array的最后一个元素删除掉：</span></div><div class="line"><span class="keyword">var</span> arr5 = [<span class="number">1</span>, <span class="number">2</span>];</div><div class="line">arr5.push(<span class="string">'A'</span>, <span class="string">'B'</span>);</div><div class="line">arr5.pop();</div><div class="line">arr5.pop();</div><div class="line">arr5.pop();</div><div class="line">arr5.pop();</div><div class="line">arr5.pop();</div><div class="line"><span class="comment">// 如果要往Array的头部添加若干元素，使用unshift()方法，shift()方法则把Array的第一个元素删掉：</span></div><div class="line"><span class="keyword">var</span> arr6 = [<span class="number">1</span>,<span class="number">2</span> ];</div><div class="line">arr6.unshift(<span class="string">'A'</span>, <span class="string">'B'</span>);</div><div class="line">arr.shift();</div><div class="line">arr.shift();</div><div class="line">arr.shift();</div><div class="line">arr.shift();</div><div class="line">arr.shift();</div><div class="line"><span class="comment">// sort()可以对当前Array进行排序，它会直接修改当前Array的元素位置，直接调用时，按照默认顺序排序：</span></div><div class="line"><span class="keyword">var</span> arr7 = [<span class="string">'B'</span>, <span class="string">'C'</span>, <span class="string">'A'</span>];</div><div class="line">arr7.sort();</div><div class="line">arr7; <span class="comment">// ['A', 'B', 'C']</span></div><div class="line"><span class="comment">// reverse() 方法将整个 Array 中的元素反转</span></div><div class="line"><span class="keyword">var</span> arr8 = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</div><div class="line">arr8.reverse();</div><div class="line">arr8;</div><div class="line"><span class="comment">// splice() 方法是修改数组的方法，具体用法如下</span></div><div class="line"><span class="keyword">var</span> arr9 = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</div><div class="line">arr9.splice(<span class="number">1</span>, <span class="number">2</span>, <span class="string">"js"</span>, <span class="string">"java"</span>, <span class="string">"kotlin"</span>);</div><div class="line">arr9.splice(<span class="number">2</span>, <span class="number">2</span>);</div><div class="line">arr9.splice(<span class="number">2</span>, <span class="number">0</span>, <span class="string">"python"</span>, <span class="string">"php"</span>, <span class="string">"c++"</span>);</div><div class="line"><span class="comment">// concat() 方法将当前 Array 和另一个 Array 连接起来，并返回一个新的 Array</span></div><div class="line">arr10 = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</div><div class="line"><span class="keyword">var</span> arr11 = arr10.concat([<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>]);</div><div class="line"><span class="keyword">var</span> arr12 = arr10.concat(<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, [<span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>]);</div><div class="line"><span class="comment">// join 方法是将当前数组中的元素用指定的字符串连接起来，然后返回连接后的字符串</span></div><div class="line"><span class="keyword">var</span> arr13 = [<span class="string">'A'</span>, <span class="string">'B'</span>, <span class="string">'C'</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</div><div class="line"><span class="keyword">var</span> temp = arr13.join(<span class="string">'-'</span>); <span class="comment">// temp 的值是 ‘A-B-C-1-2-3’</span></div><div class="line"> <span class="comment">// 多维数组</span></div><div class="line"> <span class="keyword">var</span> arr14 = [[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>], [<span class="number">400</span>, <span class="number">500</span>, <span class="number">600</span>], [<span class="string">'A'</span>, <span class="string">'B'</span>, <span class="string">'C'</span>]];</div><div class="line"> <span class="keyword">var</span> char1 = arr14[<span class="number">1</span>][<span class="number">1</span>];   <span class="comment">// char1 == 500</span></div><div class="line"> <span class="keyword">var</span> char2 = arr14[<span class="number">2</span>][<span class="number">1</span>];   <span class="comment">// char2 == 'A'</span></div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="5-2-对象"><a href="#5-2-对象" class="headerlink" title="5.2 对象"></a>5.2 对象</h4><ul>
+<li><p>JavaScript 的对象是一组由 <code>键-值</code> 组成的无序集合，例如：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> lijiankun24 = &#123;</div><div class="line">  <span class="attr">name</span>: <span class="string">'lijiankun24'</span>,</div><div class="line">   <span class="attr">age</span>: <span class="number">99</span>,</div><div class="line">   <span class="attr">company</span>: <span class="string">'meituan'</span>,</div><div class="line">   <span class="attr">score</span>: <span class="literal">null</span></div><div class="line">&#125;;</div><div class="line"></div><div class="line"><span class="keyword">var</span> name = lijiankun24.name;</div><div class="line"><span class="keyword">var</span> age = lijiankun24.age;</div><div class="line"><span class="keyword">var</span> company = lijiankun24[company];</div><div class="line"><span class="keyword">var</span> company1 = lijiankun24[<span class="string">'company'</span>];</div></pre></td></tr></table></figure>
+<blockquote>
+<p>JavaScript 用一个 {…} 表示一个对象，键值对以 xxx: xxx 形式申明，用 <code>,</code> 隔开。注意，最后一个键值对不需要在末尾加 <code>,</code>，如果加了，有的浏览器（如低版本的IE）将报错</p>
+</blockquote>
+</li>
+</ul>
+<ul>
+<li><p>JavaScript 对象的键都是字符串类型，值可以是任意数据类型</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 要获取一个对象的属性，我们用 `对象变量.属性名` 的方式：</span></div><div class="line">person.name; <span class="comment">// 'Bob'</span></div><div class="line">person.zipcode; <span class="comment">// null</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>由于 JavaScript 的对象是动态类型的，可以给对象动态地添加属性或删除属性</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> xiaoming = &#123;</div><div class="line">  <span class="attr">name</span>: <span class="string">'xiaoming'</span></div><div class="line">&#125;;</div><div class="line">xiaoming.age = <span class="number">18</span>;</div><div class="line"><span class="keyword">delete</span> xiaoming.name;</div><div class="line">xiaoming.school = <span class="string">'HighSchool'</span>;</div></pre></td></tr></table></figure>
+</li>
+<li><p>可以通过 in 判断一个属性是否存在</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> isAgeExist = <span class="string">'age'</span> <span class="keyword">in</span> xiaoming;</div><div class="line"><span class="keyword">var</span> isNameExist = <span class="string">'name'</span> <span class="keyword">in</span> xiaoming;</div><div class="line"><span class="keyword">var</span> isToStringExist = <span class="string">'toString'</span> <span class="keyword">in</span> xiaoming;</div></pre></td></tr></table></figure>
+</li>
+<li><p>要判断一个属性是否是对象自身拥有的属性，而不是通过继承得到的，可以用 ‘hasOwnProperty()’ 方法判断</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> xiaohong = &#123;</div><div class="line">    <span class="attr">name</span>: <span class="string">'xiaohong'</span>,</div><div class="line">    <span class="attr">age</span>: <span class="number">18</span></div><div class="line">&#125;</div><div class="line">xiaohong.hasOwnProperty(<span class="string">'name'</span>);     <span class="comment">// ture</span></div><div class="line">xiaohong.hasOwnProperty(<span class="string">'toString'</span>); <span class="comment">// false</span></div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="6-变量作用域"><a href="#6-变量作用域" class="headerlink" title="6. 变量作用域"></a>6. 变量作用域</h3><h4 id="6-1-var-的作用域"><a href="#6-1-var-的作用域" class="headerlink" title="6.1 var 的作用域"></a>6.1 var 的作用域</h4><ul>
+<li><p>如果在一个函数中使用 var 关键字申明了一个变量，则该变量的作用域是该函数体内，在函数体外不可引用该变量</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">'use strict'</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> x = <span class="number">1</span>;</div><div class="line">    x = x + <span class="number">1</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line">x = x + <span class="number">2</span>; <span class="comment">// ReferenceError! 无法在函数体外引用变量x</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>在 JavaScript 中，函数是可以嵌套的，那在嵌套的函数中，两个函数的变量的作用域是什么样的呢？</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">'use strict'</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> x = <span class="number">1</span>;</div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">bar</span>(<span class="params"></span>) </span>&#123;</div><div class="line">        <span class="keyword">var</span> y = x + <span class="number">1</span>; <span class="comment">// bar可以访问foo的变量x!</span></div><div class="line">    &#125;</div><div class="line">    <span class="keyword">var</span> z = y + <span class="number">1</span>; <span class="comment">// ReferenceError! foo不可以访问bar的变量y!</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<blockquote>
+<p>在嵌套函数中，外部函数可以使用内部函数的变量，但是内部函数不可以使用外部函数的变量</p>
+</blockquote>
+</li>
+<li><p>在嵌套函数中，如果外部函数和内部函数使用了同样的相同名称的变量，那怎么办呢？</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="meta">'use strict'</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> x = <span class="number">1</span>;</div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">bar</span>(<span class="params"></span>) </span>&#123;</div><div class="line">        <span class="keyword">var</span> x = <span class="string">'A'</span>;</div><div class="line">        <span class="built_in">console</span>.log(<span class="string">'x in bar() = '</span> + x); <span class="comment">// 'A'</span></div><div class="line">    &#125;</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">'x in foo() = '</span> + x); <span class="comment">// 1</span></div><div class="line">    bar();</div><div class="line">&#125;</div><div class="line"></div><div class="line">foo();</div></pre></td></tr></table></figure>
+<blockquote>
+<p>JavaScript的函数在查找变量时从自身函数定义开始，从“内”向“外”查找。如果内部函数定义了与外部函数重名的变量，则内部函数的变量将“屏蔽”外部函数的变量。</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="6-2-全局作用域"><a href="#6-2-全局作用域" class="headerlink" title="6.2 全局作用域"></a>6.2 全局作用域</h4><ul>
+<li><p>不在任何函数体内定义的变量就具有全局作用域。实际上，JavaScript 默认有一个全局对象 window，全局作用域的变量实际上被绑定到 window 的一个属性</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">'use strict'</span>;</div><div class="line">​</div><div class="line"><span class="comment">// 直接访问全局变量course和访问window.course是完全一样的</span></div><div class="line"><span class="keyword">var</span> course = <span class="string">'Learn JavaScript'</span>;</div><div class="line">alert(course); <span class="comment">// 'Learn JavaScript'</span></div><div class="line">alert(<span class="built_in">window</span>.course); <span class="comment">// 'Learn JavaScript'</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>实际上，函数也被视为一个全局变量，被绑定到 window 对象上</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">'use strict'</span>;</div><div class="line">​</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    alert(<span class="string">'foo'</span>);</div><div class="line">&#125;</div><div class="line">​</div><div class="line">foo(); <span class="comment">// 直接调用foo()</span></div><div class="line"><span class="built_in">window</span>.foo(); <span class="comment">// 通过window.foo()调用</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>任何变量（函数也视为变量），如果没有在当前函数作用域中找到，就会继续往上查找，最后如果在全局作用域中也没有找到，则报ReferenceError错误</p>
+</li>
+</ul>
+<h4 id="6-3-局部作用域"><a href="#6-3-局部作用域" class="headerlink" title="6.3 局部作用域"></a>6.3 局部作用域</h4><ul>
+<li><p>由于 JavaScript 的变量作用域实际上是函数内部，我们在 for 循环等语句块中是无法定义具有局部作用域的变量的</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">'use strict'</span>;</div><div class="line">​</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i=<span class="number">0</span>; i&lt;<span class="number">100</span>; i++) &#123;</div><div class="line">        <span class="comment">//</span></div><div class="line">    &#125;</div><div class="line">    i += <span class="number">100</span>; <span class="comment">// 仍然可以引用变量i</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>为了解决块级作用域，ES6 引入了新的关键字 let，用 let 替代 var 可以申明一个块级作用域的变量</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">'use strict'</span>;</div><div class="line">​</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> sum = <span class="number">0</span>;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i=<span class="number">0</span>; i&lt;<span class="number">100</span>; i++) &#123;</div><div class="line">        sum += i;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// SyntaxError:</span></div><div class="line">    i += <span class="number">1</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="6-4-变量提升"><a href="#6-4-变量提升" class="headerlink" title="6.4 变量提升"></a>6.4 变量提升</h4><ul>
+<li><p>在执行 JavaScript 的时候，JavaScript 引擎会自动将函数体中申明的所有变量 “提升” 到函数顶部</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">'use strict'</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> x = <span class="string">'Hello, '</span> + y;</div><div class="line">    <span class="built_in">console</span>.log(x);</div><div class="line">    <span class="keyword">var</span> y = <span class="string">'Bob'</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line">foo();</div><div class="line"><span class="comment">// 此函数执行时并不会报错，其执行结果是：‘Hello, undefined’</span></div></pre></td></tr></table></figure>
+<p>上述代码，在执行时，JavaScript 执行引擎看到的代码相当于</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> y; <span class="comment">// 提升变量 y 的申明，此时 y 为 undefined，</span></div><div class="line">    <span class="keyword">var</span> x = <span class="string">'Hello, '</span> + y;</div><div class="line">    <span class="built_in">console</span>.log(x);</div><div class="line">    y = <span class="string">'Bob'</span>;</div><div class="line">&#125;</div><div class="line"><span class="comment">// 注意：JavaScript 引擎只会提升变量的申明，并不会提升变量的赋值</span></div></pre></td></tr></table></figure>
+<p>由于 JavaScript 的这一怪异的 “特性”，我们在函数内部定义变量时，请严格遵守“在函数内部首先申明所有的变量”这一规则。最常见的做法是用一个 var 申明函数内部用到的所有变量</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span></div><div class="line">        x = <span class="number">1</span>, <span class="comment">// x初始化为1</span></div><div class="line">        y = x + <span class="number">1</span>, <span class="comment">// y初始化为2</span></div><div class="line">        z, i; <span class="comment">// z和i为undefined</span></div><div class="line">    <span class="comment">// 其他语句:</span></div><div class="line">    <span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;<span class="number">100</span>; i++) &#123;</div><div class="line">        ...</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="6-5-名字空间"><a href="#6-5-名字空间" class="headerlink" title="6.5 名字空间"></a>6.5 名字空间</h4><ul>
+<li><p>在 JavaScript 中全局变量都会绑定到 window 上，不同的 JavaScript 文件如果使用了相同的全局变量，或者定义了相同名字的顶层函数，都会造成命名冲突</p>
+</li>
+<li><p>减少冲突的一个常见的做法就是：把自己所有的变量和函数全部绑定到一个全局变量中，如下所示</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 唯一的全局变量MYAPP:</span></div><div class="line"><span class="keyword">var</span> MYAPP = &#123;&#125;;</div><div class="line">​</div><div class="line"><span class="comment">// 其他变量:</span></div><div class="line">MYAPP.name = <span class="string">'myapp'</span>;</div><div class="line">MYAPP.version = <span class="number">1.0</span>;</div><div class="line">​</div><div class="line"><span class="comment">// 其他函数:</span></div><div class="line">MYAPP.foo = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="string">'foo'</span>;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+</li>
+<li><p>把自己的代码全部放入唯一的名字空间MYAPP中，会大大减少全局变量冲突的可能。许多著名的JavaScript库都是这么干的：jQuery，YUI，underscore等等。</p>
+</li>
+</ul>
+<h3 id="7-集合"><a href="#7-集合" class="headerlink" title="7. 集合"></a>7. 集合</h3><h4 id="7-1-Map"><a href="#7-1-Map" class="headerlink" title="7.1 Map"></a>7.1 Map</h4><ul>
+<li>在最新的 ES6 规范中引入了新的数据类型 Map，在 Map 中可以以键值对的形式存储数据，具有极快的查找速度<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> map = <span class="keyword">new</span> <span class="built_in">Map</span>([[<span class="string">'Michael'</span>, <span class="number">95</span>], [<span class="string">'Bob'</span>, <span class="number">80</span>], [<span class="string">'Lee'</span>, <span class="number">90</span>]]);</div><div class="line">​</div><div class="line"><span class="keyword">var</span> map1 = <span class="keyword">new</span> <span class="built_in">Map</span>();</div><div class="line">map1.set(<span class="number">100</span>, <span class="number">1000</span>);</div><div class="line">map1.set(<span class="number">200</span>, <span class="number">2000</span>);</div><div class="line">map1.has(<span class="number">100</span>);</div><div class="line">map1.get(<span class="number">200</span>);</div><div class="line">map1.delete(<span class="number">200</span>);</div><div class="line">map1.set(<span class="number">100</span>, <span class="number">100</span>); <span class="comment">// 由于一个 key 只能对应一个 value，所以多次对一个 key 存入 value 的话，后面赋的值会把前面赋的值覆盖</span></div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="7-2-Set"><a href="#7-2-Set" class="headerlink" title="7.2 Set"></a>7.2 Set</h4><ul>
+<li>Set 也是最新的 ES6 规范中引入的，和 Map 类似，也是一组 key 的集合，但不存储 value，由于 key 不能重复，所以在 Set 中，没有重复的 key<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> set = <span class="keyword">new</span> <span class="built_in">Set</span>([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>]);</div><div class="line">​</div><div class="line"><span class="keyword">var</span> set1 = <span class="keyword">new</span> <span class="built_in">Set</span>();</div><div class="line">set1.add(<span class="number">1</span>);</div><div class="line">set1.add(<span class="number">2</span>);</div><div class="line">set1.delete(<span class="number">1</span>);</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="7-3-循环"><a href="#7-3-循环" class="headerlink" title="7.3 循环"></a>7.3 循环</h4><ul>
+<li><p>JavaScript 中的普通循环和 Java 中的循环一样，如下所示：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> arr = [<span class="string">'A'</span>, <span class="string">'B'</span>, <span class="string">'C'</span>, <span class="string">'D'</span>];</div><div class="line"><span class="keyword">var</span> i, x;</div><div class="line">x = arr.length;</div><div class="line"><span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; x; i++)&#123;</div><div class="line">  <span class="built_in">console</span>.log(arr[i]);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>for … in 循环：for … in 循环可以把一个对象的所有属性依次循环遍历</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> lijiankun24 = &#123;</div><div class="line">  <span class="attr">name</span>: <span class="string">'lijiankun24'</span>,</div><div class="line">  <span class="attr">age</span>: <span class="number">99</span>,</div><div class="line">  <span class="attr">company</span>: <span class="string">'meituan'</span></div><div class="line">&#125;;</div><div class="line"><span class="keyword">for</span>(<span class="keyword">var</span> key <span class="keyword">in</span> lijiankun24)&#123;</div><div class="line">  <span class="built_in">console</span>.log(key + <span class="string">'='</span> + lijiankun[key]);</div><div class="line">&#125;</div><div class="line">​</div><div class="line"><span class="keyword">var</span> array = [<span class="string">'A'</span>, <span class="string">'B'</span>, <span class="string">'C'</span>];</div><div class="line"><span class="keyword">for</span>(<span class="keyword">var</span> index <span class="keyword">in</span> array)&#123;</div><div class="line">  <span class="built_in">console</span>.log(index);            <span class="comment">// '0', '1', '2'</span></div><div class="line">  <span class="built_in">console</span>.log(array[index]);     <span class="comment">// 'A', 'B', 'C'</span></div><div class="line">&#125;</div><div class="line"><span class="comment">// 请注意，for ... in对Array的循环得到的是String而不是Number</span></div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="7-4-iterable"><a href="#7-4-iterable" class="headerlink" title="7.4 iterable"></a>7.4 iterable</h4><ul>
+<li>iterable 是 ES6 规范中引入的，Array、Map 和 Set 都属于 iterable 类型</li>
+<li><p>for … of 循环。iterable 类型的集合可以通过新的 for … of 方便的循环遍历</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> array = [<span class="string">'A'</span>, <span class="string">'B'</span>, <span class="string">'C'</span>];</div><div class="line"><span class="keyword">for</span>(<span class="keyword">var</span> x <span class="keyword">of</span> array)&#123;</div><div class="line">    <span class="built_in">console</span>.log(x);</div><div class="line">&#125;</div><div class="line">​</div><div class="line"><span class="keyword">var</span> set = <span class="keyword">new</span> <span class="built_in">Set</span>([<span class="string">'D'</span>, <span class="string">'E'</span>, <span class="string">'F'</span>]);</div><div class="line"><span class="keyword">for</span>(<span class="keyword">var</span> x <span class="keyword">of</span> set)&#123;</div><div class="line">    <span class="built_in">console</span>.log(x);</div><div class="line">&#125;</div><div class="line">​</div><div class="line"><span class="keyword">var</span> map = <span class="keyword">new</span> <span class="built_in">Map</span>([[<span class="string">'1'</span>, <span class="string">'A'</span>], [<span class="string">'2'</span>, <span class="string">'B'</span>], [<span class="string">'3'</span>, <span class="string">'C'</span>]]);</div><div class="line"><span class="keyword">for</span>(<span class="keyword">var</span> x <span class="keyword">of</span> map)&#123;</div><div class="line">    <span class="built_in">console</span>.log(x[<span class="number">0</span>] + <span class="string">'='</span> + x[<span class="number">1</span>]);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>forEach 循环。iterable 类型的集合可以直接使用 iterable 内置的 forEach 循环。注意：forEach() 循环遍历是在 ES5.1 规范中引入的</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"><span class="meta">'use strict'</span>;</div><div class="line"><span class="comment">/**</span></div><div class="line"> * forEach 循环接受一个函数，遍历每一项的时候都会调用该函数</div><div class="line"> */</div><div class="line"><span class="keyword">var</span> array = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>];</div><div class="line">array.forEach(<span class="function"><span class="keyword">function</span>(<span class="params">element, index, array</span>)</span>&#123;</div><div class="line">  <span class="comment">// element：指向当前元素的值</span></div><div class="line">  <span class="comment">// index：指向当前索引</span></div><div class="line">  <span class="comment">// array：指向 Array 对象本身</span></div><div class="line">  <span class="built_in">console</span>.log(element + <span class="string">', index = '</span> + index);</div><div class="line">&#125;);</div><div class="line">​</div><div class="line"><span class="comment">/**</span></div><div class="line"> * 由于在 Set 中没有索引，所以 forEach function 的前两个值相等</div><div class="line"> */</div><div class="line"><span class="keyword">var</span> set = <span class="keyword">new</span> <span class="built_in">Set</span>([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]);</div><div class="line">set.forEach(<span class="function"><span class="keyword">function</span>(<span class="params">value, sameValue, set</span>)</span>&#123;</div><div class="line">    <span class="comment">// value === sameValue</span></div><div class="line">    <span class="built_in">console</span>.log(value);</div><div class="line">&#125;);</div><div class="line">​</div><div class="line"><span class="keyword">var</span> map = <span class="keyword">new</span> <span class="built_in">Map</span>([[<span class="number">1</span>, <span class="string">'A'</span>], [<span class="number">2</span>, <span class="string">'B'</span>], [<span class="number">3</span>, <span class="string">'C'</span>]]);</div><div class="line">map.forEach(<span class="function"><span class="keyword">function</span>(<span class="params">value, key, map</span>)</span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(key + <span class="string">' = '</span> + value);</div><div class="line">&#125;);</div><div class="line">​</div><div class="line"><span class="comment">// 由于 JavaScript 的函数调用不要求参数必须一致，因此可以忽略它们</span></div><div class="line"><span class="keyword">var</span> array1 = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>];</div><div class="line">array1.forEach(<span class="function"><span class="keyword">function</span>(<span class="params">value</span>)</span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">'value = '</span> + value);</div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<hr>
+<p><strong>参考资料：</strong></p>
+<p><a href="https://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000" target="_blank" rel="external">JavaScript教程</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/JavaScript/" rel="tag"># JavaScript</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/写在2018年的初夏/" rel="next" title="写在 2018 年的初夏">
+                <i class="fa fa-chevron-left"></i> 写在 2018 年的初夏
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="lijiankun24" />
+          <p class="site-author-name" itemprop="name">lijiankun24</p>
+           
+              <p class="site-description motion-element" itemprop="description">守得云开见月明。</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">32</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/lijiankun24" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/lijiankun24" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.jianshu.com/u/1abe21b7ff5f" target="_blank" title="Jianshu">
+                  
+                    <i class="fa fa-fw fa-jianshu"></i>
+                  
+                  Jianshu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://gank.io/post/published" title="匠心写作" target="_blank">匠心写作</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/lmj623565791" title="Hongyang" target="_blank">Hongyang</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.liaohuqiu.net/cn/" title="Huqiu Liao" target="_blank">Huqiu Liao</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://drakeet.me/" title="drakeet" target="_blank">drakeet</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.jianshu.com/u/df40282480b4" title="小鄧子" target="_blank">小鄧子</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://yuweiguocn.github.io/" title="于卫国" target="_blank">于卫国</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-简介"><span class="nav-number">1.</span> <span class="nav-text">1. 简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-基本语法"><span class="nav-number">2.</span> <span class="nav-text">2. 基本语法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-基本数据类型"><span class="nav-number">3.</span> <span class="nav-text">3. 基本数据类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-变量和常量"><span class="nav-number">4.</span> <span class="nav-text">4. 变量和常量</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-变量"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 变量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-常量"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 常量</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-数组和对象"><span class="nav-number">5.</span> <span class="nav-text">5. 数组和对象</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#5-1-数组"><span class="nav-number">5.1.</span> <span class="nav-text">5.1 数组</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-2-对象"><span class="nav-number">5.2.</span> <span class="nav-text">5.2 对象</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-变量作用域"><span class="nav-number">6.</span> <span class="nav-text">6. 变量作用域</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#6-1-var-的作用域"><span class="nav-number">6.1.</span> <span class="nav-text">6.1 var 的作用域</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-2-全局作用域"><span class="nav-number">6.2.</span> <span class="nav-text">6.2 全局作用域</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-3-局部作用域"><span class="nav-number">6.3.</span> <span class="nav-text">6.3 局部作用域</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-4-变量提升"><span class="nav-number">6.4.</span> <span class="nav-text">6.4 变量提升</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-5-名字空间"><span class="nav-number">6.5.</span> <span class="nav-text">6.5 名字空间</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-集合"><span class="nav-number">7.</span> <span class="nav-text">7. 集合</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#7-1-Map"><span class="nav-number">7.1.</span> <span class="nav-text">7.1 Map</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-2-Set"><span class="nav-number">7.2.</span> <span class="nav-text">7.2 Set</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-3-循环"><span class="nav-number">7.3.</span> <span class="nav-text">7.3 循环</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-4-iterable"><span class="nav-number">7.4.</span> <span class="nav-text">7.4 iterable</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lijiankun24</span>
+  
+</div>
+
+
+<div>
+  <span id="busuanzi_container_site_pv">
+    Total views <span id="busuanzi_value_site_pv">   </span>
+  </span>
+
+  <span id="busuanzi_container_site_uv">
+    |   Total visitors <span id="busuanzi_value_site_uv"/>
+  </span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("tWG63sCRtLhi5NFeaXtWqtnv-gzGzoHsz", "lPLcNFpeOoNc6wr9PVX8XdbI");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+
+  
+
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+          bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+      } else {
+          bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+</body>
+</html>
