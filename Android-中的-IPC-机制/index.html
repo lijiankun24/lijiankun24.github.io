@@ -1,0 +1,1085 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,IPC," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="本文主要从应用开发的角度介绍了 Android 中的 IPC 机制，重点介绍了 AIDL 和 Messenger 进程间通信的方式，文章结构如下所示">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 中的 IPC 机制">
+<meta property="og:url" content="http://www.lijiankun24.com/Android-中的-IPC-机制/index.html">
+<meta property="og:site_name" content="一些无处安放的代码和故事">
+<meta property="og:description" content="本文主要从应用开发的角度介绍了 Android 中的 IPC 机制，重点介绍了 AIDL 和 Messenger 进程间通信的方式，文章结构如下所示">
+<meta property="og:image" content="http://www.lijiankun24.com/Android-中的-IPC-机制/catalog.png">
+<meta property="og:image" content="http://www.lijiankun24.com/Android-中的-IPC-机制/AIDL.png">
+<meta property="og:updated_time" content="2018-06-09T07:10:33.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android 中的 IPC 机制">
+<meta name="twitter:description" content="本文主要从应用开发的角度介绍了 Android 中的 IPC 机制，重点介绍了 AIDL 和 Messenger 进程间通信的方式，文章结构如下所示">
+<meta name="twitter:image" content="http://www.lijiankun24.com/Android-中的-IPC-机制/catalog.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.lijiankun24.com/Android-中的-IPC-机制/"/>
+
+
+
+
+
+  <title> Android 中的 IPC 机制 | 一些无处安放的代码和故事 </title>
+<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">一些无处安放的代码和故事</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://www.lijiankun24.com/Android-中的-IPC-机制/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="lijiankun24">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一些无处安放的代码和故事">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Android 中的 IPC 机制
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-06-05T22:00:18+08:00">
+                2018-06-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/Android-中的-IPC-机制/" class="leancloud_visitors" data-flag-title="Android 中的 IPC 机制">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Views </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文主要从应用开发的角度介绍了 Android 中的 IPC 机制，重点介绍了 AIDL 和 Messenger 进程间通信的方式，文章结构如下所示</p>
+<div align="center"><br>    <img src="/Android-中的-IPC-机制/catalog.png" width="708" height="517"><br></div>
+
+<a id="more"></a>
+<h3 id="一-简介"><a href="#一-简介" class="headerlink" title="一. 简介"></a>一. 简介</h3><p>IPC 是 Inter Process Communication 的缩写，含义为进程间通信或跨进程通信，是指两个进程之间进行数据交换的过程。</p>
+<p>进程和线程的大概区别有如下两点：</p>
+<ul>
+<li>在 Android 系统中进程通常是指一个应用，一个进程可以包含多个线程，也可以只有一个线程即：UI线程(主线程)，其主要功能是更新界面</li>
+<li>子线程一般是用来执行大量的耗时任务的，在子线程中是不可以更新界面的</li>
+</ul>
+<p>Android 系统是基于 Linux 内核的移动操作系统，在 Android 上不仅支持 Linux 本身就支持的 IPC 方式，包括命名管道、共享内存、信号量等进程间通信方式，而且在 Android 系统上有自己的 IPC 方式，如：Binder 机制和 Socket 机制</p>
+<p>IPC 的一些应用场景</p>
+<ul>
+<li>某些模块由于特殊原因需要运行在单独的进程中</li>
+<li>为了加大一个应用可使用的内存，可以通过创建多个进程的方式获取多分内存空间</li>
+<li>当前应用需要和其他应用进行数据交换</li>
+</ul>
+<h3 id="二-多进程模式"><a href="#二-多进程模式" class="headerlink" title="二. 多进程模式"></a>二. 多进程模式</h3><p>首先看一下，在同一个应用中如何开启多进程模式以及其运行机制</p>
+<h4 id="2-1-开启方式"><a href="#2-1-开启方式" class="headerlink" title="2.1 开启方式"></a>2.1 开启方式</h4><ul>
+<li>在 AndroidManifest.xml 文件中配置四大组件的 process 属性，该组件将会运行在单独的进程中，也就开启了一个新的进程，默认进程名称是当前应用包名</li>
+<li>进程命名方式：”包名:进程名称” —- 私有进程（包名可省略），”包名.进程名称” —- 全局进程<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">application</span></span></div><div class="line">    <span class="attr">android:allowBackup</span>=<span class="string">"true"</span></div><div class="line">    <span class="attr">android:icon</span>=<span class="string">"@mipmap/ic_launcher"</span></div><div class="line">    <span class="attr">android:label</span>=<span class="string">"@string/app_name"</span></div><div class="line">    <span class="attr">android:roundIcon</span>=<span class="string">"@mipmap/ic_launcher_round"</span></div><div class="line">    <span class="attr">android:supportsRtl</span>=<span class="string">"true"</span></div><div class="line">    <span class="attr">android:theme</span>=<span class="string">"@style/AppTheme"</span>&gt;</div><div class="line">    <span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">".MainActivity"</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">intent-filter</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">action</span> <span class="attr">android:name</span>=<span class="string">"android.intent.action.MAIN"</span> /&gt;</span></div><div class="line"></div><div class="line">            <span class="tag">&lt;<span class="name">category</span> <span class="attr">android:name</span>=<span class="string">"android.intent.category.LAUNCHER"</span> /&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">intent-filter</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">activity</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="comment">&lt;!-- 全局进程 --&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">service</span></span></div><div class="line">        <span class="attr">android:name</span>=<span class="string">".messenger.RemoteService"</span></div><div class="line">        <span class="attr">android:enabled</span>=<span class="string">"true"</span></div><div class="line">        <span class="attr">android:exported</span>=<span class="string">"true"</span></div><div class="line">        <span class="attr">android:process</span>=<span class="string">"com.lijiankun24.ipcpractice.remote"</span> /&gt;</div><div class="line"></div><div class="line">    <span class="comment">&lt;!-- 私有进程 --&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">service</span></span></div><div class="line">        <span class="attr">android:name</span>=<span class="string">".aidl.RemoteBookService"</span></div><div class="line">        <span class="attr">android:exported</span>=<span class="string">"true"</span></div><div class="line">        <span class="attr">android:process</span>=<span class="string">":aidlRemote"</span>&gt;</div><div class="line">        <span class="tag">&lt;<span class="name">intent-filter</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">category</span> <span class="attr">android:name</span>=<span class="string">"android.intent.category.DEFAULT"</span> /&gt;</span></div><div class="line"></div><div class="line">            <span class="tag">&lt;<span class="name">action</span> <span class="attr">android:name</span>=<span class="string">"com.lijiankun24.ipcpractice.MyService"</span> /&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">intent-filter</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">service</span>&gt;</span></div><div class="line"></div><div class="line">    <span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">".AidlActivity"</span>&gt;</span><span class="tag">&lt;/<span class="name">activity</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">application</span>&gt;</span></div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>除了可以在 Android Studio 的 Monitor 选项卡中看到多个运行的进程，还可以通过 adb 名称查看多个运行的进程：adb shell ——&gt; ps | grep (应用包名)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">LiJiankundeMBP:IPCPractice lijiankun$ adb shell</div><div class="line">shell@m2note:/ $ ps | grep com.lijiankun24.ipcpractice</div><div class="line">u0_a2106  5797  365   2547628 57192 ffffffff 00000000 S com.lijiankun24.ipcpractice</div><div class="line">u0_a2106  5996  365   2168084 22352 ffffffff 00000000 S com.lijiankun24.ipcpractice.remote</div></pre></td></tr></table></figure></p>
+<h4 id="2-2-运行机制"><a href="#2-2-运行机制" class="headerlink" title="2.2 运行机制"></a>2.2 运行机制</h4><ul>
+<li>通过上面的方式就可以开启多进程了，开启方式比较简单，但是多进程会引起其他的一些问题，问题的根源就要从多进程的运行机制讲起</li>
+<li>Android 为每个进程都分配了一个独立的虚拟机，不同的虚拟机在内存分配上有着不同的地址空间，所以运行在不同进程的四大组件不能通过共享内存来共享数据</li>
+<li>一般使用多进程会存在以下几个问题<ol>
+<li>静态成员和单例模式完全失效</li>
+<li>线程同步机制完全失效</li>
+<li>SharePreferences 的可靠性降低</li>
+<li>Application 会创建多次</li>
+</ol>
+</li>
+</ul>
+<h3 id="三-Binder"><a href="#三-Binder" class="headerlink" title="三. Binder"></a>三. Binder</h3><h4 id="3-1-如何理解-Binder"><a href="#3-1-如何理解-Binder" class="headerlink" title="3.1 如何理解 Binder"></a>3.1 如何理解 Binder</h4><p>可以从以下四个方面来理解 Binder</p>
+<ul>
+<li>直观来讲，Binder 是 Android 中的一个类，Binder 实现了 IBinder 的接口</li>
+<li>从 IPC 角度来说，Binder 是 Android 中的一种跨进程通信方式，Binder 还可以理解为一种虚拟的物理设备，它的设备驱动是 /dev/binder</li>
+<li>从 Android Framework 角度来说，Binder 是 ServiceManager 连接各种 Manager（ActivityManager、WindowManager）和对应的 ManagerService 的桥梁</li>
+<li>从 Android 应用层来看，Binder 是客户端和服务端进行通信的媒介，当 bindService 的时候，服务端会返回一个包含了服务端业务调用的 Binder 对象，通过这个 Binder 对象，客户端就可以获取服务端提供的服务和数据，这里的服务包括普通服务和基于 AIDL 的服务</li>
+</ul>
+<h4 id="3-2-通过-AIDL-理解-Binder"><a href="#3-2-通过-AIDL-理解-Binder" class="headerlink" title="3.2 通过 AIDL 理解 Binder"></a>3.2 通过 AIDL 理解 Binder</h4><p>Android 开发中，Binder 主要用在 Service 中，包括 AIDL 和 Messenger，其中普通 Service 不会涉及到进程间通信，无法触及 Binder 的核心。而 Messenger 的底层就是 AIDL，所以我们这里可以通过 AIDL 来分析 Binder 的工作机制</p>
+<p>Android Studio 中的 aidl 文件目录结构，如下图所示</p>
+<p><div align="center"><br>    <img src="/Android-中的-IPC-机制/AIDL.png" width="372" height="794"><br></div></p>
+<blockquote>
+<p>上图是一个典型的 AIDL 服务的目录结构，aidl 文件的生成，我就不细说了，网上有很多相关资料</p>
+</blockquote>
+<p>Android Studio 会根据 .aidl 文件自动生成对应的 .java 文件，比如上图中所示的 IBookManager.aidl 生成的对应的 IBookManager.java 在 /app/build/generated/source/aidl/debug 目录下，IBookManager.java 文件的源码如下所示(为了阅读代码方便，对代码格式进行了调整)：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div><div class="line">175</div><div class="line">176</div><div class="line">177</div><div class="line">178</div><div class="line">179</div><div class="line">180</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/*</span></div><div class="line"> * This file is auto-generated.  DO NOT MODIFY.</div><div class="line"> * Original file: /Users/lijiankun/AndroidStudioOpen/IPCPractice/app/src/main/aidl/com/lijiankun24/ipcpractice/IBookManager.aidl</div><div class="line"> */</div><div class="line"><span class="keyword">package</span> com.lijiankun24.ipcpractice;</div><div class="line"><span class="comment">// Declare any non-default types here with import statements</span></div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">IBookManager</span> <span class="keyword">extends</span> <span class="title">android</span>.<span class="title">os</span>.<span class="title">IInterface</span></span></div><div class="line">&#123;</div><div class="line">    <span class="comment">/** Local-side IPC implementation stub class. */</span></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Stub</span> <span class="keyword">extends</span> <span class="title">android</span>.<span class="title">os</span>.<span class="title">Binder</span> <span class="keyword">implements</span> <span class="title">com</span>.<span class="title">lijiankun24</span>.<span class="title">ipcpractice</span>.<span class="title">IBookManager</span></span></div><div class="line">    &#123;</div><div class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> java.lang.String DESCRIPTOR = <span class="string">"com.lijiankun24.ipcpractice.IBookManager"</span>;</div><div class="line">        <span class="comment">/** Construct the stub at attach it to the interface. */</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="title">Stub</span><span class="params">()</span></span></div><div class="line">        &#123;</div><div class="line">            <span class="keyword">this</span>.attachInterface(<span class="keyword">this</span>, DESCRIPTOR);</div><div class="line">        &#125;</div><div class="line">        <span class="comment">/**</span></div><div class="line">         * Cast an IBinder object into an com.lijiankun24.ipcpractice.IBookManager interface,</div><div class="line">         * generating a proxy if needed.</div><div class="line">         */</div><div class="line">        <span class="keyword">public</span> <span class="keyword">static</span> com.lijiankun24.ipcpractice.<span class="function">IBookManager <span class="title">asInterface</span><span class="params">(android.os.IBinder obj)</span></span></div><div class="line">        &#123;</div><div class="line">            <span class="keyword">if</span> ((obj==<span class="keyword">null</span>)) &#123;</div><div class="line">                <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">            &#125;</div><div class="line">            android.os.IInterface iin = obj.queryLocalInterface(DESCRIPTOR);</div><div class="line">            <span class="keyword">if</span> (((iin!=<span class="keyword">null</span>)&amp;&amp;(iin <span class="keyword">instanceof</span> com.lijiankun24.ipcpractice.IBookManager))) &#123;</div><div class="line">                <span class="keyword">return</span> ((com.lijiankun24.ipcpractice.IBookManager)iin);</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">new</span> com.lijiankun24.ipcpractice.IBookManager.Stub.Proxy(obj);</div><div class="line">        &#125;</div><div class="line">        <span class="meta">@Override</span> <span class="keyword">public</span> android.os.<span class="function">IBinder <span class="title">asBinder</span><span class="params">()</span></span></div><div class="line">        &#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onTransact</span><span class="params">(<span class="keyword">int</span> code, android.os.Parcel data, android.os.Parcel reply, <span class="keyword">int</span> flags)</span> <span class="keyword">throws</span> android.os.RemoteException</span></div><div class="line">        &#123;</div><div class="line">            <span class="keyword">switch</span> (code)</div><div class="line">            &#123;</div><div class="line">                <span class="keyword">case</span> INTERFACE_TRANSACTION:</div><div class="line">                &#123;</div><div class="line">                    reply.writeString(DESCRIPTOR);</div><div class="line">                    <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">                &#125;</div><div class="line">                <span class="keyword">case</span> TRANSACTION_basicTypes:</div><div class="line">                &#123;</div><div class="line">                    data.enforceInterface(DESCRIPTOR);</div><div class="line">                    <span class="keyword">int</span> _arg0;</div><div class="line">                    _arg0 = data.readInt();</div><div class="line">                    <span class="keyword">long</span> _arg1;</div><div class="line">                    _arg1 = data.readLong();</div><div class="line">                    <span class="keyword">boolean</span> _arg2;</div><div class="line">                    _arg2 = (<span class="number">0</span>!=data.readInt());</div><div class="line">                    <span class="keyword">float</span> _arg3;</div><div class="line">                    _arg3 = data.readFloat();</div><div class="line">                    <span class="keyword">double</span> _arg4;</div><div class="line">                    _arg4 = data.readDouble();</div><div class="line">                    java.lang.String _arg5;</div><div class="line">                    _arg5 = data.readString();</div><div class="line">                    <span class="keyword">this</span>.basicTypes(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5);</div><div class="line">                    reply.writeNoException();</div><div class="line">                    <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">                &#125;</div><div class="line">                <span class="keyword">case</span> TRANSACTION_getBookList:</div><div class="line">                &#123;</div><div class="line">                    data.enforceInterface(DESCRIPTOR);</div><div class="line">                    java.util.List&lt;com.lijiankun24.ipcpractice.Book&gt; _result = <span class="keyword">this</span>.getBookList();</div><div class="line">                    reply.writeNoException();</div><div class="line">                    reply.writeTypedList(_result);</div><div class="line">                    <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">                &#125;</div><div class="line">                <span class="keyword">case</span> TRANSACTION_addBook:</div><div class="line">                &#123;</div><div class="line">                    data.enforceInterface(DESCRIPTOR);</div><div class="line">                    com.lijiankun24.ipcpractice.Book _arg0;</div><div class="line">                    <span class="keyword">if</span> ((<span class="number">0</span>!=data.readInt())) &#123;</div><div class="line">                        _arg0 = com.lijiankun24.ipcpractice.Book.CREATOR.createFromParcel(data);</div><div class="line">                    &#125;</div><div class="line">                    <span class="keyword">else</span> &#123;</div><div class="line">                        _arg0 = <span class="keyword">null</span>;</div><div class="line">                    &#125;</div><div class="line">                    <span class="keyword">this</span>.addBook(_arg0);</div><div class="line">                    reply.writeNoException();</div><div class="line">                    <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">super</span>.onTransact(code, data, reply, flags);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Proxy</span> <span class="keyword">implements</span> <span class="title">com</span>.<span class="title">lijiankun24</span>.<span class="title">ipcpractice</span>.<span class="title">IBookManager</span></span></div><div class="line">        &#123;</div><div class="line">            <span class="keyword">private</span> android.os.IBinder mRemote;</div><div class="line">            Proxy(android.os.IBinder remote)</div><div class="line">            &#123;</div><div class="line">                mRemote = remote;</div><div class="line">            &#125;</div><div class="line">            <span class="meta">@Override</span> <span class="keyword">public</span> android.os.<span class="function">IBinder <span class="title">asBinder</span><span class="params">()</span></span></div><div class="line">            &#123;</div><div class="line">                <span class="keyword">return</span> mRemote;</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">public</span> java.lang.<span class="function">String <span class="title">getInterfaceDescriptor</span><span class="params">()</span></span></div><div class="line">            &#123;</div><div class="line">                <span class="keyword">return</span> DESCRIPTOR;</div><div class="line">            &#125;</div><div class="line">            <span class="comment">/**</span></div><div class="line">             * Demonstrates some basic types that you can use as parameters</div><div class="line">             * and return values in AIDL.</div><div class="line">             */</div><div class="line">            <span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">basicTypes</span><span class="params">(<span class="keyword">int</span> anInt, <span class="keyword">long</span> aLong, <span class="keyword">boolean</span> aBoolean, <span class="keyword">float</span> aFloat, <span class="keyword">double</span> aDouble, java.lang.String aString)</span> <span class="keyword">throws</span> android.os.RemoteException</span></div><div class="line">            &#123;</div><div class="line">                android.os.Parcel _data = android.os.Parcel.obtain();</div><div class="line">                android.os.Parcel _reply = android.os.Parcel.obtain();</div><div class="line">                <span class="keyword">try</span> &#123;</div><div class="line">                    _data.writeInterfaceToken(DESCRIPTOR);</div><div class="line">                    _data.writeInt(anInt);</div><div class="line">                    _data.writeLong(aLong);</div><div class="line">                    _data.writeInt(((aBoolean)?(<span class="number">1</span>):(<span class="number">0</span>)));</div><div class="line">                    _data.writeFloat(aFloat);</div><div class="line">                    _data.writeDouble(aDouble);</div><div class="line">                    _data.writeString(aString);</div><div class="line">                    mRemote.transact(Stub.TRANSACTION_basicTypes, _data, _reply, <span class="number">0</span>);</div><div class="line">                    _reply.readException();</div><div class="line">                &#125;</div><div class="line">                <span class="keyword">finally</span> &#123;</div><div class="line">                    _reply.recycle();</div><div class="line">                    _data.recycle();</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            <span class="meta">@Override</span> <span class="keyword">public</span> java.util.List&lt;com.lijiankun24.ipcpractice.Book&gt; getBookList() <span class="keyword">throws</span> android.os.RemoteException</div><div class="line">            &#123;</div><div class="line">                android.os.Parcel _data = android.os.Parcel.obtain();</div><div class="line">                android.os.Parcel _reply = android.os.Parcel.obtain();</div><div class="line">                java.util.List&lt;com.lijiankun24.ipcpractice.Book&gt; _result;</div><div class="line">                <span class="keyword">try</span> &#123;</div><div class="line">                    _data.writeInterfaceToken(DESCRIPTOR);</div><div class="line">                    mRemote.transact(Stub.TRANSACTION_getBookList, _data, _reply, <span class="number">0</span>);</div><div class="line">                    _reply.readException();</div><div class="line">                    _result = _reply.createTypedArrayList(com.lijiankun24.ipcpractice.Book.CREATOR);</div><div class="line">                &#125;</div><div class="line">                <span class="keyword">finally</span> &#123;</div><div class="line">                    _reply.recycle();</div><div class="line">                    _data.recycle();</div><div class="line">                &#125;</div><div class="line">                <span class="keyword">return</span> _result;</div><div class="line">            &#125;</div><div class="line">            <span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addBook</span><span class="params">(com.lijiankun24.ipcpractice.Book book)</span> <span class="keyword">throws</span> android.os.RemoteException</span></div><div class="line">            &#123;</div><div class="line">                android.os.Parcel _data = android.os.Parcel.obtain();</div><div class="line">                android.os.Parcel _reply = android.os.Parcel.obtain();</div><div class="line">                <span class="keyword">try</span> &#123;</div><div class="line">                    _data.writeInterfaceToken(DESCRIPTOR);</div><div class="line">                    <span class="keyword">if</span> ((book!=<span class="keyword">null</span>)) &#123;</div><div class="line">                        _data.writeInt(<span class="number">1</span>);</div><div class="line">                        book.writeToParcel(_data, <span class="number">0</span>);</div><div class="line">                    &#125;</div><div class="line">                    <span class="keyword">else</span> &#123;</div><div class="line">                        _data.writeInt(<span class="number">0</span>);</div><div class="line">                    &#125;</div><div class="line">                    mRemote.transact(Stub.TRANSACTION_addBook, _data, _reply, <span class="number">0</span>);</div><div class="line">                    _reply.readException();</div><div class="line">                &#125;</div><div class="line">                <span class="keyword">finally</span> &#123;</div><div class="line">                    _reply.recycle();</div><div class="line">                    _data.recycle();</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TRANSACTION_basicTypes = (android.os.IBinder.FIRST_CALL_TRANSACTION + <span class="number">0</span>);</div><div class="line">        <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TRANSACTION_getBookList = (android.os.IBinder.FIRST_CALL_TRANSACTION + <span class="number">1</span>);</div><div class="line">        <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TRANSACTION_addBook = (android.os.IBinder.FIRST_CALL_TRANSACTION + <span class="number">2</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * Demonstrates some basic types that you can use as parameters</div><div class="line">     * and return values in AIDL.</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">basicTypes</span><span class="params">(<span class="keyword">int</span> anInt, <span class="keyword">long</span> aLong, <span class="keyword">boolean</span> aBoolean, <span class="keyword">float</span> aFloat, <span class="keyword">double</span> aDouble, java.lang.String aString)</span> <span class="keyword">throws</span> android.os.RemoteException</span>;</div><div class="line">    <span class="keyword">public</span> java.util.List&lt;com.lijiankun24.ipcpractice.Book&gt; getBookList() <span class="keyword">throws</span> android.os.RemoteException;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addBook</span><span class="params">(com.lijiankun24.ipcpractice.Book book)</span> <span class="keyword">throws</span> android.os.RemoteException</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>分析一下上述代码：</p>
+<ol>
+<li>IBookManager 是个 interface 并且继承了 android.os.IInterface 接口。注：在 Binder 中传输的接口都需要继承 IInterface 接口</li>
+<li>在 IBookManager 接口中，存在一个 Stub 抽象类和两个方法: getBookList() 和 addBook(Book book) 方法，这两个方法是在写 IBookManager.aidl 文件时就申明的</li>
+<li>Stub 抽象类是一个内部抽象类，它继承自 android.os.Binder 类，并且实现了 IBookManager 接口</li>
+<li>在 Stub 抽象类内部又有一个内部类 Proxy，并且 Proxy 也实现了 IBookManager 接口</li>
+<li><p>在生成的 IBookManager 中非常重要的两个类是 Stub 和 Proxy 类，接下来就分析下这两个类中重要的方法</p>
+<ul>
+<li><p>Stub 抽象类中声明了两个整型的 id 分别用于标识这两个方法，这两个 id 用于标识在 transact 过程中客户端所请求的到底是哪个方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TRANSACTION_getBookList = (android.os.IBinder.FIRST_CALL_TRANSACTION + <span class="number">1</span>);</div><div class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TRANSACTION_addBook = (android.os.IBinder.FIRST_CALL_TRANSACTION + <span class="number">2</span>);</div></pre></td></tr></table></figure>
+</li>
+<li><p>Stub 抽象类中声明了一个 String 类型的 DESCRIPTOR，DESCRIPTOR 是 Binder 的唯一标识，一般用当前 Binder 的类名表示，在 IBookManager 中 DESCRIPTOR 中如下所示</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> java.lang.String DESCRIPTOR = <span class="string">"com.lijiankun24.ipcpractice.IBookManager"</span>;</div></pre></td></tr></table></figure>
+</li>
+<li><p>Stub#asInterface(android.os.IBinder obj) 方法用于将服务端的 Binder 对象转换成客户端所需要的 AIDL 接口类型的对象，这种转换过程是区分进程的，如果客户端和服务端位于同一进程，那么此方法返回的就是服务端对象本身，否则返回的是系统封装后的 Stub.proxy 对象</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * Cast an IBinder object into an com.lijiankun24.ipcpractice.IBookManager interface,</div><div class="line"> * generating a proxy if needed.</div><div class="line"> */</div><div class="line"> <span class="keyword">public</span> <span class="keyword">static</span> com.lijiankun24.ipcpractice.<span class="function">IBookManager <span class="title">asInterface</span><span class="params">(android.os.IBinder obj)</span> </span>&#123;</div><div class="line">     <span class="keyword">if</span> ((obj==<span class="keyword">null</span>)) &#123;</div><div class="line">         <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">     &#125;</div><div class="line">     android.os.IInterface iin = obj.queryLocalInterface(DESCRIPTOR);</div><div class="line">     <span class="keyword">if</span> (((iin!=<span class="keyword">null</span>)&amp;&amp;(iin <span class="keyword">instanceof</span> com.lijiankun24.ipcpractice.IBookManager))) &#123;</div><div class="line">         <span class="keyword">return</span> ((com.lijiankun24.ipcpractice.IBookManager)iin);</div><div class="line">     &#125;</div><div class="line">     <span class="keyword">return</span> <span class="keyword">new</span> com.lijiankun24.ipcpractice.IBookManager.Stub.Proxy(obj);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>Stub 抽象类中的 asBinder() 方法，返回当前 Binder 对象</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="keyword">public</span> android.os.<span class="function">IBinder <span class="title">asBinder</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>Stub 抽象类中的 onTransact(int code, android.os.Parcel data, android.os.Parcel reply, int flags) 方法是运行在服务端的Binder线程池中，当客户端发起跨进程请求时，远程请求会通过系统底层封装后交由此方法来处理。<br>服务端通过</p>
+<ul>
+<li>code 确定客户端请求的目标方法</li>
+<li>从 data 中取出目标方法所需要的参数（如果目标方法有参数的话）</li>
+<li>执行目标方法</li>
+<li>目标方法执行完毕后，向 reply 中写入返回值（如果目标方法有返回值的话）</li>
+<li>注意：如此方法返回false则客户端的请求会失败，所以我们可以在服务端中重写该方法， 然后利用这个特性来做权限验证。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onTransact</span><span class="params">(<span class="keyword">int</span> code, android.os.Parcel data, android.os.Parcel reply, <span class="keyword">int</span> flags)</span> <span class="keyword">throws</span> android.os.RemoteException</span></div><div class="line">  &#123;</div><div class="line">      <span class="keyword">switch</span> (code)</div><div class="line">      &#123;</div><div class="line">          <span class="keyword">case</span> INTERFACE_TRANSACTION:</div><div class="line">          &#123;</div><div class="line">              reply.writeString(DESCRIPTOR);</div><div class="line">              <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">          &#125;</div><div class="line">          <span class="keyword">case</span> TRANSACTION_basicTypes:</div><div class="line">          &#123;</div><div class="line">              data.enforceInterface(DESCRIPTOR);</div><div class="line">              <span class="keyword">int</span> _arg0;</div><div class="line">              _arg0 = data.readInt();</div><div class="line">              <span class="keyword">long</span> _arg1;</div><div class="line">              _arg1 = data.readLong();</div><div class="line">              <span class="keyword">boolean</span> _arg2;</div><div class="line">              _arg2 = (<span class="number">0</span>!=data.readInt());</div><div class="line">              <span class="keyword">float</span> _arg3;</div><div class="line">              _arg3 = data.readFloat();</div><div class="line">              <span class="keyword">double</span> _arg4;</div><div class="line">              _arg4 = data.readDouble();</div><div class="line">              java.lang.String _arg5;</div><div class="line">              _arg5 = data.readString();</div><div class="line">              <span class="keyword">this</span>.basicTypes(_arg0, _arg1, _arg2, _arg3, _arg4, _arg5);</div><div class="line">              reply.writeNoException();</div><div class="line">              <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">          &#125;</div><div class="line">          <span class="keyword">case</span> TRANSACTION_getBookList:</div><div class="line">          &#123;</div><div class="line">              data.enforceInterface(DESCRIPTOR);</div><div class="line">              java.util.List&lt;com.lijiankun24.ipcpractice.Book&gt; _result = <span class="keyword">this</span>.getBookList();</div><div class="line">              reply.writeNoException();</div><div class="line">              reply.writeTypedList(_result);</div><div class="line">              <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">          &#125;</div><div class="line">          <span class="keyword">case</span> TRANSACTION_addBook:</div><div class="line">          &#123;</div><div class="line">              data.enforceInterface(DESCRIPTOR);</div><div class="line">              com.lijiankun24.ipcpractice.Book _arg0;</div><div class="line">              <span class="keyword">if</span> ((<span class="number">0</span>!=data.readInt())) &#123;</div><div class="line">                  _arg0 = com.lijiankun24.ipcpractice.Book.CREATOR.createFromParcel(data);</div><div class="line">              &#125;</div><div class="line">              <span class="keyword">else</span> &#123;</div><div class="line">                  _arg0 = <span class="keyword">null</span>;</div><div class="line">              &#125;</div><div class="line">              <span class="keyword">this</span>.addBook(_arg0);</div><div class="line">              reply.writeNoException();</div><div class="line">              <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">          &#125;</div><div class="line">      &#125;</div><div class="line">      <span class="keyword">return</span> <span class="keyword">super</span>.onTransact(code, data, reply, flags);</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>Stub 中的 asInterface() 中，如果客户端和服务端不是位于同一进程，就会将一个 Proxy 对象返回给客户端调用，接下来分析下 Proxy 的代码</p>
+<ul>
+<li>Proxy 也实现了 IBookManager 接口</li>
+<li>在 Proxy 中主要看一下 getBookList() 和 addBook(Book book) 方法的实现</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 运行在客户端</div><div class="line"> * 1.创建该方法需要的输入型Parcel对象 _data</div><div class="line"> * 2.创建该方法需要的输出型Parcel对象 _reply</div><div class="line"> * 3.把该方法的参数信息写入 _data 中（如果有参数的话）</div><div class="line"> * 4.调用transact()方法来发起RPC（远程过程调用）请求，同时当前线程挂起</div><div class="line"> * 5.服务端的onTransact()方法被调用，直到RPC过程返回，当前线程继续执行</div><div class="line"> * 6.从 _reply 中读取RPC过程返回的结果（如果有返回值的话）</div><div class="line"> */</div><div class="line"><span class="meta">@Override</span> <span class="keyword">public</span> java.util.List&lt;com.lijiankun24.ipcpractice.Book&gt; getBookList() <span class="keyword">throws</span> android.os.RemoteException</div><div class="line">&#123;</div><div class="line">    android.os.Parcel _data = android.os.Parcel.obtain();</div><div class="line">    android.os.Parcel _reply = android.os.Parcel.obtain();</div><div class="line">    java.util.List&lt;com.lijiankun24.ipcpractice.Book&gt; _result;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        _data.writeInterfaceToken(DESCRIPTOR);</div><div class="line">        mRemote.transact(Stub.TRANSACTION_getBookList, _data, _reply, <span class="number">0</span>);</div><div class="line">        _reply.readException();</div><div class="line">        _result = _reply.createTypedArrayList(com.lijiankun24.ipcpractice.Book.CREATOR);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">finally</span> &#123;</div><div class="line">        _reply.recycle();</div><div class="line">        _data.recycle();</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> _result;</div><div class="line">&#125;</div><div class="line"><span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addBook</span><span class="params">(com.lijiankun24.ipcpractice.Book book)</span> <span class="keyword">throws</span> android.os.RemoteException</span></div><div class="line">&#123;</div><div class="line">    android.os.Parcel _data = android.os.Parcel.obtain();</div><div class="line">    android.os.Parcel _reply = android.os.Parcel.obtain();</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        _data.writeInterfaceToken(DESCRIPTOR);</div><div class="line">        <span class="keyword">if</span> ((book!=<span class="keyword">null</span>)) &#123;</div><div class="line">            _data.writeInt(<span class="number">1</span>);</div><div class="line">            book.writeToParcel(_data, <span class="number">0</span>);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">else</span> &#123;</div><div class="line">            _data.writeInt(<span class="number">0</span>);</div><div class="line">        &#125;</div><div class="line">        mRemote.transact(Stub.TRANSACTION_addBook, _data, _reply, <span class="number">0</span>);</div><div class="line">        _reply.readException();</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">finally</span> &#123;</div><div class="line">        _reply.recycle();</div><div class="line">        _data.recycle();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>通过分析上面的代码，我们可以得知</p>
+<ul>
+<li>当客户端发起请求时，当前线程会被挂起，直至服务端进程返回数据，所以如果远程方法很耗时，一定要放在子线程中调用</li>
+<li>服务端的Binder方法运行在Binder线程池中，所以Binder方法不管是否耗时都应该采用同步的方式实现</li>
+<li>可以大致归结为三个对象（Client对象、Service对象及连接两个对象的Binder对象）和两个方法（在Client中调用的transact()方法和运行在Service中的onTransact()方法）</li>
+<li>调用顺序大致是：Client发起远程请求 ——&gt; Binder写入参数data ——&gt; 调用transact()，同时Client线程被挂起 ——&gt; Service调用Binder线程池中的onTransact() ——&gt;写入结果reply，通过Binder返回数据后唤醒Client线程</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="四-IPC-的方式"><a href="#四-IPC-的方式" class="headerlink" title="四. IPC 的方式"></a>四. IPC 的方式</h3><h4 id="4-1-Bundle"><a href="#4-1-Bundle" class="headerlink" title="4.1 Bundle"></a>4.1 Bundle</h4><ul>
+<li>Bundle适用与不同进程中的四大组件间的进程通信，一般是单向通信，即在某个进程中打开另外一个进程中的组件时通过Intent传递</li>
+<li>Bundle支持的数据类型有基本类型、实现了Parcelable或Serialzable接口的对象、List、Size等等具体可见Bundle类</li>
+<li>还有一种比较特殊的场景是，在 A 进程中得到一个计算结果，但是该计算结果不支持放入 Bundle 中，无法传给 B 进程。这种情况我们可以换一种解决思路，比如 A 进程通过 Intent 启动 B 进程中的一个 Service，在 B 进程的 Service 中去进行计算并得到计算结果，之后再去启动 B 进程中真正要启动的目标组件，由于 Service 已经存在于 B 进程中，计算结果和目标组件是在同一进程中的，所以目标组件可以直接获取到该计算结果，这样就解决了无法通过 Bundle 传递计算结果的问题了</li>
+</ul>
+<h4 id="4-2-文件共享"><a href="#4-2-文件共享" class="headerlink" title="4.2 文件共享"></a>4.2 文件共享</h4><ul>
+<li>通过将数据序列化到外部存储设备上，然后再从外部设备上进行反序列化来达到通过共享文件进行进程间通信</li>
+<li>因为会发生并发读写问题，所以这种方式适合在对数据同步要求不高的进程间进行通信</li>
+<li>问题：通过文件共享的方式进行进程间通信时会面对并发读写的问题，怎么处理这个问题？</li>
+</ul>
+<h4 id="4-3-Messenger"><a href="#4-3-Messenger" class="headerlink" title="4.3 Messenger"></a>4.3 Messenger</h4><ul>
+<li>Messenger 是一种轻量级 IPC 方案，它的底层实现是 AIDL，它对 AIDL 做了封装使用起来更简单</li>
+<li>通过 Messenger 可以在不同的进程中传递 Message 对象，在 Message 对象中放入我们需要传递的数据</li>
+<li>由于 Messenger 一次处理一个请求，因此在服务端我们不用考虑同步的问题</li>
+<li>Messenger 设计封装的很好，有传递数据的 Messenger，数据载体 Message 和接受处理数据的 Handler</li>
+<li><p>下面可以通过一个例子熟悉 Messenger 的使用</p>
+<ul>
+<li><p>服务端进程：创建一个 RemoteService 类，继承自 Service，并且在 AndroidManifest.xml 文件中注册该 RemoteService，并且将此 RemoteSerice 运行在一个独立的进程中，作为远程服务端</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">service</span></span></div><div class="line">    <span class="attr">android:name</span>=<span class="string">".messenger.RemoteService"</span></div><div class="line">    <span class="attr">android:enabled</span>=<span class="string">"true"</span></div><div class="line">    <span class="attr">android:exported</span>=<span class="string">"true"</span></div><div class="line">    <span class="attr">android:process</span>=<span class="string">".remote"</span> /&gt;</div></pre></td></tr></table></figure>
+<p>在服务端进程中创建一个 Handler 接受处理消息，通过该 Handler 创建一个 Messenger 对象，并且在 Service 的 onBind() 方法中返回该 Messenger 对象，代码如下所示</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * RemoteService.java</div><div class="line"> *</div><div class="line"> * Created by lijiankun03 on 2018/5/28.</div><div class="line"> */</div><div class="line"> class RemoteService : Service() &#123;</div><div class="line"></div><div class="line">      private val tag: String? = "RemoteService"</div><div class="line"></div><div class="line">      private var mMessenger: Messenger? = null</div><div class="line"></div><div class="line">      override fun onCreate() &#123;</div><div class="line">          super.onCreate()</div><div class="line">          L.i("RemoteService onCreate")</div><div class="line">          Utils.printProcessInfo(tag, this)</div><div class="line"></div><div class="line">          val mHandler = RemoteHandler()</div><div class="line">          mMessenger = Messenger(mHandler)</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int &#123;</div><div class="line">          L.i("RemoteService onStartCommand")</div><div class="line">          return super.onStartCommand(intent, flags, startId)</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      override fun onBind(intent: Intent): IBinder? &#123;</div><div class="line">          L.i("RemoteService onBind")</div><div class="line">          return mMessenger?.binder</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      class RemoteHandler : Handler() &#123;</div><div class="line"></div><div class="line">          override fun handleMessage(msg: Message?) &#123;</div><div class="line">              L.i("RemoteHandler msg.what" + msg?.what)</div><div class="line">              when (msg?.what) &#123;</div><div class="line">                  1 -&gt; &#123;</div><div class="line">                    val messenger = msg.replyTo</div><div class="line">                    val sendMsg = Message.obtain()</div><div class="line">                    sendMsg.what = 99</div><div class="line">                    messenger.send(sendMsg)</div><div class="line">                  &#125;</div><div class="line">              &#125;</div><div class="line">         &#125;</div><div class="line">     &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>客户端进程：首先绑定服务端的 Service，绑定成功后用服务端返回的 IBinder 对象创建一个 Messenger 对象，通过这个 Messenger 对象就可以向服务端发送消息了，发送消息的类型为 Message</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div></pre></td><td class="code"><pre><div class="line">class MainActivity : AppCompatActivity(), View.OnClickListener &#123;</div><div class="line"></div><div class="line">    private val tag: String? = "MainActivity"</div><div class="line"></div><div class="line">    private var mMessenger: Messenger? = null</div><div class="line"></div><div class="line">    private var mServiceConnection: ServiceConnection? = null</div><div class="line"></div><div class="line">    private var mReceiveMessenger: Messenger = Messenger(ReceiveHandler())</div><div class="line"></div><div class="line">    override fun onCreate(savedInstanceState: Bundle?) &#123;</div><div class="line">        super.onCreate(savedInstanceState)</div><div class="line">        setContentView(R.layout.activity_main)</div><div class="line">        initView()</div><div class="line">        Utils.printProcessInfo(tag, this)</div><div class="line">        L.i("RemoteService onBind")</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    override fun onClick(v: View) &#123;</div><div class="line">        when (v.id) &#123;</div><div class="line">            R.id.btn_bind_service -&gt; &#123;</div><div class="line">                L.i("MainActivity BindRemoveService")</div><div class="line">                bindService()</div><div class="line">            &#125;</div><div class="line">            R.id.btn_send_msg -&gt; &#123;</div><div class="line">                L.i("MainActivity SendMsg")</div><div class="line">                sendMsg()</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    private fun bindService() &#123;</div><div class="line">        mServiceConnection = LocalServiceConnection()</div><div class="line">        val intent = Intent(this, RemoteService::class.java)</div><div class="line">        this.bindService(intent, mServiceConnection, android.content.Context.BIND_AUTO_CREATE)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    private fun sendMsg() &#123;</div><div class="line">        val msg: Message = Message.obtain()</div><div class="line">        msg.what = 1</div><div class="line">        msg.replyTo = mReceiveMessenger</div><div class="line">        mMessenger?.send(msg)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    private fun initView() &#123;</div><div class="line">        findViewById&lt;View&gt;(R.id.btn_bind_service).setOnClickListener(this)</div><div class="line">        findViewById&lt;View&gt;(R.id.btn_send_msg).setOnClickListener(this)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    inner class LocalServiceConnection : ServiceConnection &#123;</div><div class="line">        override fun onServiceDisconnected(name: ComponentName?) &#123;</div><div class="line">            L.i("MainActivity onServiceDisconnected ")</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        override fun onServiceConnected(name: ComponentName?, service: IBinder?) &#123;</div><div class="line">            mMessenger = Messenger(service)</div><div class="line">            L.i("MainActivity onServiceConnected ")</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    class ReceiveHandler : Handler &#123;</div><div class="line">        constructor() : super()</div><div class="line"></div><div class="line">        override fun handleMessage(msg: Message?) &#123;</div><div class="line">            L.i("MainActivity msg.what" + msg?.what)</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>通过上面的例子就可以明白了 Messenger 的使用流程如下：</p>
+<ul>
+<li>绑定服务:将Service返回的Binder转换成IMessenger的同时得到封装好的Messenger</li>
+<li>Client发起请求:通过Messenger将封装好数据的Message发送到Service,其底层调用的是IMessenger的send()方法</li>
+<li>Service在Handler的handleMessage()方法中接收到请求并处理</li>
+<li>如果需要Service的相应则发起请求时要在Client创建属于自己的Messenger并通过message.replyTo传递给Service</li>
+<li>Service将返回信息封装到Message中并通过message.replyTo携带过来的Client的Messenger发送相应数据</li>
+<li>Client在Handler的handleMessage()方法中接收到返回信息并处理</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="4-4-AIDL"><a href="#4-4-AIDL" class="headerlink" title="4.4 AIDL"></a>4.4 AIDL</h4><ul>
+<li>在 Messenger 中，是以串行的方式处理客户端发送到服务端的消息，如果有大量并发的请求，使用 Messenger 并不合适</li>
+<li>而且 Messenger 的作用主要是为了传递消息，很多时候我们可能需要跨进程调用服务端的方法，这时使用 AIDL 的方法会更加合适</li>
+<li><p>在使用 AIDL 方式进行进程间通信时，可以分为客户端和服务端两个方面，下面分别介绍</p>
+<ul>
+<li><p>服务端：创建一个 Service 用来监听客户端的连接请求，然后创建一个 AIDL 文件，将暴露给客户端的接口在这个 AIDL 文件中申明，最后在 Service 中实现这个 AIDL 接口，并在 onBind() 方法中返回，过程如下所示</p>
+<ol>
+<li><p>创建一个 Book 的 javabean 对象</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">/**</div><div class="line"> * Book.java</div><div class="line"> *</div><div class="line"> * Created by lijiankun03 on 2018/5/30.</div><div class="line"> */</div><div class="line"> class Book(val bookId: Int, val bookName: String) : Parcelable &#123;</div><div class="line"></div><div class="line">     constructor(parcel: Parcel) : this(</div><div class="line">         parcel.readInt(),</div><div class="line">         parcel.readString()</div><div class="line">     )</div><div class="line"></div><div class="line">     override fun writeToParcel(dest: Parcel?, flags: Int) &#123;</div><div class="line">         dest?.writeInt(bookId)</div><div class="line">         dest?.writeString(bookName)</div><div class="line">     &#125;</div><div class="line"></div><div class="line">     override fun describeContents(): Int &#123;</div><div class="line">         return 0</div><div class="line">     &#125;</div><div class="line"></div><div class="line">     companion object CREATOR : Parcelable.Creator&lt;Book&gt; &#123;</div><div class="line">         override fun createFromParcel(source: Parcel): Book &#123;</div><div class="line">           return Book(source)</div><div class="line">         &#125;</div><div class="line"></div><div class="line">         override fun newArray(size: Int): Array&lt;Book?&gt; &#123;</div><div class="line">           return arrayOfNulls&lt;Book&gt;(size)</div><div class="line">         &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>创建一个 Book.aidl 文件</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Book.aidl</span></div><div class="line"><span class="keyword">package</span> com.lijiankun24.ipcpractice;</div><div class="line"></div><div class="line"><span class="comment">// Declare any non-default types here with import statements</span></div><div class="line"></div><div class="line">parcelable Book;</div></pre></td></tr></table></figure>
+</li>
+<li><p>创建一个 IBookManager.aidl 的文件</p>
+ <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// IBookManager.aidl</span></div><div class="line"><span class="keyword">package</span> com.lijiankun24.ipcpractice;</div><div class="line"></div><div class="line"><span class="comment">// Declare any non-default types here with import statements</span></div><div class="line"></div><div class="line"><span class="keyword">import</span> com.lijiankun24.ipcpractice.Book;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">interface</span> <span class="title">IBookManager</span> </span>&#123;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * Demonstrates some basic types that you can use as parameters</div><div class="line">     * and return values in AIDL.</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">basicTypes</span><span class="params">(<span class="keyword">int</span> anInt, <span class="keyword">long</span> aLong, <span class="keyword">boolean</span> aBoolean, <span class="keyword">float</span> aFloat,</span></span></div><div class="line">            <span class="keyword">double</span> aDouble, String aString);</div><div class="line"></div><div class="line">    <span class="function">List&lt;Book&gt; <span class="title">getBookList</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">addBook</span><span class="params">(in Book book)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>创建一个 RemoteBookService 远程服务</p>
+ <figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line">class RemoteBookService : Service() &#123;</div><div class="line"></div><div class="line">    private val tag: String? = "RemoteBookService"</div><div class="line"></div><div class="line">    private var bookList: List&lt;Book&gt;? = null</div><div class="line"></div><div class="line">    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int &#123;</div><div class="line">      Utils.printProcessInfo(tag, this)</div><div class="line">      bookList = ArrayList()</div><div class="line">      return super.onStartCommand(intent, flags, startId)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    override fun onBind(intent: Intent?): IBinder &#123;</div><div class="line">      return MyBinder()</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    class MyBinder : IBookManager.Stub() &#123;</div><div class="line">      override fun basicTypes(anInt: Int, aLong: Long, aBoolean: Boolean, aFloat: Float, aDouble: Double, aString: String?) &#123;</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      override fun getBookList(): MutableList&lt;com.lijiankun24.ipcpractice.Book&gt; &#123;</div><div class="line">        return bookList</div><div class="line">      &#125;</div><div class="line"></div><div class="line">      override fun addBook(book: com.lijiankun24.ipcpractice.Book) &#123;</div><div class="line">        bookList?.add(book)</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>在 AndroidManifest.xml 文件中申明此 RemoteBookService，并将其运行在单独的进程中</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">service</span></span></div><div class="line">    <span class="attr">android:name</span>=<span class="string">".aidl.RemoteBookService"</span></div><div class="line">    <span class="attr">android:exported</span>=<span class="string">"true"</span></div><div class="line">    <span class="attr">android:process</span>=<span class="string">":aidlRemote"</span>&gt;</div><div class="line">      <span class="tag">&lt;<span class="name">intent-filter</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">category</span> <span class="attr">android:name</span>=<span class="string">"android.intent.category.DEFAULT"</span> /&gt;</span></div><div class="line"></div><div class="line">          <span class="tag">&lt;<span class="name">action</span> <span class="attr">android:name</span>=<span class="string">"com.ryg.sayhi.MyService"</span> /&gt;</span></div><div class="line">      <span class="tag">&lt;/<span class="name">intent-filter</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">service</span>&gt;</span></div></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><p>客户端，首先要绑定服务端的 Service，绑定成功后，将服务端返回的 Binder 对象转出 AIDL 接口所属的类型，接着就可以调用 AIDL 中的方法</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line">class AidlActivity : AppCompatActivity() &#123;</div><div class="line"></div><div class="line">    private var iMyAidlInterface: IBookManager? = null</div><div class="line"></div><div class="line">    private val aidlServiceConnection = AidlServiceConnection()</div><div class="line"></div><div class="line">    override fun onCreate(savedInstanceState: Bundle?) &#123;</div><div class="line">        super.onCreate(savedInstanceState)</div><div class="line">        setContentView(R.layout.activity_aidl)</div><div class="line">        findViewById&lt;View&gt;(R.id.btn_start_aidl).setOnClickListener(&#123; bindAidl() &#125;)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    override fun onDestroy() &#123;</div><div class="line">        unbindService(aidlServiceConnection)</div><div class="line">        super.onDestroy()</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    private fun bindAidl() &#123;</div><div class="line">        val intent = Intent(this, RemoteBookService::class.java)</div><div class="line">        bindService(intent, aidlServiceConnection, BIND_AUTO_CREATE)</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    inner class AidlServiceConnection : ServiceConnection &#123;</div><div class="line">        override fun onServiceDisconnected(name: ComponentName?) &#123;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        override fun onServiceConnected(name: ComponentName?, service: IBinder?) &#123;</div><div class="line">            iMyAidlInterface = IBookManager.Stub.asInterface(service)</div><div class="line">            L.i("AidlActivity getName " + iMyAidlInterface?.bookList?.size)</div><div class="line">            val book = Book(100, "Red")</div><div class="line">            iMyAidlInterface?.addBook(book)</div><div class="line">            L.i("AidlActivity getName " + iMyAidlInterface?.bookList?.size)</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="4-5-ContentProvider"><a href="#4-5-ContentProvider" class="headerlink" title="4.5 ContentProvider"></a>4.5 ContentProvider</h4><p>ContentProvider是Android中提供的专门用于不同应用间进行数据共享的方式，所以它天生适合进程间通信，底层实现也是Binder。下面是自定义Provider时的一些注意事项：</p>
+<ul>
+<li>服务端定义ContentProvider时新建类extends ContentProvider然后重写onCreate（）、insert（）、delete（）、update（）、query（）和getType（）方法。onCreate（）是运行在主线程，其它CRUD方法运行在Binder线程</li>
+<li>然后在Manifest中注册provider，注意两个属性：android:authorities是指定provider唯一属性的，android: permission可选是指定访问此provider必须要申请的相应权限，也可以单独指定android:readPermission或android:writePermission</li>
+<li>可以使用SQLiteOpneHelper结合数据库完成ContentProvider对数据的操作</li>
+<li>可以使用UriMatcher来匹配查询的Uri，UriMatcher.addURI（）初始化添加支持的URI，UriMatcher.match（）匹配查询的uri</li>
+<li>在insert，delete和update方法中因为数据发生了变化要调用ContentResolver方法的notifyChange（）</li>
+<li>要观察一个ContentProvider中的数据改变情况，可以通过ContentResolver的registerContentObserver方法来注册观察者，通过unregisterContentObserver方法来解除观察者</li>
+<li>客户端使用定义好的android:authorities属性值指定Uri，然后利用ContentResolver进行CRUD操作，如果服务端的provider注册时有声明权限，客户端必须在manifest中申请相应权限</li>
+</ul>
+<h4 id="4-6-Socket"><a href="#4-6-Socket" class="headerlink" title="4.6 Socket"></a>4.6 Socket</h4><ul>
+<li>Socket也称为“套接字”，是网络通信中的概念，它分为流式套接字和用户数据报套接字两种，分别对应于网络的传输控制层的TCP和UDP协议。</li>
+<li>TCP协议：面向连接的协议，提供稳定的双向通信功能，连接的建立需要经过“三次握手”才能完成，提供了超时重传机制，稳定性很高。</li>
+<li>UDP协议：无连接的，提供不稳定的单向通信功能，性能上效率更好，但是不能保证数据一定能正确传输，特别是在网络拥塞的情况下。</li>
+<li>Socket不仅仅可以实现进程间的通信，而且还可以实现设备间的通信，不过需要设备之间的IP地址互相可见。虽然如此，但是使用Socket的业务场景一般是在客户端和服务端通信比较频繁，需要建立长时间稳定的连接的时候，所以在Android跨进程通信的实际运用场景较少。</li>
+</ul>
+<h4 id="4-7-IPC方式适用场景总结"><a href="#4-7-IPC方式适用场景总结" class="headerlink" title="4.7 IPC方式适用场景总结"></a>4.7 IPC方式适用场景总结</h4><ul>
+<li>Bundle:四大组件间的进程间通信，简单易用，但是只能传输Bundle支持的数据类型</li>
+<li>共享文件：无并发访问情形，交换简单的数据实时性不高的场景，简单易用，但是不适合高并发场景，且无法做到进程间的即时通信</li>
+<li>AIDL：一对多通信且有RPC（远程过程调用）需求，功能强大，支持一对多并发通信，支持实时通信，但是使用稍复杂，需注意处理好线程同步</li>
+<li>Messenger：低并发的一对多即时通信，无RPC需求，或者无需返回结果的RPC需求，功能一般，支持一对多串行通信，支持试试通信，但不能很好处理高并发情形，不支持RPC，数据通过Message传输，因此只能传输Bundle支持的数据类型</li>
+<li>ContentProvider：一对多的进程间的数据共享，在数据访问方面功能强大，支持一对多并发数据共享，可以通过Call方法扩展其他操作，但是可以理解为受约束的AIDL，主要提供数据源的CRUD操作</li>
+<li>Socket:网络数据交互，功能强大，可以通过网络传输字节流，支持一对多并发实时通信，但是实现细节稍微有点麻烦，不支持直接的RPC</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/IPC/" rel="tag"># IPC</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/JavaScript-入门（一）/" rel="next" title="JavaScript 入门（一）">
+                <i class="fa fa-chevron-left"></i> JavaScript 入门（一）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="lijiankun24" />
+          <p class="site-author-name" itemprop="name">lijiankun24</p>
+           
+              <p class="site-description motion-element" itemprop="description">守得云开见月明。</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/lijiankun24" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/lijiankun24" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.jianshu.com/u/1abe21b7ff5f" target="_blank" title="Jianshu">
+                  
+                    <i class="fa fa-fw fa-jianshu"></i>
+                  
+                  Jianshu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://gank.io/post/published" title="匠心写作" target="_blank">匠心写作</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/lmj623565791" title="Hongyang" target="_blank">Hongyang</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.liaohuqiu.net/cn/" title="Huqiu Liao" target="_blank">Huqiu Liao</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://drakeet.me/" title="drakeet" target="_blank">drakeet</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.jianshu.com/u/df40282480b4" title="小鄧子" target="_blank">小鄧子</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://yuweiguocn.github.io/" title="于卫国" target="_blank">于卫国</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一-简介"><span class="nav-number">1.</span> <span class="nav-text">一. 简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二-多进程模式"><span class="nav-number">2.</span> <span class="nav-text">二. 多进程模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-开启方式"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 开启方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-运行机制"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 运行机制</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三-Binder"><span class="nav-number">3.</span> <span class="nav-text">三. Binder</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-如何理解-Binder"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 如何理解 Binder</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-通过-AIDL-理解-Binder"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 通过 AIDL 理解 Binder</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#四-IPC-的方式"><span class="nav-number">4.</span> <span class="nav-text">四. IPC 的方式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-Bundle"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 Bundle</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-文件共享"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 文件共享</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3-Messenger"><span class="nav-number">4.3.</span> <span class="nav-text">4.3 Messenger</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-4-AIDL"><span class="nav-number">4.4.</span> <span class="nav-text">4.4 AIDL</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-5-ContentProvider"><span class="nav-number">4.5.</span> <span class="nav-text">4.5 ContentProvider</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-6-Socket"><span class="nav-number">4.6.</span> <span class="nav-text">4.6 Socket</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-7-IPC方式适用场景总结"><span class="nav-number">4.7.</span> <span class="nav-text">4.7 IPC方式适用场景总结</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lijiankun24</span>
+  
+</div>
+
+
+<div>
+  <span id="busuanzi_container_site_pv">
+    Total views <span id="busuanzi_value_site_pv">   </span>
+  </span>
+
+  <span id="busuanzi_container_site_uv">
+    |   Total visitors <span id="busuanzi_value_site_uv"/>
+  </span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("tWG63sCRtLhi5NFeaXtWqtnv-gzGzoHsz", "lPLcNFpeOoNc6wr9PVX8XdbI");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+
+  
+
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+          bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+      } else {
+          bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+</body>
+</html>
