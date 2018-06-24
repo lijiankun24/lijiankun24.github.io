@@ -1,0 +1,1135 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Java,jvm," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="由于最近在学习 ASM 的使用，在学习 ASM 使用之前首先需要了解 .class 文件字节码的结构以及 JVM 虚拟机执行引擎等知识，本篇文章通过一个简单的例子认识 .class 文件的字节码结构。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="认识 .class 文件的字节码结构">
+<meta property="og:url" content="http://www.lijiankun24.com/认识-class-文件的字节码结构/index.html">
+<meta property="og:site_name" content="一些无处安放的代码和故事">
+<meta property="og:description" content="由于最近在学习 ASM 的使用，在学习 ASM 使用之前首先需要了解 .class 文件字节码的结构以及 JVM 虚拟机执行引擎等知识，本篇文章通过一个简单的例子认识 .class 文件的字节码结构。">
+<meta property="og:image" content="http://www.lijiankun24.com/认识-class-文件的字节码结构/catalog.png">
+<meta property="og:image" content="http://www.lijiankun24.com/认识-class-文件的字节码结构/class.png">
+<meta property="og:image" content="http://www.lijiankun24.com/认识-class-文件的字节码结构/sdk.png">
+<meta property="og:image" content="http://www.lijiankun24.com/认识-class-文件的字节码结构/cp_info.png">
+<meta property="og:image" content="http://www.lijiankun24.com/认识-class-文件的字节码结构/Demo.png">
+<meta property="og:image" content="http://www.lijiankun24.com/认识-class-文件的字节码结构/access_flags.png">
+<meta property="og:image" content="http://www.lijiankun24.com/认识-class-文件的字节码结构/field_info.png">
+<meta property="og:image" content="http://www.lijiankun24.com/认识-class-文件的字节码结构/method_info.png">
+<meta property="og:image" content="http://www.lijiankun24.com/认识-class-文件的字节码结构/Code.png">
+<meta property="og:image" content="http://www.lijiankun24.com/认识-class-文件的字节码结构/LineNumberTable.jpeg">
+<meta property="og:updated_time" content="2018-06-24T14:49:14.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="认识 .class 文件的字节码结构">
+<meta name="twitter:description" content="由于最近在学习 ASM 的使用，在学习 ASM 使用之前首先需要了解 .class 文件字节码的结构以及 JVM 虚拟机执行引擎等知识，本篇文章通过一个简单的例子认识 .class 文件的字节码结构。">
+<meta name="twitter:image" content="http://www.lijiankun24.com/认识-class-文件的字节码结构/catalog.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.lijiankun24.com/认识-class-文件的字节码结构/"/>
+
+
+
+
+
+  <title> 认识 .class 文件的字节码结构 | 一些无处安放的代码和故事 </title>
+<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">一些无处安放的代码和故事</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://www.lijiankun24.com/认识-class-文件的字节码结构/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="lijiankun24">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一些无处安放的代码和故事">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                认识 .class 文件的字节码结构
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-06-24T21:47:40+08:00">
+                2018-06-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/认识-class-文件的字节码结构/" class="leancloud_visitors" data-flag-title="认识 .class 文件的字节码结构">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Views </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>由于最近在学习 ASM 的使用，在学习 ASM 使用之前首先需要了解 .class 文件字节码的结构以及 JVM 虚拟机执行引擎等知识，本篇文章通过一个简单的例子认识 .class 文件的字节码结构。</p>
+<div align="center"><br>    <img src="/认识-class-文件的字节码结构/catalog.png" width="730" height="394"><br></div>
+
+<a id="more"></a>
+<h3 id="一-简介"><a href="#一-简介" class="headerlink" title="一. 简介"></a>一. 简介</h3><p>写一个简单的 Demo.java 程序如下所示<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.lijiankun24.classpractice;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</div><div class="line"></div><div class="line">	<span class="keyword">private</span> <span class="keyword">int</span> m;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">inc</span><span class="params">()</span> </span>&#123;</div><div class="line">		<span class="keyword">return</span> m + <span class="number">1</span>;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>使用 javac 命令编译 Demo.java 文件生成 Demo.class 文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ javac Demo.java</div></pre></td></tr></table></figure></p>
+<p>接着我们用纯文本编辑器打开生成的 Demo.class 文件，如下所示<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">cafe babe 0000 0034 0013 0a00 0400 0f09</div><div class="line">0003 0010 0700 1107 0012 0100 016d 0100</div><div class="line">0149 0100 063c 696e 6974 3e01 0003 2829</div><div class="line">5601 0004 436f 6465 0100 0f4c 696e 654e</div><div class="line">756d 6265 7254 6162 6c65 0100 0369 6e63</div><div class="line">0100 0328 2949 0100 0a53 6f75 7263 6546</div><div class="line">696c 6501 0009 4465 6d6f 2e6a 6176 610c</div><div class="line">0007 0008 0c00 0500 0601 0004 4465 6d6f</div><div class="line">0100 106a 6176 612f 6c61 6e67 2f4f 626a</div><div class="line">6563 7400 2100 0300 0400 0000 0100 0200</div><div class="line">0500 0600 0000 0200 0100 0700 0800 0100</div><div class="line">0900 0000 1d00 0100 0100 0000 052a b700</div><div class="line">01b1 0000 0001 000a 0000 0006 0001 0000</div><div class="line">0001 0001 000b 000c 0001 0009 0000 001f</div><div class="line">0002 0001 0000 0007 2ab4 0002 0460 ac00</div><div class="line">0000 0100 0a00 0000 0600 0100 0000 0600</div><div class="line">0100 0d00 0000 0200 0e</div></pre></td></tr></table></figure></p>
+<p>可以看到，该文件中是由十六进制符号组成的，这一段十六进制符号组成的长串是遵守 Java 虚拟机规范的</p>
+<h3 id="二-Java-虚拟机规范"><a href="#二-Java-虚拟机规范" class="headerlink" title="二. Java 虚拟机规范"></a>二. Java 虚拟机规范</h3><p>在 Java 虚拟机规范中规定了 Java 虚拟机结构、Class 类文件结构、字节码指令等内容，可以参考 GitHub 上的<a href="https://github.com/waylau/java-virtual-machine-specification" target="_blank" rel="external">《Java 虚拟机规范》</a></p>
+<p>Java 虚拟机的类文件是一组以 8 位字节为基础单位的二进制流，各数据项目严格按照顺序紧凑地排列在 .class 文件中，中间没有添加任何分隔符，这使得整个 .class 文件中存储的内容几乎全都是程序需要的数据，没有空隙存在</p>
+<h4 id="2-1-Java-虚拟机"><a href="#2-1-Java-虚拟机" class="headerlink" title="2.1 Java 虚拟机"></a>2.1 Java 虚拟机</h4><ol>
+<li>Java 虚拟机就是一个虚拟的计算机，与真实的计算机一样，Java 虚拟机有自己完善的硬件体系，如处理器、堆栈、寄存器，还有相应的指令集系统。虚拟机与真实电脑的唯一区别就是：虚拟机的处理器、内存堆栈是用软件虚拟出来的，而真实的电脑的处理器、内存则是真真实实存在的</li>
+<li>虽然名字是叫 Java 虚拟机，但是 Java 虚拟机与 Java 语言并没有直接的关系，它只是按照 Java 虚拟机规范去读取 .class 文件，并按照规定去解析、执行字节码指令</li>
+<li>准确地说，Java 虚拟机与字节码文件（.class 文件）绑定，如果足够牛逼，可以写一个编译器将 C 语言代码编译成符合 Java 虚拟机规范的字节码文件，那么 Java 虚拟机也是可以执行的</li>
+</ol>
+<h4 id="2-2-class-类文件结构"><a href="#2-2-class-类文件结构" class="headerlink" title="2.2 class 类文件结构"></a>2.2 class 类文件结构</h4><ol>
+<li>在 Java 虚拟机规范中定义了 .class 文件字节码的结构和规范，.class 字节码文件可以用两种数据类型来表示：无符号数和表</li>
+<li>无符号数属于最基本的数据类型，以 u1、u2、u4、u8 分别代码 1 个字节、2 个字节、4 个字节和 8 个字节的无符号数，无符号数可以用来描述数字、索引引用、数量值或者按照 UTF-8 编码构成的字符串值</li>
+<li>表是由无符号数或其他表作为数据项构成的复合数据结构，所有表都习惯性地以 “info” 结尾，表用于描述有层次关系的复合结构的数据</li>
+<li><p>整个 .class 文件本质上就是一张表，由下表所示的数据项构成</p>
+<div align="center"><br> <img src="/认识-class-文件的字节码结构/class.png" width="443" height="439"><br></div>
+</li>
+<li><p>上面的表其实可以划分为以下七个部分，.class 字节码文件包括：</p>
+<ul>
+<li>魔数与class文件版本</li>
+<li>常量池</li>
+<li>访问标志</li>
+<li>类索引、父类索引、接口索引</li>
+<li>字段表集合</li>
+<li>方法表集合</li>
+<li>属性表集合</li>
+</ul>
+</li>
+<li>无论是无符号数还是表，当需要描述同一类型但数量不定的多个数据时，经常会使用一个前置的容量计数器加若干个连续的数据项组成，称这一系列连续的某一类型的数据为某一类型的集合</li>
+</ol>
+<h3 id="三-class-文件详解"><a href="#三-class-文件详解" class="headerlink" title="三. class 文件详解"></a>三. class 文件详解</h3><p>我们就按照上述讲的 7 个部分详细介绍 Demo.class 字节码文件的结构和内容</p>
+<h4 id="3-1-魔数和-class-文件版本"><a href="#3-1-魔数和-class-文件版本" class="headerlink" title="3.1 魔数和 class 文件版本"></a>3.1 魔数和 class 文件版本</h4><p>在魔数和 class 文件版本中有如下四点需要介绍：</p>
+<ol>
+<li><strong>魔数(Magic Number)</strong>：.class 文件的第 1 - 4 个字节，它唯一的作用就是确定这个文件是否是一个能被虚拟机接受的 class 文件，其固定值是：0xCAFEBABE（咖啡宝贝）。如果一个 class 文件的魔术不是 0xCAFEBABE，那么虚拟机将拒绝运行这个文件</li>
+<li><strong>次版本号(minor version)</strong>：.class 文件的第 5 - 6 个字节，即编译该 .class 文件的 JDK 次版本号</li>
+<li><strong>主版本号(major version)</strong>：.class 文件的第 7 - 8个字节，即编译该 .class 文件的 JDK 主版本号</li>
+<li><strong>Note</strong>：高版本的 JDK 能向下兼容低版本的 .class 文件，但不能运行新版本的 .class 文件。例如一个 .class 文件是使用 JDK 1.5 编译的，那么我们可以用 JDK 1.7 虚拟机运行它，但不能用 JDK 1.4 虚拟机运行它。各个版本的 SDK 的次版本号和主版本号如下表所示</li>
+</ol>
+<div align="center"><br>    <img src="/认识-class-文件的字节码结构/sdk.png" width="443" height="202"><br></div>
+
+<p><strong>实例</strong>：在上面编译 Demo.java 生成的 Demo.class 文件中，Magic Number：cafe babe，minor version：0000，major version：0034，可见我们是使用 JDK 1.8 编译生成的 Demo.class 文件</p>
+<h4 id="3-2-常量池"><a href="#3-2-常量池" class="headerlink" title="3.2 常量池"></a>3.2 常量池</h4><p>紧接着主次版本号之后的是常量池的入口，常量池可以理解为 class 文件之中的资源仓库，它是 class 文件结构中与其他项目关联最多的数据类型，也是占用 class 文件空间最大的数据项之一</p>
+<p>常量池由两部分组成：常量池常量计数器和常量池</p>
+<ul>
+<li>常量池常量计数器(constant_pool_count)：.class 文件中第 9 -10 个字节</li>
+<li>常量池(constant_pool)：是紧跟在常量池常量计数器后面的内容，在常量池中的每个常量都用一个类型为 cp_info 的表表示，该表有 14 个值，分别是<div align="center"><br>    <img src="/认识-class-文件的字节码结构/cp_info.png" width="387" height="384"><br></div>
+
+</li>
+</ul>
+<p><strong>实例</strong>：在上面编译 Demo.java 生成的 Demo.class 文件中，constant_pool_count：0013，表示有 19 个常量；常量池中的内容分别如下：</p>
+<ol>
+<li>第一个常量<ul>
+<li>紧接着 0013 后面的，是 0a，从上表中查得此常量是一个 CONSTANT_Methodref_info 常量</li>
+<li>该常量项第 2 - 3 个字节表示类信息，这里是 00 04 表示指向常量池中第 4 个常量所表示的信息</li>
+<li>该常量项第 4 - 5 个字节表示名称及类描述符，这里值为 00 0f 表示指向常量池第 16 个常量所表示的信息</li>
+</ul>
+</li>
+<li>第二个常量<ul>
+<li>紧接着 00 0f 之后的一个字节是 09，从上表中查得此常量是一个 CONSTANT_Fieldref_info 常量</li>
+<li>该常量项第 2 - 3 个字节表示类信息，这里是 00 03，表示指向常量池第 13个常量所表示的信息</li>
+<li>该常量项第 4 - 5 个字节表示名称及类描述符，这里值为 00 10 表示指向常量池第 16 个常量所表示的信息</li>
+</ul>
+</li>
+<li>第三个常量<ul>
+<li>紧接着 00 10 之后的一个字节是 07，从上表中查得此常量是一个 CONSTANT_Class_info 常量</li>
+<li>该常量项第 2 - 3 个字节表示字符串字面量的索引，这里值是 00 11 表示指向常量池的第 17 个常量</li>
+</ul>
+</li>
+<li>第四个常量<ul>
+<li>紧接着 00 11 之后的一个字节是 07，表示该常量项是一个 CONSTANT_Class_info 常量项</li>
+<li>该常量项第 2 - 3 个字节表示字符串字面量的索引，这里值是 00 12 表示指向常量池的第 18 个常量</li>
+</ul>
+</li>
+<li>第五个常量<ul>
+<li>紧接着 00 12 之后的一个字节是  01，表示该常量项是一个 CONSTANT_Utf8_info 字符串常量</li>
+<li>该常量项第 2 - 3 个字节表示该字符串的长度，这里是 00 01 表示该字符串长度为 1 个字节</li>
+<li>紧接着 00 01 之后的 1 个字节是 6d，是一个字符串常量，转换之后是：m</li>
+</ul>
+</li>
+<li>第六个常量<ul>
+<li>紧接着 6d 之后的一个字节是  01，表示该常量项是一个 CONSTANT_Utf8_info 字符串常量</li>
+<li>该常量项第 2 - 3 个字节表示该字符串的长度，这里是 00 01 表示该字符串长度为 1 个字节</li>
+<li>紧接着 00 01 之后的 1 个字节是 49，是一个字符串常量，转换之后是：I</li>
+</ul>
+</li>
+<li>第七个常量<ul>
+<li>紧接着 6d 之后的一个字节是  01，表示该常量项是一个 CONSTANT_Utf8_info 字符串常量</li>
+<li>该常量项第 2 - 3 个字节表示该字符串的长度，这里是 00 06 表示该字符串长度为 6 个字节</li>
+<li>紧接着 00 06 之后的 6 个字节是 3c 696e 6974 3e，是一个字符串常量，转换之后是：<init></init></li>
+</ul>
+</li>
+<li>第八个常量<ul>
+<li>紧接着 3e 之后的一个字节是  01，表示该常量项是一个 CONSTANT_Utf8_info 字符串常量</li>
+<li>该常量项第 2 - 3 个字节表示该字符串的长度，这里是 00 03 表示该字符串长度为 3 个字节</li>
+<li>紧接着 00 03 之后的 3 个字节是 2829 56，是一个字符串常量，转换之后是：()V</li>
+</ul>
+</li>
+<li>第九个常量<ul>
+<li>紧接着 56 之后的一个字节是  01，表示该常量项是一个 CONSTANT_Utf8_info 字符串常量</li>
+<li>该常量项第 2 - 3 个字节表示该字符串的长度，这里是 00 04 表示该字符串长度为 4 个字节</li>
+<li>紧接着 00 04 之后的 4 个字节是 436f 6465，是一个字符串常量，转换之后是：Code</li>
+</ul>
+</li>
+<li>第十个常量<ul>
+<li>紧接着 65 之后的一个字节是  01，表示该常量项是一个 CONSTANT_Utf8_info 字符串常量</li>
+<li>该常量项第 2 - 3 个字节表示该字符串的长度，这里是 00 0f 表示该字符串长度为 15 个字节</li>
+<li>紧接着 00 0f 之后的 15 个字节是 4c 696e 654e 756d 6265 7254 6162 6c65，是一个字符串常量，转换之后是：LineNumberTable</li>
+</ul>
+</li>
+<li>第十一个常量<ul>
+<li>紧接着 65 之后的一个字节是  01，表示该常量项是一个 CONSTANT_Utf8_info 字符串常量</li>
+<li>该常量项第 2 - 3 个字节表示该字符串的长度，这里是 00 03 表示该字符串长度为 3 个字节</li>
+<li>紧接着 00 03 之后的 3 个字节是 69 6e63，是一个字符串常量，转换之后是：inc</li>
+</ul>
+</li>
+<li>第十二个常量：0100 0328 2949，是一个字符串常量，转换之后是：()I</li>
+<li>第十三个常量：0100 0a53 6f75 7263 6546 696c 65，是一个字符串常量，转换之后是：SourceFile</li>
+<li>第十四个常量：01 0009 4465 6d6f 2e6a 6176 61，是一个字符串常量，转换之后是：Demo.java</li>
+<li>第十五个常量<ul>
+<li>0c 0007 0008，是一个 CONSTANT_NameAndType_info 常量项</li>
+<li>该常量项第 2 - 3 个字节指向该字段或方法名称常量项的索引，这里是 00 07，表示指向常量池第 7 个常量所表示的信息</li>
+<li>该常量项第 4 - 5 个字节指向该字段或方法描述符常量项的索引，这里值为 00 08 表示指向常量池第 8 个常量所表示的信息</li>
+</ul>
+</li>
+<li>第十六个常量<ul>
+<li>0c00 0500 06，是一个 CONSTANT_NameAndType_info 常量项</li>
+<li>该常量项第 2 - 3 个字节指向该字段或方法名称常量项的索引，这里是 00 07，表示指向常量池第 5 个常量所表示的信息</li>
+<li>该常量项第 4 - 5 个字节指向该字段或方法描述符常量项的索引，这里值为 00 08 表示指向常量池第 6 个常量所表示的信息</li>
+</ul>
+</li>
+<li>第十七个常量：01 0022 636f 6d2f 6c69 6a69 616e 6b75 6e32 342f 636c 6173 7370 7261 6374 6963 652f 4465 6d6f，是一个字符串常量，转换之后是：com/lijiankun24/classpractice/Demo</li>
+<li>第十八个常量：0100 106a 6176 612f 6c61 6e67 2f4f 626a 6563 74，是一个字符串常量，转换之后是：java/lang/Object</li>
+</ol>
+<p>通过上面的分析，我们已经手动分析完成了 18 个常量，我们也可以根据 JDK 提供的 javap 命令直接查看 .class 文件的信息，其中包括了常量池信息，如下图所示：</p>
+<div align="center"><br>    <img src="/认识-class-文件的字节码结构/Demo.png" width="679" height="837"><br></div>
+
+<h4 id="3-3-访问标志"><a href="#3-3-访问标志" class="headerlink" title="3.3 访问标志"></a>3.3 访问标志</h4><p>在常量池结束之后，紧接着的两个字节代表访问标记（access_flags），这个标志用于识别一些类或者接口层次的访问信息，包括：这个Class是类还是接口、是否定义为public类型、是否定义为abstract类型等。具体的标志位以及标志的含义见下表</p>
+<div align="center"><br>    <img src="/认识-class-文件的字节码结构/access_flags.png" width="774" height="420"><br></div>
+
+<p><strong>实例</strong>：在这个例子中访问标志是：00 21，在上表中，我们并没有发现 00 21 的访问标志，这是因为在字节码文件中的访问标志，可以通过上表中多个访问标志通过或运算组成真正的访问标志。通过上表中的 ACC_SUPER 和 ACC_PUBLIC 就可以组合中 00 21 的访问标志了，也就是说该类的访问标志是 public 且允许使用 invokespecial 字节码指令的新语义的</p>
+<h4 id="3-4-类索引、父类索引、接口索引"><a href="#3-4-类索引、父类索引、接口索引" class="headerlink" title="3.4 类索引、父类索引、接口索引"></a>3.4 类索引、父类索引、接口索引</h4><p>在 .class 文件中由这三项数据来确定这个类的继承关系。</p>
+<ol>
+<li><strong>类索引</strong>：类索引用于确定这个类的全限定名。实例：在本例中，类索引是 00 03，表示其指向了常量池中第三个常量 —- com/lijiankun24/classpractice/Demo</li>
+<li><strong>父类索引</strong>：父类索引用于确定这个类的父类的全限定名。实例：在本例中，父类索引是 00 04，表示其指向了常量池中第四个常量 —- java/lang/Object</li>
+<li><strong>接口索引</strong>：接口索引集合用来描述类实现了哪些接口，这些被实现的接口将按照 implements 语句后的顺序从左至右排列在接口索引集合中。接口索引分为两部分，第一部分表示接口计数器(interfaces_count)，是一个 u2 类型的数据，第二部分是接口索引表表示接口信息，紧跟在接口计数器之后。若一个类实现的接口为 0，则接口计数器的值为 0，接口索引表不占用任何字节。实例：在本例中，Demo 类没有实现任何接口，所以紧跟着父类索引后的两个字节是 00 00，没有接口索引表。</li>
+</ol>
+<h4 id="3-5-字段表集合"><a href="#3-5-字段表集合" class="headerlink" title="3.5 字段表集合"></a>3.5 字段表集合</h4><p>字段表集合用于描述接口或类中声明的变量。这里说的字段包括类级变量和对象级变量，但不包括方法中声明的局部变量。</p>
+<p>字段表包括两部分：字段计数器和字段表，字段计数器表示有多少个字段，字段表的每个字段用一个名为 field_info 的表来表示，field_info 表的数据结构如下所示：</p>
+<div align="center"><br>    <img src="/认识-class-文件的字节码结构/field_info.png" width="584" height="232"><br></div>
+
+<p><strong>实例</strong>：本例中的字段表集合数据是：00 01 00 02 00 05 00 06 00 00</p>
+<ul>
+<li>在本例中，字段表中字段计数器是 00 01，在 Demo 类中有一个字段表数据，该字段表的结构如上图所示，接下来就来分析这个字段表</li>
+<li>00 01 之后是 00 02 表示该字段访问标识，表示该字段是 private 的</li>
+<li>00 02 之后是 00 05 表示该字段名称索引项，指向常量池中的第五个常量 —- m</li>
+<li>00 05 之后是 00 06 表示该字段描述符索引项，指向常量池中的第六个常量 —- I</li>
+</ul>
+<p>字段表都包含的固定数据项目到 descriptor_index 为止就结束了，不过在 descriptor_index 之后跟随着一个属性表集合用于存储一些额外的信息，字段都可以在属性表中描述零至多项的额外信息。对于本例中的字段 m，它的属性表计数器为 00 00，也就是没有需要的额外描述的信息</p>
+<h4 id="3-6-方法表集合"><a href="#3-6-方法表集合" class="headerlink" title="3.6 方法表集合"></a>3.6 方法表集合</h4><p>在字段表之后紧跟着方法表集合，方法表表示类或接口中有几个方法。</p>
+<p>方法表集合和上述的字段表集合几乎完全一样，最开始的 2 个字节表示一个方法计数器，在方法计数器之后，才是真正的方法数据。方法表中的每个方法都用一个 method_info 表示，其数据结构如下：</p>
+<div align="center"><br>    <img src="/认识-class-文件的字节码结构/method_info.png" width="581" height="232"><br></div>
+
+<p><strong>实例</strong>：在本例中方法表集合的数据是：00 0200 0100 0700 0800 0100<br>0900 0000 1d00 0100 0100 0000 052a b700<br>01b1 0000 0001 000a 0000 0006 0001 0000<br>0001 0001 000b 000c 0001 0009 0000 001f<br>0002 0001 0000 0007 2ab4 0002 0460 ac00<br>0000 0100 0a00 0000 0600 0100 0000 06</p>
+<ol>
+<li>方法计数是 00 02，表示在 Demo 类中一共有 2 个方法，分别是编译器添加的实例构造器 <init> 和源码中的方法 inc()</init></li>
+<li>第一个方法：00 01 00 07 00 08 00 01 00 09<ul>
+<li>access_flags：00 01 表示ACC_PUBLIC，即表示该方法是 public 的</li>
+<li>name_index：00 07 表示方法名称索引项，指向常量池中的第七项 —- <init></init></li>
+<li>descriptor_index：00 08 表方法描述符索引项，指向常量池中的第八项 —- ()V</li>
+<li>attributes_count：00 01 表示属性计数器为 1，有 1 个属性</li>
+<li>在属性表中：<ul>
+<li>第一项是 00 09 表示 attribute_name_index：指向常量池中的第九项 —- Code，说明此属性是方法的字节码描述<div align="center"><br> <img src="/认识-class-文件的字节码结构/Code.png" width="604" height="252"><br></div></li>
+<li>第二项：00 00 00 1d 表示属性长度为 29 个字节</li>
+<li>第三项：00 01 00 01 00 00 00 05 2a b700 01b1 0000 0001 000a 0000 0006 0001 0000 0003<ul>
+<li>00 01：max_stack = 1</li>
+<li>00 01：max_locals = 1</li>
+<li>00 00 00 05：code_length = 5</li>
+<li>2a b700 01b1：这是 code 代码，可以通过虚拟机字节码执行进行查找</li>
+<li>2a = aload_0：将第一个引用变量推送到栈顶</li>
+<li>b7 = invokespecial：调用父类构造方法</li>
+<li>00 = 什么都不做</li>
+<li>01 = 将 null 推送到栈顶</li>
+<li>b1 = return: 从当前方法返回void</li>
+<li>0000：exception_table_length=0</li>
+<li>0001：attributes_count=1(Code属性表内部还含有1个属性表)</li>
+<li>000a：指向常量池中的第十个常量 —- LineNumberTable，LineNumberTable 属性结构如下图所示，内容是：0000 0006 0001 0000 0003<div align="center"><br>  <img src="/认识-class-文件的字节码结构/LineNumberTable.jpeg" width="700" height="158"><br></div></li>
+<li>attribute_length：00 00 00 06，表示属性长度为 6</li>
+<li>line_number_table_length：00 01，表示后面的 line_number_info 表有 1 个，line_number_info表包括了 start_pc 和 line_number 两个 u2 类型的数据项，前者是字节码行号，后者是 java 源码行号：start_pc：00 00，end_pc：00 03</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>第二个方法：0001 000b 000c 0001 0009<ul>
+<li>access_flags：00 01 表示ACC_PUBLIC，即表示该方法是 public 的</li>
+<li>name_index：00 0b 表示方法名称索引项，指向常量池中的第十一项 —- inc</li>
+<li>descriptor_index：00 0c 表方法描述符索引项，指向常量池中的第十二项 —- ()I</li>
+<li>attributes_count：00 01 表示属性计数器为 1，有 1 个属性</li>
+<li>在属性表中：<ul>
+<li>第一项是 00 09 表示 attribute_name_index：指向常量池中的第九项 —- Code，说明此属性是方法的字节码属性，属性内容是：0000 001f 0002 0001 0000 0007 2ab4 0002 0460 ac00 0000 0100 0a00 0000 0600 0100 0000 08</li>
+<li>第二项：00 00 00 1f 表示属性长度为 21 个字节</li>
+<li>第三项：0002 0001 0000 0007 2ab4 0002 0460 ac00 0000 0100 0a<ul>
+<li>00 02：max_stack = 2</li>
+<li>00 01：max_locals = 1</li>
+<li>00 00 00 07：code_length = 7</li>
+<li>2ab4 0002 0460 ac：code</li>
+<li>00 00：exception_table_length</li>
+<li>00 01：attributes_count = 1</li>
+<li>00 0a：LineNumberTable</li>
+<li>00 0000 06：attribute_length：6</li>
+<li>00 01：line_number_table_length：1，表示后面的 line_number_info 表有 1 个，line_number_info表包括了 start_pc 和 line_number 两个 u2 类型的数据项，前者是字节码行号，后者是 java 源码行号，start_pc：00 00，end_pc：00 08</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h4 id="3-7-属性表集合"><a href="#3-7-属性表集合" class="headerlink" title="3.7 属性表集合"></a>3.7 属性表集合</h4><p>最后是一个属性表：00 0100 0d00 0000 0200 0e</p>
+<ul>
+<li>00 01：表示有 1 个attributes</li>
+<li>00 0d：指向常量池中的第十三个常量 —- SourceFile</li>
+<li>0000 0002：attribute_length=2</li>
+<li>00 0e：sourcefile_index = 指向常量池中第十四个常量 Demo.java</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/jvm/" rel="tag"># jvm</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/Android-中的-IPC-机制/" rel="next" title="Android 中的 IPC 机制">
+                <i class="fa fa-chevron-left"></i> Android 中的 IPC 机制
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="lijiankun24" />
+          <p class="site-author-name" itemprop="name">lijiankun24</p>
+           
+              <p class="site-description motion-element" itemprop="description">守得云开见月明。</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">34</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/lijiankun24" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/lijiankun24" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.jianshu.com/u/1abe21b7ff5f" target="_blank" title="Jianshu">
+                  
+                    <i class="fa fa-fw fa-jianshu"></i>
+                  
+                  Jianshu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://gank.io/post/published" title="匠心写作" target="_blank">匠心写作</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/lmj623565791" title="Hongyang" target="_blank">Hongyang</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.liaohuqiu.net/cn/" title="Huqiu Liao" target="_blank">Huqiu Liao</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://drakeet.me/" title="drakeet" target="_blank">drakeet</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.jianshu.com/u/df40282480b4" title="小鄧子" target="_blank">小鄧子</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://yuweiguocn.github.io/" title="于卫国" target="_blank">于卫国</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一-简介"><span class="nav-number">1.</span> <span class="nav-text">一. 简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二-Java-虚拟机规范"><span class="nav-number">2.</span> <span class="nav-text">二. Java 虚拟机规范</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-Java-虚拟机"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 Java 虚拟机</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-class-类文件结构"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 class 类文件结构</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三-class-文件详解"><span class="nav-number">3.</span> <span class="nav-text">三. class 文件详解</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-魔数和-class-文件版本"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 魔数和 class 文件版本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-常量池"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 常量池</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-访问标志"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 访问标志</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-类索引、父类索引、接口索引"><span class="nav-number">3.4.</span> <span class="nav-text">3.4 类索引、父类索引、接口索引</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-5-字段表集合"><span class="nav-number">3.5.</span> <span class="nav-text">3.5 字段表集合</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-6-方法表集合"><span class="nav-number">3.6.</span> <span class="nav-text">3.6 方法表集合</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-7-属性表集合"><span class="nav-number">3.7.</span> <span class="nav-text">3.7 属性表集合</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lijiankun24</span>
+  
+</div>
+
+
+<div>
+  <span id="busuanzi_container_site_pv">
+    Total views <span id="busuanzi_value_site_pv">   </span>
+  </span>
+
+  <span id="busuanzi_container_site_uv">
+    |   Total visitors <span id="busuanzi_value_site_uv"/>
+  </span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("tWG63sCRtLhi5NFeaXtWqtnv-gzGzoHsz", "lPLcNFpeOoNc6wr9PVX8XdbI");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+
+  
+
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+          bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+      } else {
+          bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+</body>
+</html>
