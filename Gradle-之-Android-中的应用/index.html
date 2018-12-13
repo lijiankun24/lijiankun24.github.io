@@ -1,0 +1,985 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,Gradle,Groovy," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="在上一篇文章中 Gradle 之语言基础 Groovy 主要介绍了 Groovy 的基础语法（如果没有 Groovy 的基础，建议先看看上篇文章，如果可以动手敲一下里面的示例代码就更好不过了），也是为本篇文章打基础的。
+本篇文章主要介绍 Gradle 在 Android 中的应用（Android DSL 和 Gradle DSL），也是通过一些示例来介绍和理解，主要分为以下一些内容，示例代码都在">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Gradle 之 Android 中的应用">
+<meta property="og:url" content="http://www.lijiankun24.com/Gradle-之-Android-中的应用/index.html">
+<meta property="og:site_name" content="一些无处安放的代码和故事">
+<meta property="og:description" content="在上一篇文章中 Gradle 之语言基础 Groovy 主要介绍了 Groovy 的基础语法（如果没有 Groovy 的基础，建议先看看上篇文章，如果可以动手敲一下里面的示例代码就更好不过了），也是为本篇文章打基础的。
+本篇文章主要介绍 Gradle 在 Android 中的应用（Android DSL 和 Gradle DSL），也是通过一些示例来介绍和理解，主要分为以下一些内容，示例代码都在">
+<meta property="og:image" content="http://www.lijiankun24.com/Gradle-之-Android-中的应用/Setting.png">
+<meta property="og:image" content="http://www.lijiankun24.com/Gradle-之-Android-中的应用/TaskExecutionGraph.png">
+<meta property="og:updated_time" content="2018-12-13T00:34:54.868Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Gradle 之 Android 中的应用">
+<meta name="twitter:description" content="在上一篇文章中 Gradle 之语言基础 Groovy 主要介绍了 Groovy 的基础语法（如果没有 Groovy 的基础，建议先看看上篇文章，如果可以动手敲一下里面的示例代码就更好不过了），也是为本篇文章打基础的。
+本篇文章主要介绍 Gradle 在 Android 中的应用（Android DSL 和 Gradle DSL），也是通过一些示例来介绍和理解，主要分为以下一些内容，示例代码都在">
+<meta name="twitter:image" content="http://www.lijiankun24.com/Gradle-之-Android-中的应用/Setting.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.lijiankun24.com/Gradle-之-Android-中的应用/"/>
+
+
+
+
+
+  <title> Gradle 之 Android 中的应用 | 一些无处安放的代码和故事 </title>
+<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">一些无处安放的代码和故事</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://www.lijiankun24.com/Gradle-之-Android-中的应用/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="lijiankun24">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一些无处安放的代码和故事">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Gradle 之 Android 中的应用
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-12-13T08:28:33+08:00">
+                2018-12-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/Gradle-之-Android-中的应用/" class="leancloud_visitors" data-flag-title="Gradle 之 Android 中的应用">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Views </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在上一篇文章中 <a href="https://www.jianshu.com/p/fe3aede00fd3" target="_blank" rel="external">Gradle 之语言基础 Groovy</a> 主要介绍了 Groovy 的基础语法（如果没有 Groovy 的基础，建议先看看上篇文章，如果可以动手敲一下里面的示例代码就更好不过了），也是为本篇文章打基础的。</p>
+<p>本篇文章主要介绍 Gradle 在 Android 中的应用（Android DSL 和 Gradle DSL），也是通过一些示例来介绍和理解，主要分为以下一些内容，示例代码都在 <a href="https://github.com/lijiankun24/GradleForAndroid" target="_blank" rel="external">GradleForAndroid</a></p>
+<a id="more"></a>
+<h3 id="一-Gradle-构建生命周期"><a href="#一-Gradle-构建生命周期" class="headerlink" title="一. Gradle 构建生命周期"></a>一. Gradle 构建生命周期</h3><p>一个 Gradle 的构建通常有如下三个阶段</p>
+<ul>
+<li>初始化：项目 <code>Project</code> 实例会在该阶段被创建。如果一个项目中包含有多个模块，并且每一个模块都有其对应的 <code>build.gradle</code> 文件，就会为每一个模块都创建一个对应的 <code>Project</code> 实例</li>
+<li>配置：执行各个模块下的 <code>build.gradle</code> 脚本，为 <code>Project</code>实例创建和配置 <code>Task</code>，构造 <code>Task</code> 任务依赖关系图以便在执行阶段按照依赖关系执行 <code>Task</code> </li>
+<li>执行：在这个阶段将会决定执行哪个 <code>Task</code>，哪个 <code>Task</code> 被执行取决于开始该次构建的参数配置和该 Gradle 文件的当前目录</li>
+</ul>
+<p>在创建完成一个新的 Android 应用项目之后，一般情况下， .gradle 文件的目录结构如下所示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">GradleForAndroid</div><div class="line">      |---- build.gradle</div><div class="line">      |---- setting.gradle</div><div class="line">      \---- app</div><div class="line">              \---- build.gradle</div></pre></td></tr></table></figure></p>
+<p>其中，两个文件 <code>build.gradle</code> 和 <code>setting.gradle</code> 位于项目的根目录下，还有一个 <code>build.gradle</code> 位于 <code>\app\</code> 目录下。<code>\build.gradle</code> 是顶层构建文件，<code>\app\build.gradle</code> 是模块构建文件。<br>我们以上面这个新创建的项目来学习 Gradle 的构建生命周期</p>
+<h4 id="1-1-初始化"><a href="#1-1-初始化" class="headerlink" title="1.1 初始化"></a>1.1 初始化</h4><ol>
+<li><p>在初始化阶段，会创建一个 <code>Setting</code> 对象，对应着 <code>setting.gradle</code> 文件，<br><code>Setting</code> 对象的一个主要作用就是声明哪些模块将会参与到构建中去，<a href="https://docs.gradle.org/current/javadoc/org/gradle/api/initialization/Settings.html" target="_blank" rel="external">Setting 文档（Gradle API 5.0）</a></p>
+</li>
+<li><p>在新建的项目中，<code>setting.gradle</code> 文件一般会默认包含一行内容，如下所示</p>
+ <figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">include <span class="string">':app'</span></div></pre></td></tr></table></figure>
+<p> 上面这一行，其实是一行 <code>groovy</code> 代码的简写，对应的是 <code>Setting#include(String[] projectPaths)</code> 方法，表示 <code>:app</code> 模块将会参与到构建中去。<br>如果我们创建一个 <code>library</code> 库，<code>setting.gradle</code> 将会变为如下所示，表示 <code>:app</code> 和 <code>:library</code> 两个模块将会参与到构建中</p>
+ <figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">include <span class="string">':app'</span>, <span class="string">':library'</span></div></pre></td></tr></table></figure>
+</li>
+<li><p><code>setting.gradle</code> 脚本文件可以中读取一些只可读的配置信息，这些配置信息的来源可以有如下三个：</p>
+<ul>
+<li>可以在本工程的 <code>gradle.properties</code> 文件中定义配置信息</li>
+<li>也可以在系统的 <code>gradle.properties</code> 文件中定义配置信息，系统的 <code>gradle.properties</code> 位于 <code>user&#39;s .gradle</code> 目录下</li>
+<li>还可以通过 <code>-P</code> 命令参数指定配置信息，比如 <code>./gradlew clean -P cmd=&#39;Hello from commandLine&#39;</code> 便在执行 <code>clean</code> task 的时候，指定了 <code>cmd=&#39;Hello from commandLine&#39;</code> 配置信息</li>
+</ul>
+</li>
+<li><p>上面讲到，一个 <code>setting.gradle</code> 文件对应着一个 <code>Setting</code> 对象，<code>Setting</code> 对象包含的方法如下图所示</p>
+<div align="center"><br> <img src="/Gradle-之-Android-中的应用/Setting.png" width="730" height="394"><br></div>
+
+</li>
+</ol>
+<p>例如有如下代码<br>    <figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">include <span class="string">':app'</span>, <span class="string">':library'</span></div><div class="line">println propertiesFile</div><div class="line">println DEFAULT_SETTINGS_FILE</div><div class="line">println getRootProject().name</div><div class="line">println getRootProject().path</div><div class="line"></div><div class="line">getGradle().addBuildListener(<span class="keyword">new</span> BuildListener() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="keyword">void</span> buildStarted(Gradle gradle) &#123;</div><div class="line">        println <span class="string">'buildStarted'</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="keyword">void</span> settingsEvaluated(Settings settings) &#123;</div><div class="line">        println <span class="string">"settingsEvaluated"</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="keyword">void</span> projectsLoaded(Gradle gradle) &#123;</div><div class="line">        println <span class="string">'projectsLoaded'</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="keyword">void</span> projectsEvaluated(Gradle gradle) &#123;</div><div class="line">        println <span class="string">'projectsEvaluated'</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="keyword">void</span> buildFinished(BuildResult result) &#123;</div><div class="line">        println <span class="string">'buildFinished'</span></div><div class="line">    &#125;</div><div class="line">&#125;)</div></pre></td></tr></table></figure></p>
+<p>其输出是：</p>
+<pre><code><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">Hello from gradle.properties</div><div class="line">settings.gradle</div><div class="line">GradleForAndroid</div><div class="line">:</div><div class="line">settingsEvaluated</div><div class="line">projectsLoaded</div><div class="line">projectsEvaluated</div><div class="line"></div><div class="line">BUILD SUCCESSFUL in 0s</div><div class="line">3 actionable tasks: 3 executed</div><div class="line">buildFinished</div></pre></td></tr></table></figure>
+</code></pre><h4 id="1-2-配置"><a href="#1-2-配置" class="headerlink" title="1.2 配置"></a>1.2 配置</h4><ol>
+<li>在配置阶段，会执行所有的 <code>build.gradle</code>，包括项目根目录下的 <code>build.gradle</code> 和各个 module 下的 <code>build.gradle</code></li>
+<li>在执行 <code>build.gradle</code> 的时候，会为每个 <code>build.gradle</code> 创建一个对应的 <code>Project</code> 对象，<a href="https://docs.gradle.org/current/javadoc/org/gradle/api/Project.html" target="_blank" rel="external">Project 文档（Gradle API 5.0）</a></li>
+<li>配置阶段会执行 <code>build.gradle</code> 里面的所有代码和 <code>Task</code> 里面的配置代码，比如下面的 <code>printProperties</code> <code>Task</code>，只执行了 <code>doLast{}</code> 之外的代码，<code>doLast{}</code> 之外的代码是 <code>Task</code> 的配置代码</li>
+<li>配置执行完成之后，会根据各个 <code>Task</code> 的依赖关系生成一个有向无环图，可以通过<code>Gradle</code>对象的<code>getTaskGraph</code>方法访问，对应的类为<a href="https://docs.gradle.org/current/javadoc/org/gradle/api/execution/TaskExecutionGraph.html" target="_blank" rel="external">TaskExecutionGraph</a></li>
+<li>在执行所有的 <code>Gradle Task</code> 之前，都会执行 <code>初始化阶段</code> 和 <code>配置阶段</code> 的代码</li>
+<li><p>比如有如下代码</p>
+ <figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Top-level build file where you can add configuration options common to all sub-projects/modules.</span></div><div class="line">println <span class="string">"/build.gradle 开始配置"</span></div><div class="line">buildscript &#123;</div><div class="line">    println <span class="string">"/build.gradle buildscript 开始配置"</span></div><div class="line">    ext.kotlin_version = <span class="string">'1.2.71'</span></div><div class="line">    repositories &#123;</div><div class="line">        google()</div><div class="line">        jcenter()</div><div class="line">    &#125;</div><div class="line">    dependencies &#123;</div><div class="line">        classpath <span class="string">'com.android.tools.build:gradle:3.0.1'</span></div><div class="line">        classpath <span class="string">"org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"</span></div><div class="line"></div><div class="line">        <span class="comment">// <span class="doctag">NOTE:</span> Do not place your application dependencies here; they belong</span></div><div class="line">        <span class="comment">// in the individual module build.gradle files</span></div><div class="line">    &#125;</div><div class="line">    println <span class="string">"/build.gradle buildscript 结束配置"</span></div><div class="line">&#125;</div><div class="line"></div><div class="line">allprojects &#123;</div><div class="line">    println <span class="string">"/build.gradle allprojects 开始配置"</span></div><div class="line">    repositories &#123;</div><div class="line">        google()</div><div class="line">        jcenter()</div><div class="line">    &#125;</div><div class="line">    println <span class="string">"/build.gradle allprojects 结束配置"</span></div><div class="line">&#125;  </div><div class="line"></div><div class="line">task clean(<span class="string">type:</span> Delete) &#123;</div><div class="line">    delete rootProject.buildDir</div><div class="line">&#125;</div><div class="line"></div><div class="line">ext &#123;</div><div class="line">    local = <span class="string">'Hello from build.gradle'</span></div><div class="line">&#125;</div><div class="line"></div><div class="line">task printProperties &#123;</div><div class="line">    println <span class="string">"/build.gradle task printProperties 开始配置"</span></div><div class="line">    println <span class="string">'/build.gradle task printProperties'</span></div><div class="line">    println <span class="string">"/build.gradle task printProperties 结束配置"</span></div><div class="line">    doLast &#123;</div><div class="line">        println local</div><div class="line">        println propertiesFile</div><div class="line">        <span class="keyword">if</span> (project.hasProperty(<span class="string">'cmd'</span>)) &#123;</div><div class="line">            println cmd</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">println <span class="string">"/build.gradle 结束配置"</span></div></pre></td></tr></table></figure>
+<p> 在 Terminal 里面执行 <code>./gradlew clean</code> 会有如下输出</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">Hello from gradle.properties</div><div class="line">settings.gradle</div><div class="line">GradleForAndroid</div><div class="line">:</div><div class="line">settingsEvaluated</div><div class="line">projectsLoaded</div><div class="line"></div><div class="line">// 配置阶段，执行 /build.gradle 里面的代码</div><div class="line">&gt; Configure project :</div><div class="line">/build.gradle buildscript 开始配置</div><div class="line">/build.gradle buildscript 结束配置</div><div class="line">/build.gradle 开始配置</div><div class="line">/build.gradle allprojects 开始配置</div><div class="line">/build.gradle allprojects 结束配置</div><div class="line">/build.gradle allprojects 开始配置</div><div class="line">/build.gradle allprojects 结束配置</div><div class="line">/build.gradle allprojects 开始配置</div><div class="line">/build.gradle allprojects 结束配置</div><div class="line">/build.gradle task printProperties 开始配置</div><div class="line">/build.gradle task printProperties</div><div class="line">/build.gradle task printProperties 结束配置</div><div class="line">/build.gradle 结束配置</div><div class="line">  </div><div class="line">projectsEvaluated</div><div class="line"></div><div class="line">BUILD SUCCESSFUL in 0s</div><div class="line">3 actionable tasks: 3 executed</div><div class="line">buildFinished</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="1-3-执行"><a href="#1-3-执行" class="headerlink" title="1.3 执行"></a>1.3 执行</h4><p>执行阶段就是指执行某个具体的任务 <code>Task</code>。说道 <code>Task</code>，我想大家应该比较熟悉，在 Android 项目中依赖了 Android Gradle 插件以后，会有许多自带的 <code>Task</code>，比如常用的 <code>clean</code>、<code>assemble</code> 等，而且大家更应该掌握的是如何自定义 <code>Task</code>，关于 <code>Task</code> 会单独抽一节来讲述。</p>
+<h3 id="二-自定义-Task"><a href="#二-自定义-Task" class="headerlink" title="二. 自定义 Task"></a>二. 自定义 Task</h3><ol>
+<li>任务 <code>Task</code> 代表了在构建过程中的一个单原子性的动作，比如：编程生成 .class 文件或者生成 javadoc 等.</li>
+<li>每一个 <code>task</code> 都是属于某一个 <code>Project</code> 对象的，每一个 <code>task</code> 都有自己的名字，在 <code>project</code> 中 <code>task</code> 的名字是唯一的，如果在整个项目 <code>projects</code> 范围内需要指定某个 <code>task</code> 的话，也需要指定 <code>project</code> 的名字，<code>project</code> 和 <code>task</code> 的名字中间使用 <code>:</code> 相连接，比如：<code>./gradlew :app:clean</code></li>
+<li><p>创建 <code>Task</code> 对象的方法有以下几种</p>
+ <figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 通过 TaskContainer.create(String) 创建 `Task`</span></div><div class="line">getTasks().create(<span class="string">'helloTask'</span>) &#123;</div><div class="line">    doLast &#123;</div><div class="line">        println <span class="string">'create Task by TaskContainer'</span></div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">task helloTask1 &#123;</div><div class="line">    doLast &#123;</div><div class="line">        println <span class="string">'create Task by task(String name)'</span></div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">HelloTask</span> <span class="keyword">extends</span> <span class="title">DefaultTask</span> &#123;</span></div><div class="line">    <span class="keyword">def</span> message = <span class="string">'create Task by extends DefaultTask'</span></div><div class="line"></div><div class="line">    <span class="meta">@TaskAction</span></div><div class="line">    <span class="keyword">def</span> hello() &#123;</div><div class="line">        println message</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"><span class="comment">// 通过 type 参数可以指定该 task 的父类，默认的父类是 DefaultTask</span></div><div class="line">task helloTask2(<span class="string">type:</span> HelloTask)</div></pre></td></tr></table></figure>
+</li>
+<li><p>一个 <code>Task</code> 是由一系列的 <code>Action</code> 组成的，当一个 <code>Task</code> 执行的时候就是按照一定的顺序执行这些 <code>Action</code>，可以有以下两种方式向 <code>Task</code> 中添加 <code>Action</code></p>
+<ul>
+<li><p>通过闭包 <code>Closure</code> 的方式添加 <code>Action</code></p>
+  <figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">HelloTask</span> <span class="keyword">extends</span> <span class="title">DefaultTask</span> &#123;</span></div><div class="line">    <span class="keyword">def</span> message = <span class="string">'create Task by extends DefaultTask'</span></div><div class="line"></div><div class="line">    <span class="meta">@TaskAction</span></div><div class="line">    <span class="keyword">def</span> hello() &#123;</div><div class="line">        println message</div><div class="line">     &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">task helloTask2(<span class="string">type:</span> HelloTask) &#123;</div><div class="line">    doFirst &#123;</div><div class="line">        println <span class="string">'helloTask2 doFirst'</span></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    doLast &#123;</div><div class="line">        println <span class="string">'helloTask2 doLast'</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>直接添加 <code>Action</code> 实例对象</p>
+  <figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">def</span> taskDef = task helloTask3(<span class="string">type:</span> HelloTask)</div><div class="line">taskDef.doFirst(<span class="keyword">new</span> Action&lt;Task&gt;() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="keyword">void</span> execute(Task task) &#123;</div><div class="line">        println <span class="string">'helloTask3 Action execute doFirst'</span></div><div class="line">    &#125;</div><div class="line">&#125;)</div><div class="line">taskDef.doLast(<span class="keyword">new</span> Action&lt;Task&gt;() &#123;</div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="keyword">void</span> execute(Task task) &#123;</div><div class="line">        println <span class="string">'helloTask3 Action execute doLast'</span></div><div class="line">    &#125;</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>Task 依赖关系 &amp; Task 执行顺序<br>在 <code>Task</code> 中有两个很重要的概念 <code>dependsOn</code>  和 <code>mustRunAfter</code>。<code>dependsOn</code> 用于声明两个 <code>Task</code> 对象之间的依赖关系，<code>mustRunAfter</code> 用于声明一个 <code>Task</code> 必须在另一个 <code>Task</code> 之后运行，虽然感觉差不多，但是实际上还是有区别的</p>
+<ul>
+<li><code>helloTaskB.dependsOn(helloTaskA)</code> 中，可以单独运行 <code>helloTaskA</code>，但是运行 <code>helloTaskB</code> 的时候会触发 <code>helloTaskA</code> 的执行</li>
+<li><code>helloTaskC.mustRunAfter(helloTaskA)</code>中，<code>helloTaskA</code> 和 <code>helloTaskC</code> 都是可以单独运行的，但是当 <code>helloTaskC</code> 和 <code>helloTaskA</code> 同时运行时，<code>helloTaskC</code> 一定会在 <code>helloTaskA</code> 之后运行<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">task helloTaskA &#123;</div><div class="line">    doFirst &#123;</div><div class="line">        println &apos;helloTaskA doFirst&apos;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">task helloTaskB &#123;</div><div class="line">    doFirst &#123;</div><div class="line">        println &apos;helloTaskB doFirst&apos;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">helloTaskB.dependsOn(helloTaskA)</div><div class="line"></div><div class="line">task helloTaskC &#123;</div><div class="line">    doFirst &#123;</div><div class="line">        println &apos;helloTaskC doFirst&apos;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">helloTaskC.mustRunAfter(helloTaskA)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>Android 中使用自定义 Task<br>在 Gradle 构建的时候，需要将自定义的 Task 添加到构建过程中时，需要把握好添加自定义 Task 的时机与位置</p>
+<ul>
+<li>下面一幅图清晰地展示了 Gradle 构建过程中一些关键的回调，可以在下面一些回调中添加自定义 Task</li>
+<li>在 <code>project</code> 对象中，可以通过 <code>gradle</code> 对象得到 <code>TaskExecutionGraph</code> 的实例对象，也可以通过 <code>TaskExecutionGraph</code> 实例对象一些关键回调添加自定义的 Task。比如下面这个例子，就是在 <code>TaskExecutionGraph</code> 实例对象准备好之后，弹出一个 <code>dialog</code> 用于输入 <code>storePass</code> 和 <code>keyPass</code>，然后将  <code>storePass</code> 和 <code>keyPass</code> 设置到 <code>android.signingConfigs</code> 中<figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line">apply <span class="string">plugin:</span> <span class="string">'com.android.application'</span></div><div class="line"><span class="keyword">import</span> groovy.swing.SwingBuilder</div><div class="line"></div><div class="line"><span class="comment">//......</span></div><div class="line"></div><div class="line">gradle.taskGraph.whenReady &#123; taskGraph -&gt;</div><div class="line">    <span class="keyword">if</span> (taskGraph.hasTask(<span class="string">':app:assembleRelease'</span>)) &#123;</div><div class="line">        <span class="keyword">def</span> storePass = <span class="string">''</span></div><div class="line">        <span class="keyword">def</span> keyPass = <span class="string">''</span></div><div class="line">        <span class="keyword">if</span> (System.console() == <span class="literal">null</span>) &#123;</div><div class="line">            System.setProperty(<span class="string">'java.awt.headless'</span>, <span class="string">'false'</span>)</div><div class="line">            <span class="keyword">new</span> SwingBuilder().edt &#123;</div><div class="line">                dialog(<span class="string">modal:</span> <span class="literal">true</span>, <span class="string">title:</span> <span class="string">'Enter password'</span>, <span class="string">alwaysOnTop:</span> <span class="literal">true</span>, <span class="string">resizable:</span> <span class="literal">false</span>, <span class="string">locationRelativeTo:</span> <span class="literal">null</span>, <span class="string">pack:</span> <span class="literal">true</span>, <span class="string">show:</span> <span class="literal">true</span>) &#123;</div><div class="line">                    vbox &#123; <span class="comment">// Put everything below each other</span></div><div class="line">                        label(<span class="string">text:</span> <span class="string">"Please enter store passphrase:"</span>)</div><div class="line">                        <span class="keyword">def</span> input1 = passwordField()</div><div class="line">                        label(<span class="string">text:</span> <span class="string">"Please enter key passphrase:"</span>)</div><div class="line">                        <span class="keyword">def</span> input2 = passwordField()</div><div class="line">                        button(<span class="string">defaultButton:</span> <span class="literal">true</span>, <span class="string">text:</span> <span class="string">'OK'</span>, <span class="string">actionPerformed:</span> &#123;</div><div class="line">                            storePass = input1.password;</div><div class="line">                            keyPass = input2.password;</div><div class="line">                            dispose();</div><div class="line">                        &#125;)</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            storePass = System.console().readPassword(<span class="string">"\nPlease enter store passphrase: "</span>)</div><div class="line">            keyPass = System.console().readPassword(<span class="string">"\nPlease enter key passphrase: "</span>)</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (storePass.size() &lt;= <span class="number">0</span> || keyPass.size() &lt;= <span class="number">0</span>) &#123;</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> InvalidUserDataException(<span class="string">"You must enter the passwords to proceed."</span>)</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        storePass = <span class="keyword">new</span> String(storePass)</div><div class="line">        keyPass = <span class="keyword">new</span> String(keyPass)</div><div class="line"></div><div class="line">        android.signingConfigs.release.storePassword = storePass</div><div class="line">        android.signingConfigs.release.keyPassword = keyPass</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ol>
+<p>如下图所示 <code>TaskExecutionGraph</code> 的方法结构如下图所示，都是非常实用方便的方法</p>
+<div align="center"><br>    <img src="/Gradle-之-Android-中的应用/TaskExecutionGraph.png" width="730" height="394"><br></div>
+
+<h3 id="三-Android-DSL-amp-Gradle-DSL"><a href="#三-Android-DSL-amp-Gradle-DSL" class="headerlink" title="三. Android DSL &amp; Gradle DSL"></a>三. Android DSL &amp; Gradle DSL</h3><h4 id="3-1-Android-DSL"><a href="#3-1-Android-DSL" class="headerlink" title="3.1 Android DSL"></a>3.1 Android DSL</h4><p>Android DSL 是 Gradle 的一个 Android 插件，其实在使用 Android Studio 开发的时候经常会和 Android DSL 打交道，比如下面 <code>android{ } 闭包</code> 里面的内容都是 Android DSL<br><figure class="highlight groovy"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">apply <span class="string">plugin:</span> <span class="string">'com.android.application'</span></div><div class="line"><span class="keyword">import</span> groovy.swing.SwingBuilder</div><div class="line"></div><div class="line">android &#123;</div><div class="line">    compileSdkVersion <span class="number">27</span></div><div class="line">    defaultConfig &#123;</div><div class="line">        applicationId <span class="string">"com.lijiankun24.gradleforandroid"</span></div><div class="line">        minSdkVersion <span class="number">15</span></div><div class="line">        targetSdkVersion <span class="number">27</span></div><div class="line">        <span class="comment">// ......</span></div><div class="line">    &#125;</div><div class="line">    buildTypes &#123;</div><div class="line">        <span class="comment">// ......</span></div><div class="line">    &#125;</div><div class="line">    signingConfigs &#123;</div><div class="line">        <span class="comment">// ......</span></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>至于里面都有哪些 API，可以去 <a href="http://google.github.io/android-gradle-dsl/" target="_blank" rel="external">Android DSL 文档</a> 查看，也可以去 GitHub 上面搜 <code>android-gradle-dsl</code></p>
+<h4 id="3-2-Gradle-DSL"><a href="#3-2-Gradle-DSL" class="headerlink" title="3.2 Gradle DSL"></a>3.2 Gradle DSL</h4><p>Gradle DSL 在上面介绍 Gradle 生命周期和自定义 Task 的时候已经介绍过了，比如上面介绍的 <code>Setting</code> 和 <code>TaskExecutionGraph</code> 都是 Gradle DSL 中的类，其他的类和方法等 API 可以去 <a href="https://docs.gradle.org/current/userguide/userguide.html" target="_blank" rel="external">Gradle DSL 文档</a> 查看，或者可以在 Android Studio 中像查看 Android SDK 源码一样去查看 Gradle DSL 的源码</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/Gradle/" rel="tag"># Gradle</a>
+          
+            <a href="/tags/Groovy/" rel="tag"># Groovy</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/Gradle-之语言基础-Groovy/" rel="next" title="Gradle 之语言基础 Groovy">
+                <i class="fa fa-chevron-left"></i> Gradle 之语言基础 Groovy
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="lijiankun24" />
+          <p class="site-author-name" itemprop="name">lijiankun24</p>
+           
+              <p class="site-description motion-element" itemprop="description">守得云开见月明。</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">36</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">26</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/lijiankun24" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/lijiankun24" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.jianshu.com/u/1abe21b7ff5f" target="_blank" title="Jianshu">
+                  
+                    <i class="fa fa-fw fa-jianshu"></i>
+                  
+                  Jianshu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://gank.io/post/published" title="匠心写作" target="_blank">匠心写作</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/lmj623565791" title="Hongyang" target="_blank">Hongyang</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.liaohuqiu.net/cn/" title="Huqiu Liao" target="_blank">Huqiu Liao</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://drakeet.me/" title="drakeet" target="_blank">drakeet</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.jianshu.com/u/df40282480b4" title="小鄧子" target="_blank">小鄧子</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://yuweiguocn.github.io/" title="于卫国" target="_blank">于卫国</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一-Gradle-构建生命周期"><span class="nav-number">1.</span> <span class="nav-text">一. Gradle 构建生命周期</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-初始化"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 初始化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-配置"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-执行"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 执行</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二-自定义-Task"><span class="nav-number">2.</span> <span class="nav-text">二. 自定义 Task</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三-Android-DSL-amp-Gradle-DSL"><span class="nav-number">3.</span> <span class="nav-text">三. Android DSL & Gradle DSL</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-Android-DSL"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 Android DSL</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-Gradle-DSL"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 Gradle DSL</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lijiankun24</span>
+  
+</div>
+
+
+<div>
+  <span id="busuanzi_container_site_pv">
+    Total views <span id="busuanzi_value_site_pv">   </span>
+  </span>
+
+  <span id="busuanzi_container_site_uv">
+    |   Total visitors <span id="busuanzi_value_site_uv"/>
+  </span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("tWG63sCRtLhi5NFeaXtWqtnv-gzGzoHsz", "lPLcNFpeOoNc6wr9PVX8XdbI");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+
+  
+
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+          bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+      } else {
+          bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+</body>
+</html>
