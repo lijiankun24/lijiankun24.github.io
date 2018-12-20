@@ -260,6 +260,149 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://www.lijiankun24.com/深入理解-Activity-的生命周期/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="lijiankun24">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一些无处安放的代码和故事">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/深入理解-Activity-的生命周期/" itemprop="url">
+                  深入理解 Activity 的生命周期
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-12-20T22:32:01+08:00">
+                2018-12-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/深入理解-Activity-的生命周期/" class="leancloud_visitors" data-flag-title="深入理解 Activity 的生命周期">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Views </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>对于 Android 开发者来说，Activity 应该是非常熟悉的，一提到 Activity，可能大家首先会想到 Activity 的生命周期、启动模式等开发中经常用到的知识，但是有没有更深入的去了解过在 Framework 层面 Activity 是一个怎样的存在呢？<br>这篇文章就带大家从 Framework 层面更深入地理解 Activity 的生命周期，在这篇文章中会带大家重新认识几个类：</p>
+<ul>
+<li>Activity：四大组件之一，开发者只需要继承 Activity，重写生命周期方法即可，不需要关心生命周期的方法是怎么被调用的</li>
+<li>ActivityThread：在其中创建了 Activity、Window、Instrumentation 实例对象，是，是调用 Activity 生命周期方法的源头</li>
+<li>Instrumentation：ActivityThread 并不会直接调用 Activity 的生命周期方法，而是通过 Instrumentation 对象间接地调用 Activity 的生命周期方法</li>
+<li>IActivityManager：AIDL 接口，定义了应用进程调用系统进程 ActivityManagerService 中 Activity 实例的方法</li>
+<li>IApplicationThread：AIDL 接口，定义了系统进程 ActivityManagerService 调用应用进程中 Activity 生命周期的方法，其在应用进程中的实现类是 ActivityThread 的内部类 ApplicationThread</li>
+</ul>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/深入理解-Activity-的生命周期/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://www.lijiankun24.com/draft-1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1470,148 +1613,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://www.lijiankun24.com/热修复自定义框架雏形（三）/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="lijiankun24">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="一些无处安放的代码和故事">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/热修复自定义框架雏形（三）/" itemprop="url">
-                  热修复之自定义热修复框架雏形（三）
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-04-13T08:29:08+08:00">
-                2018-04-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/热修复自定义框架雏形（三）/" class="leancloud_visitors" data-flag-title="热修复之自定义热修复框架雏形（三）">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">Views </span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>在上篇最后提出了两个问题：</p>
-<ol>
-<li>在 Android Studio 中，.java 文件 —-&gt; .class 文件 —-&gt; .dex 文件都是自动化的过程，如何在 .class 文件 —-&gt; .dex 文件的过程中修改 .class 文件呢，可以借助<br>gradle 构建脚本实现</li>
-<li>如何修改类的字节码文件，在字节码层面的类中的构造方法中插入对其他 dex 文件中的类的引用，可以使用 javaassist 工具实现</li>
-</ol>
-<p>好，接下来就通过实例介绍如何解决上面两个问题</p>
-<div align="center"><br>    <img src="/热修复自定义框架雏形（三）/catalog.png" width="912" height="360"><br></div>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/热修复自定义框架雏形（三）/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1661,7 +1662,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">38</span>
+                <span class="site-state-item-count">39</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>

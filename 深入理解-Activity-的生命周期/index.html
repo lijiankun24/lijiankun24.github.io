@@ -1,0 +1,953 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="对于 Android 开发者来说，Activity 应该是非常熟悉的，一提到 Activity，可能大家首先会想到 Activity 的生命周期、启动模式等开发中经常用到的知识，但是有没有更深入的去了解过在 Framework 层面 Activity 是一个怎样的存在呢？这篇文章就带大家从 Framework 层面更深入地理解 Activity 的生命周期，在这篇文章中会带大家重新认识几个类：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深入理解 Activity 的生命周期">
+<meta property="og:url" content="http://www.lijiankun24.com/深入理解-Activity-的生命周期/index.html">
+<meta property="og:site_name" content="一些无处安放的代码和故事">
+<meta property="og:description" content="对于 Android 开发者来说，Activity 应该是非常熟悉的，一提到 Activity，可能大家首先会想到 Activity 的生命周期、启动模式等开发中经常用到的知识，但是有没有更深入的去了解过在 Framework 层面 Activity 是一个怎样的存在呢？这篇文章就带大家从 Framework 层面更深入地理解 Activity 的生命周期，在这篇文章中会带大家重新认识几个类：">
+<meta property="og:updated_time" content="2018-12-20T14:39:42.176Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深入理解 Activity 的生命周期">
+<meta name="twitter:description" content="对于 Android 开发者来说，Activity 应该是非常熟悉的，一提到 Activity，可能大家首先会想到 Activity 的生命周期、启动模式等开发中经常用到的知识，但是有没有更深入的去了解过在 Framework 层面 Activity 是一个怎样的存在呢？这篇文章就带大家从 Framework 层面更深入地理解 Activity 的生命周期，在这篇文章中会带大家重新认识几个类：">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://www.lijiankun24.com/深入理解-Activity-的生命周期/"/>
+
+
+
+
+
+  <title> 深入理解 Activity 的生命周期 | 一些无处安放的代码和故事 </title>
+<link rel="stylesheet" href="/css/prism.css" type="text/css"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">一些无处安放的代码和故事</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://www.lijiankun24.com/深入理解-Activity-的生命周期/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="lijiankun24">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一些无处安放的代码和故事">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                深入理解 Activity 的生命周期
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-12-20T22:32:01+08:00">
+                2018-12-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/深入理解-Activity-的生命周期/" class="leancloud_visitors" data-flag-title="深入理解 Activity 的生命周期">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Views </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>对于 Android 开发者来说，Activity 应该是非常熟悉的，一提到 Activity，可能大家首先会想到 Activity 的生命周期、启动模式等开发中经常用到的知识，但是有没有更深入的去了解过在 Framework 层面 Activity 是一个怎样的存在呢？<br>这篇文章就带大家从 Framework 层面更深入地理解 Activity 的生命周期，在这篇文章中会带大家重新认识几个类：</p>
+<ul>
+<li>Activity：四大组件之一，开发者只需要继承 Activity，重写生命周期方法即可，不需要关心生命周期的方法是怎么被调用的</li>
+<li>ActivityThread：在其中创建了 Activity、Window、Instrumentation 实例对象，是，是调用 Activity 生命周期方法的源头</li>
+<li>Instrumentation：ActivityThread 并不会直接调用 Activity 的生命周期方法，而是通过 Instrumentation 对象间接地调用 Activity 的生命周期方法</li>
+<li>IActivityManager：AIDL 接口，定义了应用进程调用系统进程 ActivityManagerService 中 Activity 实例的方法</li>
+<li>IApplicationThread：AIDL 接口，定义了系统进程 ActivityManagerService 调用应用进程中 Activity 生命周期的方法，其在应用进程中的实现类是 ActivityThread 的内部类 ApplicationThread</li>
+</ul>
+<a id="more"></a>
+<h4 id="一-Activity-中的启动源码分析"><a href="#一-Activity-中的启动源码分析" class="headerlink" title="一. Activity 中的启动源码分析"></a>一. Activity 中的启动源码分析</h4><p>首先，我们从一个非常熟悉的概念开始。启动一个 Activity，相信大家都驾轻就熟，方法如下，我们就从这个方法开始<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">startActivity(<span class="keyword">new</span> Intent(MainActivity.<span class="keyword">this</span>, SecondActivity.class));</div></pre></td></tr></table></figure></p>
+<p>调用 <code>Activity#startActivity(Intent intent)</code> 方法之后，会有如下的方法调用链<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Activity</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">startActivity</span><span class="params">(Intent intent)</span> </span>&#123;</div><div class="line">        <span class="keyword">this</span>.startActivity(intent, <span class="keyword">null</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">startActivity</span><span class="params">(Intent intent, @Nullable Bundle options)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (options != <span class="keyword">null</span>) &#123;</div><div class="line">            startActivityForResult(intent, -<span class="number">1</span>, options);</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="comment">// Note we want to go through this call for compatibility with</span></div><div class="line">            <span class="comment">// applications that may have overridden the method.</span></div><div class="line">            startActivityForResult(intent, -<span class="number">1</span>);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">startActivityForResult</span><span class="params">(@RequiresPermission Intent intent, <span class="keyword">int</span> requestCode)</span> </span>&#123;</div><div class="line">        startActivityForResult(intent, requestCode, <span class="keyword">null</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">startActivityForResult</span><span class="params">(@RequiresPermission Intent intent, <span class="keyword">int</span> requestCode,</span></span></div><div class="line">            @Nullable Bundle options) &#123;</div><div class="line">        <span class="keyword">if</span> (mParent == <span class="keyword">null</span>) &#123;</div><div class="line">            options = transferSpringboardActivityOptions(options);</div><div class="line">            Instrumentation.ActivityResult ar =</div><div class="line">                mInstrumentation.execStartActivity(</div><div class="line">                    <span class="keyword">this</span>, mMainThread.getApplicationThread(), mToken, <span class="keyword">this</span>,</div><div class="line">                    intent, requestCode, options);</div><div class="line">            <span class="keyword">if</span> (ar != <span class="keyword">null</span>) &#123;</div><div class="line">                mMainThread.sendActivityResult(</div><div class="line">                    mToken, mEmbeddedID, requestCode, ar.getResultCode(),</div><div class="line">                    ar.getResultData());</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">if</span> (requestCode &gt;= <span class="number">0</span>) &#123;</div><div class="line">                <span class="comment">// If this start is requesting a result, we can avoid making</span></div><div class="line">                <span class="comment">// the activity visible until the result is received.  Setting</span></div><div class="line">                <span class="comment">// this code during onCreate(Bundle savedInstanceState) or onResume() will keep the</span></div><div class="line">                <span class="comment">// activity hidden during this time, to avoid flickering.</span></div><div class="line">                <span class="comment">// This can only be done when a result is requested because</span></div><div class="line">                <span class="comment">// that guarantees we will get information back when the</span></div><div class="line">                <span class="comment">// activity is finished, no matter what happens to it.</span></div><div class="line">                mStartedActivity = <span class="keyword">true</span>;</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            cancelInputsAndStartExitTransition(options);</div><div class="line">            <span class="comment">// TODO Consider clearing/flushing other event sources and events for child windows.</span></div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="keyword">if</span> (options != <span class="keyword">null</span>) &#123;</div><div class="line">                mParent.startActivityFromChild(<span class="keyword">this</span>, intent, requestCode, options);</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                <span class="comment">// Note we want to go through this method for compatibility with</span></div><div class="line">                <span class="comment">// existing applications that may have overridden it.</span></div><div class="line">                mParent.startActivityFromChild(<span class="keyword">this</span>, intent, requestCode);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>从上面代码调用链中可以发现，启动 <code>Activity</code> 最后走到了  <code>Activity#startActivityForResult(@RequiresPermission Intent intent, int requestCode, @Nullable Bundle options)</code> 方法中</p>
+<ol>
+<li>在 <code>Activity</code> 中的 <code>mParent</code> 是 <code>ActivityGroup</code> 的遗留产物，而 <code>ActivityGroup</code> 现在已被废弃，所以这里只分析 <code>mParent == null</code> 的情况</li>
+<li>上面代码中，最重要的是 <code>mInstrumentation.execStartActivity</code> 方法的调用，<code>mInstrumentation</code> 就是一个 <code>Instrumentation</code> 的对象，接下来进入到 <code>Instrumentation#execStartActivity</code> 方法中</li>
+</ol>
+<h4 id="二-Instrumentation-中的启动源码分析"><a href="#二-Instrumentation-中的启动源码分析" class="headerlink" title="二. Instrumentation 中的启动源码分析"></a>二. Instrumentation 中的启动源码分析</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Instrumentation</span> </span>&#123;</div><div class="line">    </div><div class="line">    <span class="comment">// ......</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> ActivityResult <span class="title">execStartActivity</span><span class="params">(</span></span></div><div class="line">        Context who, IBinder contextThread, IBinder token, String target,</div><div class="line">        Intent intent, <span class="keyword">int</span> requestCode, Bundle options) &#123;</div><div class="line">        <span class="comment">// 代码 1</span></div><div class="line">        IApplicationThread whoThread = (IApplicationThread) contextThread;</div><div class="line">        <span class="keyword">if</span> (mActivityMonitors != <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">synchronized</span> (mSync) &#123;</div><div class="line">                <span class="keyword">final</span> <span class="keyword">int</span> N = mActivityMonitors.size();</div><div class="line">                <span class="comment">// 循环遍历 mActivityMonitors 中对象</span></div><div class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;N; i++) &#123;</div><div class="line">                    <span class="keyword">final</span> ActivityMonitor am = mActivityMonitors.get(i);</div><div class="line">                    ActivityResult result = <span class="keyword">null</span>;</div><div class="line">                    <span class="keyword">if</span> (am.ignoreMatchingSpecificIntents()) &#123;</div><div class="line">                        result = am.onStartActivity(intent);</div><div class="line">                    &#125;</div><div class="line">                    <span class="comment">// 如果找到则直接返回结果</span></div><div class="line">                    <span class="keyword">if</span> (result != <span class="keyword">null</span>) &#123;</div><div class="line">                        am.mHits++;</div><div class="line">                        <span class="keyword">return</span> result;</div><div class="line">                    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (am.match(who, <span class="keyword">null</span>, intent)) &#123;</div><div class="line">                        am.mHits++;</div><div class="line">                        <span class="keyword">if</span> (am.isBlocking()) &#123;</div><div class="line">                            <span class="keyword">return</span> requestCode &gt;= <span class="number">0</span> ? am.getResult() : <span class="keyword">null</span>;</div><div class="line">                        &#125;</div><div class="line">                        <span class="keyword">break</span>;</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            intent.migrateExtraStreamToClipData();</div><div class="line">            intent.prepareToLeaveProcess(who);</div><div class="line">            <span class="comment">// 代码 2，真正启动 Activity 的代码</span></div><div class="line">            <span class="keyword">int</span> result = ActivityManager.getService()</div><div class="line">                .startActivity(whoThread, who.getBasePackageName(), intent,</div><div class="line">                        intent.resolveTypeIfNeeded(who.getContentResolver()),</div><div class="line">                        token, target, requestCode, <span class="number">0</span>, <span class="keyword">null</span>, options);</div><div class="line">            checkStartActivityResult(result, intent);</div><div class="line">        &#125; <span class="keyword">catch</span> (RemoteException e) &#123;</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"Failure from system"</span>, e);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// ......</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在上述代码2处是真正启动 Activity 的代码。在这行代码有两个问题，我们依次寻找下面两个问题的答案</p>
+<ol>
+<li>那么 <code>ActivityManager.getService()</code> 得到了一个什么对象呢？</li>
+<li>在调用 <code>startActivity</code> 方法时传入的 IApplicationThread 对象有何用处呢？</li>
+</ol>
+<p>我们来到  <code>ActivityManager.getService()</code> 方法中，代码如下<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ActivityManager</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * <span class="doctag">@hide</span></div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> IActivityManager <span class="title">getService</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> IActivityManagerSingleton.get();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Singleton&lt;IActivityManager&gt; IActivityManagerSingleton =</div><div class="line">            <span class="keyword">new</span> Singleton&lt;IActivityManager&gt;() &#123;</div><div class="line">                <span class="meta">@Override</span></div><div class="line">                <span class="function"><span class="keyword">protected</span> IActivityManager <span class="title">create</span><span class="params">()</span> </span>&#123;</div><div class="line">                    <span class="keyword">final</span> IBinder b = ServiceManager.getService(Context.ACTIVITY_SERVICE);</div><div class="line">                    <span class="keyword">final</span> IActivityManager am = IActivityManager.Stub.asInterface(b);</div><div class="line">                    <span class="keyword">return</span> am;</div><div class="line">                &#125;</div><div class="line">            &#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<ol>
+<li>在 ActivityManager 中通过 <code>getService()</code> 方法向外暴露一个 IActivityManager 对象，而此 IActivityManager 对象在 ActivityManager 中是个单例。在 <code>Singleton#create()</code> 方法中创建  IActivityManager 对象时，是通过进程间通信的 AIDL 方式创建 IActivityManager 对象的</li>
+<li>这儿就涉及到 ActivityManagerService 和 AIDL 进程间通信（如果不熟悉的话，建议阅读 <a href="http://lijiankun24.com/Android-中的-IPC-机制/" target="_blank" rel="external">Android 中的 IPC 机制</a>，复习一下）了。我们可以这样理解，在 AIDL 进程间通信时涉及到两个进程：客户端进程和服务端进程。<ul>
+<li>在 IActivityManager AIDL 中：客户端进程是我们的应用进程，服务端进程是 ActivityManagerService 所在的系统进程</li>
+<li>ActivityManagerService 是系统进程中提供服务的 Binder 对象，并且 ActivityManagerService 实现了 IActivityManager 接口，通过 <code>ActivityManager.getService()</code> 得到的 IActivityManager 对象，是客户端进程调用 ActivityManagerService 中方法的客户端对象</li>
+</ul>
+</li>
+<li>在 <code>Instrumentation#execStartActivity</code> 方法 代码1 处我们得到了一个 IApplicationThread 对象，在调用 <code>IActivityManager.startActivity</code> 方法时将此 IApplicationThread 对象传给 ActivityManagerService，其实 IApplicationThread 也是一个 AIDL 接口，只不过它和 IActivityManager 调用方向相反。<ul>
+<li>在 IApplicationThread AIDL 中，服务端进程是应用所在的进程，客户端进程是 ActivityManagerService 所在的系统进程。</li>
+<li>实现 IApplicationThread 接口的 Binder 类在应用进程中，是 ActivityThread 中的内部类 ApplicationThread，在 ActivityManagerService 中也持有一个 IApplicationThread 对象，用于调用 ApplicationThread 所提供的服务端方法</li>
+</ul>
+</li>
+</ol>
+<h4 id="三-ApplicationThread-amp-ActivityThread-amp-Instrumentation-中生命周期方法的调用"><a href="#三-ApplicationThread-amp-ActivityThread-amp-Instrumentation-中生命周期方法的调用" class="headerlink" title="三. ApplicationThread &amp; ActivityThread &amp; Instrumentation 中生命周期方法的调用"></a>三. ApplicationThread &amp; ActivityThread &amp; Instrumentation 中生命周期方法的调用</h4><p>在应用进程经 IActivityManager 通过 AIDL 方式调用系统进程中的 <code>ActivityManagerService#startActivity</code> 之后会走到 ActivityManagerService 中的逻辑，在  ActivityManagerService 处理完成之后，也会经 IApplicationThread 通过 AIDL 方式调用应用进程中 ApplicationThread 中的 <code>scheduleLaunchActivity</code> 方法，源码如下<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">ActivityThread</span> </span>&#123;</div><div class="line">    </div><div class="line">    <span class="keyword">final</span> H mH = <span class="keyword">new</span> H();</div><div class="line"></div><div class="line">    /......</div><div class="line">    <span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">ApplicationThread</span> <span class="keyword">extends</span> <span class="title">IApplicationThread</span>.<span class="title">Stub</span> </span>&#123;</div><div class="line">        </div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">scheduleLaunchActivity</span><span class="params">(Intent intent, IBinder token, <span class="keyword">int</span> ident,</span></span></div><div class="line">                ActivityInfo info, Configuration curConfig, Configuration overrideConfig,</div><div class="line">                CompatibilityInfo compatInfo, String referrer, IVoiceInteractor voiceInteractor,</div><div class="line">                <span class="keyword">int</span> procState, Bundle state, PersistableBundle persistentState,</div><div class="line">                List&lt;ResultInfo&gt; pendingResults, List&lt;ReferrerIntent&gt; pendingNewIntents,</div><div class="line">                <span class="keyword">boolean</span> notResumed, <span class="keyword">boolean</span> isForward, ProfilerInfo profilerInfo) &#123;</div><div class="line"></div><div class="line">            updateProcessState(procState, <span class="keyword">false</span>);</div><div class="line"></div><div class="line">            ActivityClientRecord r = <span class="keyword">new</span> ActivityClientRecord();</div><div class="line"></div><div class="line">            r.token = token;</div><div class="line">            r.ident = ident;</div><div class="line">            r.intent = intent;</div><div class="line">            r.referrer = referrer;</div><div class="line">            r.voiceInteractor = voiceInteractor;</div><div class="line">            r.activityInfo = info;</div><div class="line">            r.compatInfo = compatInfo;</div><div class="line">            r.state = state;</div><div class="line">            r.persistentState = persistentState;</div><div class="line"></div><div class="line">            r.pendingResults = pendingResults;</div><div class="line">            r.pendingIntents = pendingNewIntents;</div><div class="line"></div><div class="line">            r.startsNotResumed = notResumed;</div><div class="line">            r.isForward = isForward;</div><div class="line"></div><div class="line">            r.profilerInfo = profilerInfo;</div><div class="line"></div><div class="line">            r.overrideConfig = overrideConfig;</div><div class="line">            updatePendingConfiguration(curConfig);</div><div class="line"></div><div class="line">            sendMessage(H.LAUNCH_ACTIVITY, r);</div><div class="line">        &#125;  </div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">sendMessage</span><span class="params">(<span class="keyword">int</span> what, Object obj)</span> </span>&#123;</div><div class="line">        sendMessage(what, obj, <span class="number">0</span>, <span class="number">0</span>, <span class="keyword">false</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">sendMessage</span><span class="params">(<span class="keyword">int</span> what, Object obj, <span class="keyword">int</span> arg1, <span class="keyword">int</span> arg2, <span class="keyword">boolean</span> async)</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (DEBUG_MESSAGES) Slog.v(</div><div class="line">            TAG, <span class="string">"SCHEDULE "</span> + what + <span class="string">" "</span> + mH.codeToString(what)</div><div class="line">            + <span class="string">": "</span> + arg1 + <span class="string">" / "</span> + obj);</div><div class="line">        Message msg = Message.obtain();</div><div class="line">        msg.what = what;</div><div class="line">        msg.obj = obj;</div><div class="line">        msg.arg1 = arg1;</div><div class="line">        msg.arg2 = arg2;</div><div class="line">        <span class="keyword">if</span> (async) &#123;</div><div class="line">            msg.setAsynchronous(<span class="keyword">true</span>);</div><div class="line">        &#125;</div><div class="line">        mH.sendMessage(msg);</div><div class="line">    &#125;</div><div class="line">    /......</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>上面这段代码也不难理解，在 <code>scheduleLaunchActivity</code> 方法中，生成一个 ActivityClientRecord 对象之后，通过一个 H 类的对象发送一个 H.LAUNCH_ACTIVITY 消息，此 H 类是一个 Handler 的子类，源码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">ActivityThread</span> </span>&#123;</div><div class="line">    /......</div><div class="line">    <span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">H</span> <span class="keyword">extends</span> <span class="title">Handler</span> </span>&#123;</div><div class="line">         <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> LAUNCH_ACTIVITY         = <span class="number">100</span>;</div><div class="line">         <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> PAUSE_ACTIVITY          = <span class="number">101</span>;</div><div class="line">         /......</div><div class="line">         <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleMessage</span><span class="params">(Message msg)</span> </span>&#123;</div><div class="line">            <span class="keyword">if</span> (DEBUG_MESSAGES) Slog.v(TAG, <span class="string">"&gt;&gt;&gt; handling: "</span> + codeToString(msg.what));</div><div class="line">            <span class="keyword">switch</span> (msg.what) &#123;</div><div class="line">                <span class="keyword">case</span> LAUNCH_ACTIVITY: &#123;</div><div class="line">                    Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, <span class="string">"activityStart"</span>);</div><div class="line">                    <span class="keyword">final</span> ActivityClientRecord r = (ActivityClientRecord) msg.obj;</div><div class="line"></div><div class="line">                    r.packageInfo = getPackageInfoNoCheck(</div><div class="line">                            r.activityInfo.applicationInfo, r.compatInfo);</div><div class="line">                    handleLaunchActivity(r, <span class="keyword">null</span>, <span class="string">"LAUNCH_ACTIVITY"</span>);</div><div class="line">                    Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);</div><div class="line">                &#125; <span class="keyword">break</span>;</div><div class="line">                <span class="keyword">case</span> RELAUNCH_ACTIVITY: &#123;</div><div class="line">                    Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, <span class="string">"activityRestart"</span>);</div><div class="line">                    ActivityClientRecord r = (ActivityClientRecord)msg.obj;</div><div class="line">                    handleRelaunchActivity(r);</div><div class="line">                    Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);</div><div class="line">                &#125; </div><div class="line">                /.....</div><div class="line">         &#125;</div><div class="line">    &#125;</div><div class="line">    /......</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>在 H 类中处理 <code>H.LAUNCH_ACTIVITY</code> 消息时，调用了 <code>handleLaunchActivity(ActivityClientRecord r, Intent customIntent, String reason)</code> 方法如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">handleLaunchActivity</span><span class="params">(ActivityClientRecord r, Intent customIntent, String reason)</span> </span>&#123;</div><div class="line">    <span class="comment">// If we are getting ready to gc after going to the background, well</span></div><div class="line">    <span class="comment">// we are back active so skip it.</span></div><div class="line">    unscheduleGcIdler();</div><div class="line">    mSomeActivitiesChanged = <span class="keyword">true</span>;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (r.profilerInfo != <span class="keyword">null</span>) &#123;</div><div class="line">        mProfiler.setProfiler(r.profilerInfo);</div><div class="line">        mProfiler.startProfiling();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// Make sure we are running with the most recent config.</span></div><div class="line">    handleConfigurationChanged(<span class="keyword">null</span>, <span class="keyword">null</span>);</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (localLOGV) Slog.v(</div><div class="line">        TAG, <span class="string">"Handling launch of "</span> + r);</div><div class="line"></div><div class="line">    <span class="comment">// Initialize before creating the activity</span></div><div class="line">    WindowManagerGlobal.initialize();</div><div class="line">    <span class="comment">// 代码 1</span></div><div class="line">    Activity a = performLaunchActivity(r, customIntent);</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (a != <span class="keyword">null</span>) &#123;</div><div class="line">        r.createdConfig = <span class="keyword">new</span> Configuration(mConfiguration);</div><div class="line">        reportSizeConfigurations(r);</div><div class="line">        Bundle oldState = r.state;</div><div class="line">        <span class="comment">// 代码 2</span></div><div class="line">        handleResumeActivity(r.token, <span class="keyword">false</span>, r.isForward,</div><div class="line">                !r.activity.mFinished &amp;&amp; !r.startsNotResumed, r.lastProcessedSeq, reason);</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (!r.activity.mFinished &amp;&amp; r.startsNotResumed) &#123;</div><div class="line">            <span class="comment">// The activity manager actually wants this one to start out paused, because it</span></div><div class="line">            <span class="comment">// needs to be visible but isn't in the foreground. We accomplish this by going</span></div><div class="line">            <span class="comment">// through the normal startup (because activities expect to go through onResume()</span></div><div class="line">            <span class="comment">// the first time they run, before their window is displayed), and then pausing it.</span></div><div class="line">            <span class="comment">// However, in this case we do -not- need to do the full pause cycle (of freezing</span></div><div class="line">            <span class="comment">// and such) because the activity manager assumes it can just retain the current</span></div><div class="line">            <span class="comment">// state it has.</span></div><div class="line">            performPauseActivityIfNeeded(r, reason);</div><div class="line"></div><div class="line">            <span class="comment">// We need to keep around the original state, in case we need to be created again.</span></div><div class="line">            <span class="comment">// But we only do this for pre-Honeycomb apps, which always save their state when</span></div><div class="line">            <span class="comment">// pausing, so we can not have them save their state when restarting from a paused</span></div><div class="line">            <span class="comment">// state. For HC and later, we want to (and can) let the state be saved as the</span></div><div class="line">            <span class="comment">// normal part of stopping the activity.</span></div><div class="line">            <span class="keyword">if</span> (r.isPreHoneycomb()) &#123;</div><div class="line">                r.state = oldState;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="comment">// If there was an error, for any reason, tell the activity manager to stop us.</span></div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            ActivityManager.getService()</div><div class="line">                .finishActivity(r.token, Activity.RESULT_CANCELED, <span class="keyword">null</span>,</div><div class="line">                        Activity.DONT_FINISH_TASK_WITH_ACTIVITY);</div><div class="line">        &#125; <span class="keyword">catch</span> (RemoteException ex) &#123;</div><div class="line">            <span class="keyword">throw</span> ex.rethrowFromSystemServer();</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>在上面代码中有两处代码很重要：</p>
+<ol>
+<li>代码1 处调用 <code>performLaunchActivity(ActivityClientRecord r, Intent customIntent)</code> 执行 Activity 的 create 流程</li>
+<li>代码2 处调用 <code>handleResumeActivity(IBinder token,boolean clearHide, boolean isForward, boolean reallyResume, int seq, String reason)</code> 执行 Activity 的 resume 流程 <code>performLaunchActivity(ActivityClientRecord r, Intent customIntent)</code>  源码如下，重要的代码都加了相应的注释</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> Activity <span class="title">performLaunchActivity</span><span class="params">(ActivityClientRecord r, Intent customIntent)</span> </span>&#123;</div><div class="line">    <span class="comment">// System.out.println("##### [" + System.currentTimeMillis() + "] ActivityThread.performLaunchActivity(" + r + ")");</span></div><div class="line">    </div><div class="line">    <span class="comment">// 从 ActivityClientRecord 对象中解析出 Activity 信息</span></div><div class="line">    ActivityInfo aInfo = r.activityInfo;</div><div class="line">    <span class="keyword">if</span> (r.packageInfo == <span class="keyword">null</span>) &#123;</div><div class="line">        r.packageInfo = getPackageInfo(aInfo.applicationInfo, r.compatInfo,</div><div class="line">                Context.CONTEXT_INCLUDE_CODE);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    ComponentName component = r.intent.getComponent();</div><div class="line">    <span class="keyword">if</span> (component == <span class="keyword">null</span>) &#123;</div><div class="line">        component = r.intent.resolveActivity(</div><div class="line">            mInitialApplication.getPackageManager());</div><div class="line">        r.intent.setComponent(component);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (r.activityInfo.targetActivity != <span class="keyword">null</span>) &#123;</div><div class="line">        component = <span class="keyword">new</span> ComponentName(r.activityInfo.packageName,</div><div class="line">                r.activityInfo.targetActivity);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    ContextImpl appContext = createBaseContextForActivity(r);</div><div class="line">    Activity activity = <span class="keyword">null</span>;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        <span class="comment">// 通过 Instrumentation 和 ClassLoader 对象创建相应的 Activity 对象</span></div><div class="line">        java.lang.ClassLoader cl = appContext.getClassLoader();</div><div class="line">        activity = mInstrumentation.newActivity(</div><div class="line">                cl, component.getClassName(), r.intent);</div><div class="line">        StrictMode.incrementExpectedActivityCount(activity.getClass());</div><div class="line">        r.intent.setExtrasClassLoader(cl);</div><div class="line">        r.intent.prepareToEnterProcess();</div><div class="line">        <span class="keyword">if</span> (r.state != <span class="keyword">null</span>) &#123;</div><div class="line">            r.state.setClassLoader(cl);</div><div class="line">        &#125;</div><div class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">        <span class="keyword">if</span> (!mInstrumentation.onException(activity, e)) &#123;</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(</div><div class="line">                <span class="string">"Unable to instantiate activity "</span> + component</div><div class="line">                + <span class="string">": "</span> + e.toString(), e);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        Application app = r.packageInfo.makeApplication(<span class="keyword">false</span>, mInstrumentation);</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (localLOGV) Slog.v(TAG, <span class="string">"Performing launch of "</span> + r);</div><div class="line">        <span class="keyword">if</span> (localLOGV) Slog.v(</div><div class="line">                TAG, r + <span class="string">": app="</span> + app</div><div class="line">                + <span class="string">", appName="</span> + app.getPackageName()</div><div class="line">                + <span class="string">", pkg="</span> + r.packageInfo.getPackageName()</div><div class="line">                + <span class="string">", comp="</span> + r.intent.getComponent().toShortString()</div><div class="line">                + <span class="string">", dir="</span> + r.packageInfo.getAppDir());</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (activity != <span class="keyword">null</span>) &#123;</div><div class="line">            CharSequence title = r.activityInfo.loadLabel(appContext.getPackageManager());</div><div class="line">            Configuration config = <span class="keyword">new</span> Configuration(mCompatConfiguration);</div><div class="line">            <span class="keyword">if</span> (r.overrideConfig != <span class="keyword">null</span>) &#123;</div><div class="line">                config.updateFrom(r.overrideConfig);</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">if</span> (DEBUG_CONFIGURATION) Slog.v(TAG, <span class="string">"Launching activity "</span></div><div class="line">                    + r.activityInfo.name + <span class="string">" with config "</span> + config);</div><div class="line">            Window window = <span class="keyword">null</span>;</div><div class="line">            <span class="keyword">if</span> (r.mPendingRemoveWindow != <span class="keyword">null</span> &amp;&amp; r.mPreserveWindow) &#123;</div><div class="line">                window = r.mPendingRemoveWindow;</div><div class="line">                r.mPendingRemoveWindow = <span class="keyword">null</span>;</div><div class="line">                r.mPendingRemoveWindowManager = <span class="keyword">null</span>;</div><div class="line">            &#125;</div><div class="line">            appContext.setOuterContext(activity);</div><div class="line">            <span class="comment">// 代码1，调用 Activity 的 attach 方法，其中创建了 Activity 所对应的 Window 对象</span></div><div class="line">            activity.attach(appContext, <span class="keyword">this</span>, getInstrumentation(), r.token,</div><div class="line">                    r.ident, app, r.intent, r.activityInfo, title, r.parent,</div><div class="line">                    r.embeddedID, r.lastNonConfigurationInstances, config,</div><div class="line">                    r.referrer, r.voiceInteractor, window, r.configCallback);</div><div class="line"></div><div class="line">            <span class="keyword">if</span> (customIntent != <span class="keyword">null</span>) &#123;</div><div class="line">                activity.mIntent = customIntent;</div><div class="line">            &#125;</div><div class="line">            r.lastNonConfigurationInstances = <span class="keyword">null</span>;</div><div class="line">            checkAndBlockForNetworkAccess();</div><div class="line">            activity.mStartedActivity = <span class="keyword">false</span>;</div><div class="line">            <span class="keyword">int</span> theme = r.activityInfo.getThemeResource();</div><div class="line">            <span class="keyword">if</span> (theme != <span class="number">0</span>) &#123;</div><div class="line">                activity.setTheme(theme);</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            activity.mCalled = <span class="keyword">false</span>;</div><div class="line">            <span class="comment">// 代码2，通过 mInstrumentation 调用 Activity 对象的 onCreate 方法</span></div><div class="line">            <span class="keyword">if</span> (r.isPersistable()) &#123;</div><div class="line">                mInstrumentation.callActivityOnCreate(activity, r.state, r.persistentState);</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                mInstrumentation.callActivityOnCreate(activity, r.state);</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">if</span> (!activity.mCalled) &#123;</div><div class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> SuperNotCalledException(</div><div class="line">                    <span class="string">"Activity "</span> + r.intent.getComponent().toShortString() +</div><div class="line">                    <span class="string">" did not call through to super.onCreate()"</span>);</div><div class="line">            &#125;</div><div class="line">            r.activity = activity;</div><div class="line">            r.stopped = <span class="keyword">true</span>;</div><div class="line">            <span class="keyword">if</span> (!r.activity.mFinished) &#123;</div><div class="line">                activity.performStart();</div><div class="line">                r.stopped = <span class="keyword">false</span>;</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">if</span> (!r.activity.mFinished) &#123;</div><div class="line">                <span class="comment">// 代码3，通过 mInstrumentation 调用 Activity 对象的 onRestoreInstanceState 方法</span></div><div class="line">                <span class="keyword">if</span> (r.isPersistable()) &#123;</div><div class="line">                    <span class="keyword">if</span> (r.state != <span class="keyword">null</span> || r.persistentState != <span class="keyword">null</span>) &#123;</div><div class="line">                        mInstrumentation.callActivityOnRestoreInstanceState(activity, r.state,</div><div class="line">                                r.persistentState);</div><div class="line">                    &#125;</div><div class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> (r.state != <span class="keyword">null</span>) &#123;</div><div class="line">                    mInstrumentation.callActivityOnRestoreInstanceState(activity, r.state);</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">if</span> (!r.activity.mFinished) &#123;</div><div class="line">                activity.mCalled = <span class="keyword">false</span>;</div><div class="line">                <span class="comment">// 代码4，通过 mInstrumentation 调用 Activity 对象的 onPostCreate 方法</span></div><div class="line">                <span class="keyword">if</span> (r.isPersistable()) &#123;</div><div class="line">                    mInstrumentation.callActivityOnPostCreate(activity, r.state,</div><div class="line">                            r.persistentState);</div><div class="line">                &#125; <span class="keyword">else</span> &#123;</div><div class="line">                    mInstrumentation.callActivityOnPostCreate(activity, r.state);</div><div class="line">                &#125;</div><div class="line">                <span class="keyword">if</span> (!activity.mCalled) &#123;</div><div class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> SuperNotCalledException(</div><div class="line">                        <span class="string">"Activity "</span> + r.intent.getComponent().toShortString() +</div><div class="line">                        <span class="string">" did not call through to super.onPostCreate()"</span>);</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        r.paused = <span class="keyword">true</span>;</div><div class="line">        </div><div class="line">        <span class="comment">// 代码5</span></div><div class="line">        mActivities.put(r.token, r);</div><div class="line"></div><div class="line">    &#125; <span class="keyword">catch</span> (SuperNotCalledException e) &#123;</div><div class="line">        <span class="keyword">throw</span> e;</div><div class="line"></div><div class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">        <span class="keyword">if</span> (!mInstrumentation.onException(activity, e)) &#123;</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(</div><div class="line">                <span class="string">"Unable to start activity "</span> + component</div><div class="line">                + <span class="string">": "</span> + e.toString(), e);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> activity;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>对上面的代码做简单的说明：</p>
+<ol>
+<li><p>代码1 处调用了 <code>Activity#attach</code> 方法，如下所示，在其中最重要的就是为 Activity 创建了对应的 Window 对象</p>
+<ul>
+<li>Activity 实现了 Window 中的几个 Callback，其中最重要的就是 <code>Window#Callback</code> 接口，Window 接收到的键盘、触摸等事件就是通过此接口传递到 Activity 中的</li>
+<li>为此 Window 对象添加 WindowManager 对象 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">void</span> <span class="title">attach</span><span class="params">(Context context, ActivityThread aThread,</span></span></div><div class="line">        Instrumentation instr, IBinder token, <span class="keyword">int</span> ident,</div><div class="line">        Application application, Intent intent, ActivityInfo info,</div><div class="line">        CharSequence title, Activity parent, String id,</div><div class="line">        NonConfigurationInstances lastNonConfigurationInstances,</div><div class="line">        Configuration config, String referrer, IVoiceInteractor voiceInteractor,</div><div class="line">        Window window, ActivityConfigCallback activityConfigCallback) &#123;</div><div class="line">    attachBaseContext(context);</div><div class="line"></div><div class="line">    mFragments.attachHost(<span class="keyword">null</span> <span class="comment">/*parent*/</span>);</div><div class="line">    </div><div class="line">    <span class="comment">// 创建 Activity 对应的 Window 对象，并实现 Window 中几个重要的回调方法</span></div><div class="line">    mWindow = <span class="keyword">new</span> PhoneWindow(<span class="keyword">this</span>, window, activityConfigCallback);</div><div class="line">    mWindow.setWindowControllerCallback(<span class="keyword">this</span>);</div><div class="line">    mWindow.setCallback(<span class="keyword">this</span>);</div><div class="line">    mWindow.setOnWindowDismissedCallback(<span class="keyword">this</span>);</div><div class="line">    mWindow.getLayoutInflater().setPrivateFactory(<span class="keyword">this</span>);</div><div class="line">    <span class="keyword">if</span> (info.softInputMode != WindowManager.LayoutParams.SOFT_INPUT_STATE_UNSPECIFIED) &#123;</div><div class="line">        mWindow.setSoftInputMode(info.softInputMode);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> (info.uiOptions != <span class="number">0</span>) &#123;</div><div class="line">        mWindow.setUiOptions(info.uiOptions);</div><div class="line">    &#125;</div><div class="line">    mUiThread = Thread.currentThread();</div><div class="line"></div><div class="line">    mMainThread = aThread;</div><div class="line">    mInstrumentation = instr;</div><div class="line">    mToken = token;</div><div class="line">    mIdent = ident;</div><div class="line">    mApplication = application;</div><div class="line">    mIntent = intent;</div><div class="line">    mReferrer = referrer;</div><div class="line">    mComponent = intent.getComponent();</div><div class="line">    mActivityInfo = info;</div><div class="line">    mTitle = title;</div><div class="line">    mParent = parent;</div><div class="line">    mEmbeddedID = id;</div><div class="line">    mLastNonConfigurationInstances = lastNonConfigurationInstances;</div><div class="line">    <span class="keyword">if</span> (voiceInteractor != <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="keyword">if</span> (lastNonConfigurationInstances != <span class="keyword">null</span>) &#123;</div><div class="line">            mVoiceInteractor = lastNonConfigurationInstances.voiceInteractor;</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            mVoiceInteractor = <span class="keyword">new</span> VoiceInteractor(voiceInteractor, <span class="keyword">this</span>, <span class="keyword">this</span>,</div><div class="line">                    Looper.myLooper());</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">     </div><div class="line">    <span class="comment">// 为 Window 对象添加 WindowManager 对象</span></div><div class="line">    mWindow.setWindowManager(</div><div class="line">            (WindowManager)context.getSystemService(Context.WINDOW_SERVICE),</div><div class="line">            mToken, mComponent.flattenToString(),</div><div class="line">            (info.flags &amp; ActivityInfo.FLAG_HARDWARE_ACCELERATED) != <span class="number">0</span>);</div><div class="line">    <span class="keyword">if</span> (mParent != <span class="keyword">null</span>) &#123;</div><div class="line">        mWindow.setContainer(mParent.getWindow());</div><div class="line">    &#125;</div><div class="line">    mWindowManager = mWindow.getWindowManager();</div><div class="line">    mCurrentConfig = config;</div><div class="line"></div><div class="line">    mWindow.setColorMode(info.colorMode);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>在代码 2 处调用了 <code>Instrumentation#callActivityOnCreate</code> 方法，如下所示，可以看到最终调用了 <code>Activity#onCreate</code> 方法</p>
+ <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Instrumentation</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">callActivityOnCreate</span><span class="params">(Activity activity, Bundle icicle,</span></span></div><div class="line">        PersistableBundle persistentState) &#123;</div><div class="line">    prePerformCreate(activity);</div><div class="line">    activity.performCreate(icicle, persistentState);</div><div class="line">    postPerformCreate(activity);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+ <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Activity </span></div><div class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">void</span> <span class="title">performCreate</span><span class="params">(Bundle icicle)</span> </span>&#123;</div><div class="line">    restoreHasCurrentPermissionRequest(icicle);</div><div class="line">    onCreate(icicle);</div><div class="line">    mActivityTransitionState.readState(icicle);</div><div class="line">    performCreateCommon();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>代码 3 处和代码 4 处和代码 2 处相同，都是先调用了 Instrumentation 中的 <code>callActivityOnRestoreInstanceState</code> 和 <code>callActivityOnPostCreate</code> 方法，然后在其中又调用了 Activity 中的 <code>performRestoreInstanceState</code> 和 <code>onPostCreate</code> 方法的。</p>
+</li>
+</ol>
+<p>可见 ActivityThread 中持有 Instrumentation 和 Activity 的实例对象，但是不会直接调用 Activity 的生命周期方法，而是通过 Instrumentation 对象间接的调用 Activity 的生命周期方法，上面只分析了 create 阶段的方法调用过程，其实 resume、start、stop、pause 和 destory 阶段的生命周期方法调用过程都是类似的</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/draft-1/" rel="next" title="draft">
+                <i class="fa fa-chevron-left"></i> draft
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="lijiankun24" />
+          <p class="site-author-name" itemprop="name">lijiankun24</p>
+           
+              <p class="site-description motion-element" itemprop="description">守得云开见月明。</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">39</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">26</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/lijiankun24" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/lijiankun24" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.jianshu.com/u/1abe21b7ff5f" target="_blank" title="Jianshu">
+                  
+                    <i class="fa fa-fw fa-jianshu"></i>
+                  
+                  Jianshu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://gank.io/post/published" title="匠心写作" target="_blank">匠心写作</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/lmj623565791" title="Hongyang" target="_blank">Hongyang</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://www.liaohuqiu.net/cn/" title="Huqiu Liao" target="_blank">Huqiu Liao</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://drakeet.me/" title="drakeet" target="_blank">drakeet</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.jianshu.com/u/df40282480b4" title="小鄧子" target="_blank">小鄧子</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://yuweiguocn.github.io/" title="于卫国" target="_blank">于卫国</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#一-Activity-中的启动源码分析"><span class="nav-number">1.</span> <span class="nav-text">一. Activity 中的启动源码分析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二-Instrumentation-中的启动源码分析"><span class="nav-number">2.</span> <span class="nav-text">二. Instrumentation 中的启动源码分析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#三-ApplicationThread-amp-ActivityThread-amp-Instrumentation-中生命周期方法的调用"><span class="nav-number">3.</span> <span class="nav-text">三. ApplicationThread & ActivityThread & Instrumentation 中生命周期方法的调用</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lijiankun24</span>
+  
+</div>
+
+
+<div>
+  <span id="busuanzi_container_site_pv">
+    Total views <span id="busuanzi_value_site_pv">   </span>
+  </span>
+
+  <span id="busuanzi_container_site_uv">
+    |   Total visitors <span id="busuanzi_value_site_uv"/>
+  </span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("tWG63sCRtLhi5NFeaXtWqtnv-gzGzoHsz", "lPLcNFpeOoNc6wr9PVX8XdbI");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+
+  
+
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+          bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+      } else {
+          bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+</body>
+</html>
